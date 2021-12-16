@@ -8,7 +8,7 @@ def _requires_from_file(filename):
     return open(filename).read().splitlines()
 
 ext_modules = [
-    Extension('util', 
+    Extension('sectionviewer.util', 
               sources=['sectionviewer/util.pyx'],
               extra_compile_args=["/openmp"],
               extra_link_args=["/openmp"], 
