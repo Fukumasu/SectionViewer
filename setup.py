@@ -28,7 +28,7 @@ setup(
     cmdclass={'build_ext': build_ext},
     entry_points = {
         'console_scripts': [
-            'SectionViewer = src.sectionviewer.SectionViewer:launch'
+            'SectionViewer = sectionviewer.SectionViewer:launch'
         ]
     }
 )
