@@ -18,10 +18,10 @@ ext_modules = [
 setup(
     name = 'sectionviewer',
     version = "1.0.0",
-    packages=find_packages("src"),
-    package_dir={'': 'src'},
+    packages=find_packages('src/sectionviewer'),
+    package_dir={'': 'src/sectionviewer'},
     install_requires=_requires_from_file('requirements.txt'),
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    py_modules=[splitext(basename(path))[0] for path in glob('src/sectionviewer/*.py')],
     package_data={'': ['img/*.png', 'img/SectionViewer.ico']},
     include_package_data=True,
     ext_modules=ext_modules,
