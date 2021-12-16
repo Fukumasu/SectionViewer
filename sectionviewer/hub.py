@@ -15,13 +15,13 @@ import tifffile as tif
 from tkinter import filedialog
 from tkinter import messagebox
 
-from data import Data
-from geometry import Geometry
-from position import Position
-from channels import Channels
-from points import Points
-from stack import Stack
-from memories import Memories
+from .data import Data
+from .geometry import Geometry
+from .position import Position
+from .channels import Channels
+from .points import Points
+from .stack import Stack
+from .memories import Memories
 
 import util as ut
 
