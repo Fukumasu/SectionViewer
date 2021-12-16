@@ -14,21 +14,21 @@ ext_modules = [
               extra_link_args=["/openmp"], 
               include_dirs=[".", get_include()])
 ]
-print([splitext(basename(path))[0] for path in glob('src/*.py')])
-# setup(
-#     name = 'sectionviewer',
-#     version = "1.0.0",
-#     packages=find_packages("src"),
-#     package_dir={'': 'src'},
-#     install_requires=_requires_from_file('requirements.txt'),
-#     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-#     package_data={'': ['img/*.png', 'img/SectionViewer.ico']},
-#     include_package_data=True,
-#     ext_modules=ext_modules,
-#     cmdclass={'build_ext': build_ext},
-#     entry_points = {
-#         'console_scripts': [
-#             'SectionViewer = src.sectionviewer.SectionViewer:launch'
-#         ]
-#     }
-# )
+
+setup(
+    name = 'sectionviewer',
+    version = "1.0.0",
+    packages=find_packages("src"),
+    package_dir={'': 'src'},
+    install_requires=_requires_from_file('requirements.txt'),
+    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    package_data={'': ['img/*.png', 'img/SectionViewer.ico']},
+    include_package_data=True,
+    ext_modules=ext_modules,
+    cmdclass={'build_ext': build_ext},
+    entry_points = {
+        'console_scripts': [
+            'SectionViewer = src.sectionviewer.SectionViewer:launch'
+        ]
+    }
+)
