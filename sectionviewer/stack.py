@@ -20,8 +20,8 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-from channels import Channels
-from geometry import Geometry
+from .channels import Channels
+from .geometry import Geometry
 import util as ut
 
 
