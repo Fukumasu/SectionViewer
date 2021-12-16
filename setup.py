@@ -22,7 +22,7 @@ setup(
 #     package_dir={'': 'sectionviewer'},
     install_requires=_requires_from_file('requirements.txt'),
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-    package_data={'': ['img/*.png', 'img/SectionViewer.ico']},
+    package_data={'': ['img/xyz.png', 'img/SectionViewer.ico']},
     include_package_data=True,
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
