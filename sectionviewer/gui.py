@@ -16,8 +16,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from hub import Hub
-from hub import empty
+from .hub import Hub
+from .hub import empty
 
 
 class GUI(ttk.Frame):
