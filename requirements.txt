@@ -1,8 +1,8 @@
-certifi==2020.6.20
-Cython==0.29.25
-numpy==1.19.2
-oiffile==2020.9.18
-opencv-python==4.4.0.44
-Pillow==7.2.0
-tifffile==2020.10.1
-wincertstore==0.2
+certifi
+Cython
+numpy
+oiffile
+opencv-python
+Pillow
+tifffile
+wincertstore
