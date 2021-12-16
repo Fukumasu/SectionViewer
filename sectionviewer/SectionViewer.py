@@ -11,8 +11,8 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 
-from gui import GUI
-from stack import STAC
+from .gui import GUI
+from .stack import STAC
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
