@@ -6,6 +6,7 @@ Created on Wed Jun  3 21:09:58 2020
 """
 import os
 import sys
+import zipfile
 
 import tkinter as tk
 from tkinter import filedialog
@@ -94,6 +95,11 @@ class SectionViewer(ttk.Frame):
         
 
 def launch(*arg):
+    eDir = os.path.dirname(os.path.abspath(__file__))
+    eDir = eDir.replace("\\", "/") + "/"
+    if not os.path.isfile(eDir + "img/xyz.png"):
+        with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
+            zp.extractall(path=eDir+"img/")
     app = SectionViewer(arg)
     app.mainloop()
     
