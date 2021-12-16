@@ -23,7 +23,7 @@ from .points import Points
 from .stack import Stack
 from .memories import Memories
 
-import util as ut
+import .util as ut
 
 
 class Hub:
