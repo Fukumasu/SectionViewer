@@ -9,7 +9,7 @@ def _requires_from_file(filename):
 
 ext_modules = [
     Extension('util', 
-              sources=['src/sectionviewer/util.pyx'],
+              sources=['sectionviewer/util.pyx'],
               extra_compile_args=["/openmp"],
               extra_link_args=["/openmp"], 
               include_dirs=[".", get_include()])
@@ -18,10 +18,10 @@ ext_modules = [
 setup(
     name = 'sectionviewer',
     version = '1.0.0',
-    packages=['src.sectionviewer'],
-#     package_dir={'': 'src'},
+    packages=['sectionviewer'],
+#     package_dir={'': 'sectionviewer'},
     install_requires=_requires_from_file('requirements.txt'),
-    py_modules=[splitext(basename(path))[0] for path in glob('src/sectionviewer/*.py')],
+    py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
     package_data={'': ['img/*.png', 'img/SectionViewer.ico']},
     include_package_data=True,
     ext_modules=ext_modules,
