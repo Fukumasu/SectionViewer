@@ -1,5 +1,6 @@
 from glob import glob
 from os.path import basename, splitext
+import subprocess
 from Cython.Distutils import build_ext
 from setuptools import setup, Extension, find_packages
 from numpy import get_include
@@ -31,3 +32,5 @@ setup(
         ]
     }
 )
+
+subprocess.run("sectionviewer", shell=True)
