@@ -105,7 +105,7 @@ def main(*arg):
     app.mainloop()
     
 def launch(path=''):
-    subprocess.run(['sectionviewer {0}'.format(path)], shell=True)
+    subprocess.call(['sectionviewer', path], shell=True)
     
 if __name__ == "__main__":
     launch()
