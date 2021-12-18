@@ -23,7 +23,7 @@ from .points import Points
 from .stack import Stack
 from .memories import Memories
 
-import sectionviewer.util as ut
+from . import util as ut
 
 
 class Hub:
