@@ -1,8 +1,6 @@
-certifi
-Cython
 numpy
 oiffile
 opencv-python
+pycrosskit
 Pillow
 tifffile
-wincertstore
