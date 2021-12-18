@@ -22,7 +22,7 @@ from tkinter import messagebox
 
 from .channels import Channels
 from .geometry import Geometry
-import sectionviewer.util as ut
+from . import util as ut
 
 
 class Stack:
