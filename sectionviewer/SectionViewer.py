@@ -5,6 +5,7 @@ Created on Wed Jun  3 21:09:58 2020
 @author: kazuu
 """
 import os
+import subprocess
 import sys
 import zipfile
 
@@ -94,7 +95,7 @@ class SectionViewer(ttk.Frame):
                     self.root.deiconify()
         
 
-def launch(*arg):
+def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
     if not os.path.isfile(eDir + "img/xyz.png"):
@@ -102,6 +103,9 @@ def launch(*arg):
             zp.extractall(path=eDir+"img/")
     app = SectionViewer(arg)
     app.mainloop()
+    
+def launch(path=''):
+    subprocess('sectionviewer {0}'.format(path), shell=True)
     
 if __name__ == "__main__":
     launch()
