@@ -97,10 +97,11 @@ class SectionViewer(ttk.Frame):
         
 
 def main(*arg):
-    if arg[-1] == "--getDesktopIcon":
-        exec_path = os.path.join(os.path.join(sys.base_prefix, "Scripts"), "SectionViewer.exe")
-        icon_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"), "SectionViewer.ico")
-        Shortcut("SectionViewer", exec_path, icon_path, True, True)
+    if len(arg) > 0:
+        if arg[-1] == "--getDesktopIcon":
+            exec_path = os.path.join(os.path.join(sys.base_prefix, "Scripts"), "SectionViewer.exe")
+            icon_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"), "SectionViewer.ico")
+            Shortcut("SectionViewer", exec_path, icon_path, True, True)
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
     if not os.path.isfile(eDir + "img/xyz.png"):
