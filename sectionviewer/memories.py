@@ -14,7 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import sectionviewer.util as ut
+from . import util as ut
 
 
 class Memories:
