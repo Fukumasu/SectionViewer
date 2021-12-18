@@ -9,6 +9,7 @@ import subprocess
 import sys
 import zipfile
 
+from pycrosskit.shortcuts import Shortcut
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -96,6 +97,11 @@ class SectionViewer(ttk.Frame):
         
 
 def main(*arg):
+    if len(arg) > 0:
+        if arg[0] == "--getDesktopIcon":
+            exec_path = os.path.join(os.path.join(sys.base_prefix, "Scripts"), "SectionViewer.exe")
+            icon_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"), "SectionViewer.ico")
+            Shortcut("SectionViewer", exec_path, icon_path, True, True)
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
     if not os.path.isfile(eDir + "img/xyz.png"):
