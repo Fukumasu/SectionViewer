@@ -9,7 +9,6 @@ import subprocess
 import sys
 import zipfile
 
-from pycrosskit.shortcuts import Shortcut
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -97,10 +96,6 @@ class SectionViewer(ttk.Frame):
         
 
 def main(*arg):
-    if sys.argv[-1] == "--getDesktopIcon":
-        exec_path = os.path.join(os.path.join(sys.base_prefix, "Scripts"), "SectionViewer.exe")
-        icon_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)), "img"), "SectionViewer.ico")
-        Shortcut("SectionViewer", exec_path, icon_path, True, True)
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
     if not os.path.isfile(eDir + "img/xyz.png"):
@@ -109,8 +104,28 @@ def main(*arg):
     app = SectionViewer(arg)
     app.mainloop()
     
-def launch(path=""):
-    subprocess.Popen("sectionviewer {0}".format(path), shell=True)
+def launch(file_name=None):
+    eDir = os.path.dirname(os.path.abspath(__file__))
+    eDir = eDir.replace("\\", "/") + "/"
+    if file_name == None:
+        fTyp = [("SectionViewer projects", "*.secv"), 
+                ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
+                ("SV multi-stack files", "*.stac")]
+        if not os.path.isfile(eDir + ".init_dir.txt"):
+            with open(eDir + ".init_dir.txt", "w") as f:
+                f.write(os.path.expanduser("~/Desktop"))
+        with open(eDir + ".init_dir.txt", "r") as f:
+            iDir = f.read()
+        if not os.path.isdir(iDir):
+            iDir = os.path.expanduser("~/Desktop")
+        root = tk.Tk()
+        root.withdraw()
+        root.iconbitmap(eDir + "img/SectionViewer.ico")
+        file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
+                                               initialdir=iDir, title="Open")
+        root.destroy()
+    subprocess.Popen("sectionviewer {0}".format(file_name), shell=True)
+    return file_name
     
 if __name__ == "__main__":
     launch()
