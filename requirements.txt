@@ -1,6 +1,5 @@
 numpy
 oiffile
 opencv-python
-pycrosskit
 Pillow
 tifffile
