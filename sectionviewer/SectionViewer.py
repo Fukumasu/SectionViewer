@@ -6,7 +6,6 @@ Created on Wed Jun  3 21:09:58 2020
 """
 import os
 import subprocess
-from subprocess import PIPE
 import sys
 import zipfile
 
@@ -99,9 +98,6 @@ class SectionViewer(ttk.Frame):
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    assoc = subprocess.run("assoc .secv", shell=True, stdout=PIPE, text=True)
-    if assoc!='.secv=SectionViewerFile\n':
-        subprocess.run('powershell start-process ' + eDir + 'assocsecv.bat -verb runas', shell=True)
     if not os.path.isfile(eDir + "img/xyz.png"):
         with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
             zp.extractall(path=eDir+"img/")
