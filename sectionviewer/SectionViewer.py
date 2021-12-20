@@ -124,6 +124,8 @@ def launch(file_name=None):
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
                                                initialdir=iDir, title="Open")
         root.destroy()
+    if len(file_name) == 0:
+        return
     subprocess.Popen("sectionviewer {0}".format(file_name), shell=True)
     return file_name
     
