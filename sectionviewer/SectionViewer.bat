@@ -1,3 +1,3 @@
 @echo off
 
-start %~dp0../../../Scripts/SectionViewer.exe %1
+%~dp0../../../python.exe %~dp0enter.py %1
