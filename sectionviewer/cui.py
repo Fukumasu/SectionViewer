@@ -464,7 +464,7 @@ class Point:
     def __delattr__(self, name):
         pass
         
-class Memories:
+class Snapshots:
     def __init__(self, hub, val):
         if type(val) == SuperList:
             object.__setattr__(self, "_val" , val)
@@ -482,31 +482,31 @@ class Memories:
         pass
     def __getitem__(self, x):
         if type(x) == int:
-            return Memory(self._hub, self._val[x])
+            return Snapshot(self._hub, self._val[x])
         if type(x) == str:
             w = np.where(np.array(self.getnames())==x)[0].tolist()
             if len(w) == 0:
-                raise NameError("Memory name '{0}' does not exist".format(x))
+                raise NameError("Snapshot name '{0}' does not exist".format(x))
             x = w
-        return Memories(self._hub, self._val[x])
+        return Snapshots(self._hub, self._val[x])
     def getnames(self):
-        return [m['name'] for m in self._val]
-class Memory:
+        return [s['name'] for s in self._val]
+class Snapshot:
     def __init__(self, hub, val):
         object.__setattr__(self, '_val', val)
         object.__setattr__(self, '_hub', hub)
         try:
             keys = list(hub.classes.keys())
-            keys.remove("memories")
+            keys.remove("snapshots")
             for k in keys:
                 object.__setattr__(self, k, hub.classes[k](self, val[k]))
         except:
-            raise SecvError("an invalid Memory object")
+            raise SnapshotError("an invalid Snapshot object")
     def __setitem__(self, k, v):
         if k == 'name':
             self._val[k] = v
         else:
-            raise SecvError("cannot change Memory object except name")
+            raise SnapshotError("cannot change Snapshot object except name")
     def __setattr__(self, name, value):
         pass
     def __delattr__(self, name):
@@ -552,7 +552,7 @@ class Memory:
         if points:
             self._val['points'] = secv['points']
         keys = list(self._hub.classes.keys())
-        keys.remove("memories")
+        keys.remove("snapshots")
         for k in keys:
             object.__setattr__(self, k, self._hub.classes[k](self, self._val[k]))
 
@@ -563,7 +563,7 @@ class SectionViewer(dict):
                    "position": Position,
                    "channels": Channels,
                      "points": Points  ,
-                   "memories": Memories}
+                   "snapshots": Snapshots}
         object.__setattr__(self, "classes", classes)
         dict.__init__(self, classes)
         if type(x) == str:
@@ -614,10 +614,10 @@ class SectionViewer(dict):
         pt = str(pt) if len(pt) <= 3 else str(pt[:3])[:-1] + ", ...]"
         pt = pt[1:-1].replace("'", "")
         text += "   points:  {0}\n".format(pt)
-        mm = self.memories.getnames()
-        mm = str(mm) if len(mm) <= 3 else str(mm[:3])[:-1] + ", ...]"
-        mm = mm[1:-1].replace("'", "")
-        text += " memories:  " + mm
+        ss = self.snapshots.getnames()
+        ss = str(ss) if len(ss) <= 3 else str(ss[:3])[:-1] + ", ...]"
+        ss = ss[1:-1].replace("'", "")
+        text += "snapshots:  " + ss
         return text
     def save(self, path=None):
         secv = self._secv
@@ -631,7 +631,7 @@ class SectionViewer(dict):
         secv['position'] = self.position._val
         secv['channels'] = self.channels._val._val
         secv['points'] = self.points._val._val
-        secv['memories'] = self.memories._val._val
+        secv['snapshots'] = self.snapshots._val._val
         with open(path, "wb") as f:
             pickle.dump(secv, f, protocol=4)
     def reload(self):
@@ -719,6 +719,8 @@ class SecvError(Exception):
 class ChannelError(Exception):
     pass
 class PointError(Exception):
+    pass
+class SnapshotError(Exception):
     pass
 class PathNotGivenError(Exception):
     pass

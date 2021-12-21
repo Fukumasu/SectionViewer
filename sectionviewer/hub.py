@@ -21,7 +21,7 @@ from .position import Position
 from .channels import Channels
 from .points import Points
 from .stack import Stack
-from .memories import Memories
+from .snapshots import Snapshots
 
 from . import util as ut
 
@@ -35,7 +35,7 @@ class Hub:
         self.position = None
         self.channels = []
         self.points = []
-        self.memories = []
+        self.snapshots = []
         
         self.thickness = 1
         gui.thickness.set("1")
@@ -78,8 +78,10 @@ class Hub:
                 if "upperleft" in display:
                     gui.upperleft = display["upperleft"]
                     
+            if "snapshots" in secv:
+                self.snapshots = secv["snapshots"]
             if "memories" in secv:
-                self.memories = secv["memories"]
+                self.snapshots = secv["memories"]
             self.secv_name = path
         else:
             self.data = [[path]]
@@ -97,7 +99,7 @@ class Hub:
         self.channels = Channels(self)
         self.points = Points(self)
         self.stack = Stack(self)
-        self.memories = Memories(self)
+        self.snapshots = Snapshots(self)
         self.reload = Reload(self)
         self.hist_grouping = Hist_grouping(self)
         
@@ -697,8 +699,8 @@ class Hub:
         sort = np.argsort(self.points.getnames())
         secv["points"] = [self.points.pts[s] for s in sort]
         
-        sort = np.argsort(self.memories.names())
-        secv["memories"] = [self.memories.memories[s] for s in sort]
+        sort = np.argsort(self.snapshots.names())
+        secv["snapshots"] = [self.snapshots.snapshots[s] for s in sort]
         
         display = {}
         display["thickness"] = self.thickness
@@ -893,19 +895,21 @@ class Reload:
             messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
             return None
         
-        if "memories" in secv:
-            mem = secv["memories"]
+        if "snapshots" in secv:
+            snp = secv["snapshots"]
+        elif "memories" in secv:
+            snp = secv["memories"]
         else:
-            mem = []
+            snp = []
         
         ul = self.Hub.gui.upperleft
         iw0, ih0 = self.Hub.geometry["image size"]
         
         typ, old, new = [], [], []
         try:
-            for v, m in zip([dat, geo, pos, chs, pts, mem],
+            for v, m in zip([dat, geo, pos, chs, pts, snp],
                             [Hub.data, Hub.geometry, Hub.position, 
-                             Hub.channels, Hub.points, Hub.memories]):
+                             Hub.channels, Hub.points, Hub.snapshots]):
                 old += [m.val]
                 if m.reload(v): 
                     new += [m.val]
@@ -963,7 +967,7 @@ class Reload:
             else:
                 self.Hub.calc_sideview()
         
-        for cl in [self.Hub.channels, self.Hub.points, self.Hub.memories]:
+        for cl in [self.Hub.channels, self.Hub.points, self.Hub.snapshots]:
             cl.refresh_tree()
     
         

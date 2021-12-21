@@ -32,8 +32,8 @@ class GUI(ttk.Frame):
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = cv2.imread(eDir+"img/p_button.png")
         self.p_image = ImageTk.PhotoImage(Image.fromarray(p_image[:,:,::-1]))
-        m_image = cv2.imread(eDir+"img/m_button.png")
-        self.m_image = ImageTk.PhotoImage(Image.fromarray(m_image[:,:,::-1]))
+        s_image = cv2.imread(eDir+"img/s_button.png")
+        self.s_image = ImageTk.PhotoImage(Image.fromarray(s_image[:,:,::-1]))
         k_image = cv2.imread(eDir+"img/Keyboard.png")
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
         e_image = cv2.imread(eDir+"img/expand.png")
@@ -85,11 +85,11 @@ class GUI(ttk.Frame):
                     self.Hub.channels.settings()
                 elif key == "p":
                     self.Hub.points.settings()
-                elif key == "m":
-                    self.Hub.memories.settings()
+                elif key == "s":
+                    self.Hub.snapshots.settings()
         self.palette.bind("<c>", switch)
         self.palette.bind("<p>", switch)
-        self.palette.bind("<m>", switch)
+        self.palette.bind("<s>", switch)
         self.palette.bind("<Control-s>", lambda event: self.Hub.save(self.Hub.secv_name))
         self.palette.bind("<Control-w>", lambda event: self.Hub.save())
         self.palette.bind("<Control-z>", lambda event: self.Hub.undo())
@@ -158,10 +158,9 @@ class GUI(ttk.Frame):
                                        command=Hub.geometry.details)
         
         self.tools_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.tools_menu.add_command(label="Stack", command=Hub.stack.settings,
+        self.tools_menu.add_command(label="Snapshots", command=Hub.snapshots.settings,
                                     accelerator="S")
-        self.tools_menu.add_command(label="Memories", command=Hub.memories.settings,
-                                    accelerator="M")
+        self.tools_menu.add_command(label="Stack", command=Hub.stack.settings)
         
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
         self.menu_bar.add_cascade(label="Edit", menu=self.edit_menu)
@@ -234,8 +233,8 @@ class GUI(ttk.Frame):
         self.c_button.grid(column=0, row=0)
         self.p_button = ttk.Button(self.buttons, image=self.p_image, command=Hub.points.settings)
         self.p_button.grid(column=1, row=0)
-        self.m_button = ttk.Button(self.buttons, image=self.m_image, command=Hub.memories.settings)
-        self.m_button.grid(column=2, row=0)
+        self.s_button = ttk.Button(self.buttons, image=self.s_image, command=Hub.snapshots.settings)
+        self.s_button.grid(column=2, row=0)
         
         self.display = ttk.LabelFrame(self.top, text="Display")
         self.display.pack(side=tk.RIGHT, ipady=3)
@@ -375,7 +374,7 @@ class GUI(ttk.Frame):
         else:
             if key in ["a", "b", "g"]:
                 getattr(self, "chk_{0}".format(key)).invoke()
-            elif key in ["c", "p", "m"]:
+            elif key in ["c", "p", "s"]:
                 getattr(self, "{0}_button".format(key)).invoke()
             elif key == "Delete":
                 self.Hub.points.del_pt(x=[self.p_num])
