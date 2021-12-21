@@ -98,9 +98,8 @@ class SectionViewer(ttk.Frame):
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    if not os.path.isfile(eDir + "img/xyz.png"):
-        with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
-            zp.extractall(path=eDir+"img/")
+    with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
+        zp.extractall(path=eDir+"img/")
     app = SectionViewer(arg)
     app.mainloop()
     
@@ -126,8 +125,6 @@ def launch(file_name=None):
         root.destroy()
     if len(file_name) == 0:
         return
-    subprocess.Popen("sectionviewer {0}".format(file_name), shell=True)
+    subprocess.Popen("python enter.py {0}".format(file_name), shell=True)
     return file_name
-    
-if __name__ == "__main__":
-    launch()
+
