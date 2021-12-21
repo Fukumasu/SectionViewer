@@ -112,6 +112,7 @@ class Channels:
         
         frame2 = ttk.Frame(frame0)
         frame2.pack(side=tk.LEFT, pady=10)
+        self.frame2 = frame2
         
         frame3 = ttk.Frame(frame2)
         frame3.pack(padx=10, pady=5, ipadx=5, ipady=5)
@@ -345,18 +346,10 @@ class Channels:
         selection = self.treeview.selection()
         
         if len(selection) == 0:
-            if hasattr(self, "button_dl"):
-                self.button_dl["state"] = tk.DISABLED
-            self.checkbutton["state"] = tk.DISABLED
-            self.entry_nm["state"] = tk.DISABLED
-            for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.DISABLED
-            for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.DISABLED
-            for w in self.vnx_frame.grid_slaves():
-                w["state"] = tk.DISABLED
-                
-            return None
+            self.frame2.pack_forget()
+            return
+        else:
+            self.frame2.pack()
         
         if hasattr(self, "button_dl"):
             if len(selection) < len(self.treeview.get_children()):
@@ -389,22 +382,28 @@ class Channels:
         if self.Hub.ch_show[x].all():
             self.variables["sh"].set(1)
             for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
         else:
             if self.Hub.ch_show[x].any():
                 self.variables["sh"].set(-1)
             else:
                 self.variables["sh"].set(0)
             for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
         
         if len(selection) == 1:
             self.entry_nm["state"] = tk.ACTIVE
@@ -457,19 +456,25 @@ class Channels:
         if self.variables["sh"].get():
             self.entry_nm["state"] = tk.ACTIVE
             for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                w["state"] = tk.ACTIVE
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.ACTIVE
         else:
             self.entry_nm["state"] = tk.DISABLED
             for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                w["state"] = tk.DISABLED
+                if not "scale" in str(w)[-6:]:
+                    w["state"] = tk.DISABLED
                 
         self.Hub.calc_frame()
         if hasattr(self.Hub.gui, "g_on"):
@@ -524,6 +529,12 @@ class Channels:
         
         
     def rgb(self, *args):
+        if not self.variables["sh"].get():
+            i = int(self.treeview.selection()[0])
+            self.variables["b"].set(self.chs[i][1][0])
+            self.variables["g"].set(self.chs[i][1][1])
+            self.variables["r"].set(self.chs[i][1][2])
+            return
         a  = [self.variables["b"].get()]
         a += [self.variables["g"].get()]
         a += [self.variables["r"].get()]
@@ -533,6 +544,14 @@ class Channels:
         self.variables["l"].set(int(a[2]*10))
         self.ch_color()
     def hsl(self, *args):
+        if not self.variables["sh"].get():
+            i = int(self.treeview.selection()[0])
+            a = list(self.chs[i][1])
+            a = self.bgr2hsl(a)
+            self.variables["h"].set(int(a[0]*10))
+            self.variables["s"].set(int(a[1]*10))
+            self.variables["l"].set(int(a[2]*10))
+            return
         a  = [self.variables["h"].get()/10]
         a += [self.variables["s"].get()/10]
         a += [self.variables["l"].get()/10]
@@ -607,10 +626,18 @@ class Channels:
                 
     
     def vmin(self, *args):
+        if not self.variables["sh"].get():
+            i = int(self.treeview.selection()[0])
+            self.variables["vn"].set(self.chs[i][2])
+            return
         if self.variables["vn"].get() >= self.variables["vx"].get():
             self.variables["vn"].set(self.variables["vx"].get()-1)
         self.ch_vrange()
     def vmax(self, *args):
+        if not self.variables["sh"].get():
+            i = int(self.treeview.selection()[0])
+            self.variables["vx"].set(self.chs[i][3])
+            return
         if self.variables["vn"].get() >= self.variables["vx"].get():
             self.variables["vx"].set(self.variables["vn"].get()+1)
         self.ch_vrange()

@@ -59,6 +59,8 @@ class Points:
         
         frameb = ttk.Frame(frame1)
         frameb.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
+        self.button_mv = ttk.Button(frameb, text="Move to", command=self.move_to)
+        self.button_mv.pack(side=tk.LEFT)
         button1 = ttk.Button(frameb, text="Add", command=self.add_pt)
         button1.pack(side=tk.LEFT)
         button2 = ttk.Button(frameb, text="Delete", command=self.del_pt)
@@ -91,6 +93,7 @@ class Points:
         
         frame2 = ttk.Frame(frame0)
         frame2.pack(side=tk.TOP, pady=10)
+        self.frame2 = frame2
             
         self.entry_nm = ttk.Entry(frame2, textvariable=self.variables["nm"])
         self.entry_nm.grid(row=0, column=0, columnspan=2, pady=10)
@@ -193,9 +196,6 @@ class Points:
         self.button_cg = ttk.Button(frame2, text="Change", command=self.change)
         self.button_cg.grid(row=2, column=1, pady=10, padx=10, sticky=tk.E)
         
-        self.button_mv = ttk.Button(frame0, text="Move to", command=self.move_to)
-        self.button_mv.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
-        
     
     def __getattr__(self, name):
         if name == "val":
@@ -265,6 +265,11 @@ class Points:
             self.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
             self.treeview.insert("", "end", str(i), text=" "+names[i], image=self.icons[i])
         self.treeview.selection_set()
+        x = self.treeview.get_children()
+        if len(x) == 0:
+            self.button_mv["state"] = tk.DISABLED
+        else:
+            self.button_mv["state"] = tk.ACTIVE
             
         
     def pt_select(self, event):
@@ -272,20 +277,12 @@ class Points:
         
         if len(selection) == 0:
             self.button_dl["state"] = tk.DISABLED
-            self.entry_nm["state"] = tk.DISABLED
-            self.button_cg["state"] = tk.DISABLED
-            for w in self.rgb_frame.grid_slaves():
-                w["state"] = tk.DISABLED
-            for w in self.hsl_frame.grid_slaves():
-                w["state"] = tk.DISABLED
-            
-            return None
+            self.frame2.pack_forget()
+            return
+        else:
+            self.frame2.pack()
         
         self.button_dl["state"] = tk.ACTIVE
-        for w in self.rgb_frame.grid_slaves():
-            w["state"] = tk.ACTIVE
-        for w in self.hsl_frame.grid_slaves():
-            w["state"] = tk.ACTIVE
         
         i = int(selection[0])
         p = self.pts[i][2]
