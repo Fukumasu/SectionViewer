@@ -118,7 +118,6 @@ def launch(file_name=None):
         if not os.path.isdir(iDir):
             iDir = os.path.expanduser("~/Desktop")
         root = tk.Tk()
-        root.withdraw()
         root.iconbitmap(eDir + "img/SectionViewer.ico")
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
                                                initialdir=iDir, title="Open")
