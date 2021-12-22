@@ -619,6 +619,8 @@ class SectionViewer(dict):
         ss = ss[1:-1].replace("'", "")
         text += "snapshots:  " + ss
         return text
+    def __repr__(self):
+        return str(self)
     def save(self, path=None):
         secv = self._secv
         if path == None:
