@@ -124,6 +124,6 @@ def launch(file_name=None):
         root.destroy()
     if len(file_name) == 0:
         return
-    subprocess.Popen("python enter.py {0}".format(file_name), shell=True)
+    subprocess.Popen("sectionviewer {0}".format(file_name), shell=True)
     return file_name
 
