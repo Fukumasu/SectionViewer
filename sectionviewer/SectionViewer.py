@@ -26,7 +26,7 @@ class SectionViewer(ttk.Frame):
         root = tk.Tk()
         root.withdraw()
         root.iconbitmap(eDir + "img/SectionViewer.ico")
-        label = ttk.Label(root, text="Press Ctrl+O to open a file.")
+        label = ttk.Label(root, text="Open OIB, TIFF, or SECV file")
         label.pack(padx=50, pady=30)
         root.title('SectionViewer')
         super().__init__(root)
