@@ -24,7 +24,7 @@ setup(
     package_data={'': ['*.pyd', 'img/resources.zip']},
     include_package_data=True,
 #     ext_modules=ext_modules,
-    cmdclass={'build_ext': build_ext},
+#     cmdclass={'build_ext': build_ext},
     entry_points = {
         'gui_scripts': [
             'SectionViewer = sectionviewer.SectionViewer:main'
