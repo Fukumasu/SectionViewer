@@ -26,6 +26,9 @@ class SectionViewer(ttk.Frame):
         root = tk.Tk()
         root.withdraw()
         root.iconbitmap(eDir + "img/SectionViewer.ico")
+        label = ttk.Label(root, text="Press Ctrl+O to open a file.")
+        label.pack(padx=50, pady=30)
+        root.title('SectionViewer')
         super().__init__(root)
         self.root = root
         
@@ -33,26 +36,11 @@ class SectionViewer(ttk.Frame):
             arg = sys.argv[1:]
         self.wins = []
         
-        self.create_widgets(self.root)
-        self.root.bind("<Control-o>", lambda event: self.open_new(self.root))
-        self.root.title("SectionViewer")
+        self.root.deiconify()
         if len(arg) == 0:
-            self.root.deiconify()
+            self.open_new(self.root)
         else:
             self.open_new(self.root, file_name=arg[0])
-        
-    def create_widgets(self, master):
-        self.menu_bar = tk.Menu(master)
-        
-        self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.file_menu.add_command(label="Open", command=lambda: self.open_new(self.root), accelerator="Ctrl+O")
-        self.menu_bar.add_cascade(label="File", menu=self.file_menu)
-        
-        master.config(menu=self.menu_bar)
-        
-        label = ttk.Label(master, text="Press Ctrl+O to open a file.")
-        label.pack(padx=50, pady=30)
-    
     
     def open_new(self, master, file_name=None):
         
@@ -92,7 +80,13 @@ class SectionViewer(ttk.Frame):
                 for w in self.wins:
                     close = close and not bool(w.winfo_exists())
                 if close:
-                    self.root.deiconify()
+                    self.root.destroy()
+        else:
+            close = True
+            for w in self.wins:
+                close = close and not bool(w.winfo_exists())
+            if close:
+                self.root.destroy()
         
 
 def main(*arg):
@@ -118,6 +112,9 @@ def launch(file_name=None):
         if not os.path.isdir(iDir):
             iDir = os.path.expanduser("~/Desktop")
         root = tk.Tk()
+        root.title('SectionViewer')
+        label = ttk.Label(root, text="Open OIB, TIFF, or SECV file")
+        label.pack(padx=50, pady=30)
         root.iconbitmap(eDir + "img/SectionViewer.ico")
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
                                                initialdir=iDir, title="Open")
