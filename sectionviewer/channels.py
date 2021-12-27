@@ -706,7 +706,8 @@ class Channels:
     def add_ch(self):
         Hub = self.Hub
         
-        fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"])]
+        fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
+                ("All files", "*")]
         iDir = Hub.gui.iDir
         data_files = filedialog.askopenfilenames(parent=Hub.gui.palette, filetypes=fTyp, 
                                                  initialdir=iDir, title="Add channels")
