@@ -23,7 +23,8 @@ class Data:
             messagebox.showinfo("Information",
                                     '''The project doesn't contain any data files.
 Please choose data file to open.''')
-            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"])]
+            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
+                    ("All files", "*")]
             iDir = os.path.dirname(Hub.gui.iDir)
             file = filedialog.askopenfilename(parent=Hub.gui.master, 
                                                filetypes=fTyp, 
@@ -94,7 +95,8 @@ Please choose data file to open.''')
                                     '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(f)))
-                fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"])]
+                fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
+                        ("All files", "*")]
                 iDir = os.path.dirname(Hub.gui.iDir)
                 iFil = os.path.splitext(os.path.basename(f))[0]
                 f = filedialog.askopenfilename(parent=Hub.gui.master, 
@@ -140,13 +142,14 @@ Please specify the file.'''.format(os.path.basename(f)))
     
             elif f[-4:] == ".tif" or f[-5:] == ".tiff":
                 boxes += [tif.imread(f)]
-            elif f[-7:] == ".pickle":
-                with open(f, "rb") as g:
-                    boxes += [pickle.load(g)]
             else:
-                messagebox.showerror("Error", 
-                                     "File type '{0}' is not supported.".format(os.path.splitext(f)[1]))
-                return 0
+                try:
+                    with open(f, "rb") as g:
+                        boxes += [pickle.load(g)]
+                except:
+                    messagebox.showerror("Error", 
+                                         "File type '{0}' is not supported.".format(os.path.splitext(f)[1]))
+                    return 0
             
         boxes = [boxes[i][None] if boxes[i].ndim == 3 else boxes[i] for i in range(len(boxes))]
         
@@ -201,7 +204,8 @@ Please specify the file.'''.format(os.path.basename(f)))
                                 '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(path)))
-            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"])]
+            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
+                    ("All files", "*"]
             iDir = os.path.dirname(Hub.gui.iDir)
             iFil = os.path.splitext(os.path.basename(path))[0]
             path = filedialog.askopenfilename(parent=Hub.gui.master, 
@@ -219,13 +223,14 @@ Please specify the file.'''.format(os.path.basename(path)))
 
         elif path[-4:] == ".tif" or path[-5:] == ".tiff":
             box = tif.imread(path)
-        elif path[-7:] == ".pickle":
-            with open(path, "rb") as f:
-                box = pickle.load(f)
         else:
-            messagebox.showerror("Error", 
-                                 "File type '{0}' is not supported.".format(os.path.splitext(path)[1]))
-            return
+            try:
+                with open(path, "rb") as f:
+                    box = pickle.load(f)
+            except:
+                messagebox.showerror("Error", 
+                                     "File type '{0}' is not supported.".format(os.path.splitext(path)[1]))
+                return
             
         box = box[None] if box.ndim == 3 else box
         if box[0].shape != self.Hub.box[0].shape:
