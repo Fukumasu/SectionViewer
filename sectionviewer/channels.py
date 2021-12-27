@@ -320,6 +320,7 @@ class Channels:
         self.set_frame.pack(pady=10, padx=5)
         gui.palette.unbind("<Control-a>")
         gui.palette.bind("<Control-a>", lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        self.refresh_tree()
     
         gui.palette.deiconify()
         gui.palette.grab_set()
