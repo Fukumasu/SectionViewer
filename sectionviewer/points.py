@@ -725,11 +725,12 @@ class Points:
             
             win.grab_release()
             win.destroy()
-            
+            self.Hub.gui.palette.grab_set()
             
         def cancel():
             win.grab_release()
             win.destroy()
+            self.Hub.gui.palette.grab_set()
         
         frame2 = ttk.Frame(frame0)
         frame2.pack(padx=5, pady=5)
