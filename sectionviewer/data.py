@@ -205,7 +205,7 @@ Please specify the file.'''.format(os.path.basename(f)))
 {0}
 Please specify the file.'''.format(os.path.basename(path)))
             fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
-                    ("All files", "*"]
+                    ("All files", "*")]
             iDir = os.path.dirname(Hub.gui.iDir)
             iFil = os.path.splitext(os.path.basename(path))[0]
             path = filedialog.askopenfilename(parent=Hub.gui.master, 
