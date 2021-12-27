@@ -47,7 +47,8 @@ class SectionViewer(ttk.Frame):
         if file_name == None:
             fTyp = [("SectionViewer projects", "*.secv"), 
                     ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
-                    ("SV multi-stack files", "*.stac")]
+                    ("SV multi-stack files", "*.stac"),
+                    ("All files", "*")]
             if not os.path.isfile(self.eDir + ".init_dir.txt"):
                 with open(self.eDir + ".init_dir.txt", "w") as f:
                     f.write(os.path.expanduser("~/Desktop"))
@@ -103,7 +104,8 @@ def launch(file_name=None):
     if file_name == None:
         fTyp = [("SectionViewer projects", "*.secv"), 
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
-                ("SV multi-stack files", "*.stac")]
+                ("SV multi-stack files", "*.stac"),
+                ("All files", "*")]
         if not os.path.isfile(eDir + ".init_dir.txt"):
             with open(eDir + ".init_dir.txt", "w") as f:
                 f.write(os.path.expanduser("~/Desktop"))
