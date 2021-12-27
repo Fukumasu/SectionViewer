@@ -232,6 +232,7 @@ class Points:
         self.set_frame.pack(pady=10, padx=5)
         gui.palette.unbind("<Control-a>")
         gui.palette.bind("<Control-a>", lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        self.refresh_tree()
     
         x = self.treeview.get_children()
         if len(x) == 0:
