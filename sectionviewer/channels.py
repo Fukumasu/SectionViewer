@@ -739,7 +739,8 @@ class Channels:
         
         idx, hist = Hub.hidx, Hub.history
         
-        self.chs_trash[len(hist) + idx + 1] = chs.copy()
+        ntrash = len(hist) + idx + 1
+        self.chs_trash[ntrash] = chs.copy()
         
         x = list(range(len(Hub.data.getchload()) - len(chs), len(Hub.data.getchload())))
         self.chs = self.chs + chs
@@ -759,6 +760,12 @@ class Channels:
         gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.add_channels(x, needload=False)
+        mx = np.amax(self.Hub.frame[-dc:], axis=(1,2))
+        for i in range(-1,-len(mx)-1,-1):
+            self.chs[i][3] = mx[i]
+        self.chs_trash[ntrash] = self.chs[-dc:].copy()
+        self.chs = self.chs
+        
         
         
     def add_channels(self, x, needload=True):
