@@ -142,7 +142,7 @@ class Hub:
         if self.secv_name==None:
             mx = np.amax(self.frame, axis=(1,2))
             for i in range(len(mx)):
-                self.channels.val[i][1][1] = mx[i]
+                self.channels.val[i][3] = mx[i]
             self.channels.val = self.channels.val
             self.calc_image()
         
