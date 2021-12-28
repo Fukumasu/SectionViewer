@@ -743,6 +743,12 @@ class Channels:
         
         x = list(range(len(Hub.data.getchload()) - len(chs), len(Hub.data.getchload())))
         self.chs = self.chs + chs
+        self.Hub.calc_frame()
+        mx = np.amax(self.Hub.frame[-dc:], axis=(1,2))
+        for i in range(-1,-len(mx)-1,-1):
+            self.chs[i][3] = mx[i]
+        self.chs = self.chs
+        self.Hub.calc_image()
         
         if idx != -1:
             hist[idx:] = hist[idx:idx+1]
