@@ -139,6 +139,11 @@ class Hub:
                                      "Data shape is invalid\n CZYX = {0}".format(self.box.shape))
                 self.load_success = False
                 return None
+        mx = np.amax(self.frame, axis=(1,2))
+        for i in range(len(mx)):
+            self.channels.val[i][1][1] = mx[i]
+        self.channels.val = self.channels.val
+        self.calc_image()
         
         self.calc_guide()
         self.calc_sideview()
