@@ -827,7 +827,7 @@ class GUI(ttk.Frame):
             pos[2] =  np.cos(self.angle)*nx - np.sin(self.angle)*ny
             self.Hub.position.pos = pos.tolist()
             sec_raw = self.Hub.sec_raw
-            M = cv2.getRotationMatrix2D((la//2, lb//2), -self.angle/np.pi*180, 1)
+            M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), -self.angle/np.pi*180, 1)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
             if self.g_on.get():
@@ -846,7 +846,7 @@ class GUI(ttk.Frame):
             exp_rate = self.Hub.geometry["expansion"]
             self.Hub.geometry.geo["expansion"] *= self.expand
             sec_raw = self.Hub.sec_raw
-            M = cv2.getRotationMatrix2D((la//2, lb//2), 0, self.expand)
+            M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), 0, self.expand)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
             if self.g_on.get():
