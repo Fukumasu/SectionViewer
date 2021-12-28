@@ -765,7 +765,7 @@ class Channels:
             self.chs[i][3] = mx[i]
         self.chs_trash[ntrash] = self.chs[-dc:].copy()
         self.chs = self.chs
-        
+        self.Hub.calc_image()
         
         
     def add_channels(self, x, needload=True):
