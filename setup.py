@@ -21,7 +21,7 @@ setup(
     packages=['sectionviewer'],
     install_requires=_requires_from_file('requirements.txt'),
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-    package_data={'': ['*.exe', 'SectionViewer/*.exe', 'SectionViewer/*.bat', 'img/resources.zip']},
+    package_data={'': ['*.exe', 'SectionViewer/*.exe', 'img/resources.zip']},
     include_package_data=True,
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
