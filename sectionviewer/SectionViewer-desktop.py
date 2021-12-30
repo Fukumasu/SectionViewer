@@ -7,7 +7,8 @@ Created on Thu Dec 30 17:53:00 2021
 import os
 import subprocess
 
-eDir = os.path.dirname(os.path.abspath(__file__))
-eDir = os.path.join(eDir, "SectionViewer-install.exe")
-
-subprocess.Popen(eDir, shell=True)
+def main():
+    eDir = os.path.dirname(os.path.abspath(__file__))
+    eDir = os.path.join(eDir, "SectionViewer-install.exe")
+    
+    subprocess.Popen(eDir, shell=True)
