@@ -655,6 +655,16 @@ class STAC(ttk.Frame):
         super().__init__(master)
         self.master.protocol("WM_DELETE_WINDOW", self.on_close)
         
+        # Palette
+        self.palette = tk.Toplevel(self.master)
+        self.palette.withdraw()
+        self.palette.iconbitmap(self.SV.eDir + "img/SectionViewer.ico")
+        self.palette.resizable(height=False, width=False)
+        def hide():
+            self.palette.grab_release()
+            self.palette.withdraw()
+        self.palette.protocol("WM_DELETE_WINDOW", hide)
+        
         try:
             self.Hub = Hub_stack(self, file_name, stac=stac)
         except Exception as e:
@@ -1358,6 +1368,7 @@ class STAC(ttk.Frame):
         
 class Hub_stack:
     def __init__(self, gui, path, stac=None):
+        self.gui = gui
         if stac == None:
             with open(path, "rb") as f:
                 byt = f.read()
@@ -1397,7 +1408,6 @@ class Hub_stack:
                         gui.trans = 1
             gui.to = len(self.stacks) - 1 if gui.trans==0 else len(self.stacks)*2 - 3
         
-        self.gui = gui
         self.ch_show = np.ones(len(self.channels), np.bool)
         self.stacked = self.stacks[0]
         
