@@ -11,4 +11,4 @@ def main():
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = os.path.join(eDir, "SectionViewer-install.exe")
     
-    subprocess.Popen(eDir, shell=True)
+    subprocess.run(eDir, shell=True)
