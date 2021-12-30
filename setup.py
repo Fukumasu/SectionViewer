@@ -28,7 +28,7 @@ setup(
     entry_points = {
         'gui_scripts': [
             'SectionViewer = sectionviewer.SectionViewer:main',
-            'SectionViewer-desktop = sectionviewer.SectionViewer-desktop:main'
+            'SectionViewer_desktop = sectionviewer.SectionViewer_desktop:main'
         ]
     }
 )
