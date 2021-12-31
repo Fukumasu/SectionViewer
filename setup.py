@@ -27,8 +27,8 @@ setup(
     cmdclass={'build_ext': build_ext},
     entry_points = {
         'gui_scripts': [
-            'SectionViewer = sectionviewer.SectionViewer:main',
-            'SectionViewer_desktop = sectionviewer.SectionViewer_desktop:main'
+            'sectionviewer = sectionviewer.sectionviewer:main',
+            'sectionviewer_desktop = sectionviewer.sectionviewer_desktop:main'
         ]
     }
 )
