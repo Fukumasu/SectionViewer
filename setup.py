@@ -26,9 +26,8 @@ setup(
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
     entry_points = {
-        'gui_scripts': [
-            'sectionviewer = sectionviewer.sectionviewer:main',
-            'sectionviewer_desktop = sectionviewer.sectionviewer_desktop:main'
+        'console_scripts': [
+            'sectionviewer = sectionviewer.sectionviewer:main'
         ]
     }
 )
