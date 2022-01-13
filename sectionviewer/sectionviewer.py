@@ -95,17 +95,20 @@ def main(*arg):
     eDir = eDir.replace("\\", "/") + "/"
     with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
         zp.extractall(path=eDir+"img/")
-    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
+    if not os.isfile(eDir + "SectionViewer/SectionViewer.exe"):
         eDir = os.path.dirname(os.path.abspath(__file__))
         eDir = os.path.join(eDir, "SectionViewer-install.exe")
         subprocess.run(eDir, shell=True)
-        return
     app = SectionViewer(arg)
     app.mainloop()
     
 def launch(file_name=None):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
+    if not os.isfile(eDir + "SectionViewer/SectionViewer.exe"):
+        eDir = os.path.dirname(os.path.abspath(__file__))
+        eDir = os.path.join(eDir, "SectionViewer-install.exe")
+        subprocess.run(eDir, shell=True)
     if file_name == None:
         fTyp = [("SectionViewer projects", "*.secv"), 
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
