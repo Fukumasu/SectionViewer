@@ -7,7 +7,7 @@ def _requires_from_file(filename):
     return open(filename).read().splitlines()
 
 pf = platform.system()
-if pf == "Windowss":
+if pf == "Windows":
     setup(
         name = 'sectionviewer',
         version = '1.0.0',
