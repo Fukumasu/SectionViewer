@@ -11,14 +11,14 @@ if pf == "Windows":
     setup(
         name = 'sectionviewer',
         version = '1.0.0',
-        packages=['windows'],
+        packages=['sectionviewer'],
         install_requires=_requires_from_file('requirements.txt'),
-        py_modules=[splitext(basename(path))[0] for path in glob('windows/*.py')],
+        py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
         package_data={'': ['*.exe', '*.dll', 'img/resources.zip', 'img/SectionViewer.ico']},
         include_package_data=True,
         entry_points = {
             'console_scripts': [
-                'sectionviewer = windows.sectionviewer:main'
+                'sectionviewer = sectionviewer.sectionviewer:main'
             ]
         }
     )
