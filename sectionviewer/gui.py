@@ -8,6 +8,7 @@ import os
 import shutil
 import time
 import traceback
+import zipfile
 
 import cv2
 import numpy as np
@@ -28,6 +29,8 @@ class GUI(ttk.Frame):
         
         self.iDir = file_name
         
+        with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
+            zp.extractall(path=eDir+"img/")
         c_image = cv2.imread(eDir+"img/c_button.png")
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = cv2.imread(eDir+"img/p_button.png")

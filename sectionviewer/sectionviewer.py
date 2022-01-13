@@ -95,16 +95,11 @@ def main(*arg):
     eDir = eDir.replace("\\", "/") + "/"
     with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
         zp.extractall(path=eDir+"img/")
-    if len(sys.argv) > 1:
-        if sys.argv[1][:2] == "--":
-            if sys.argv[1] == "--desktop":
-                eDir = os.path.dirname(os.path.abspath(__file__))
-                eDir = os.path.join(eDir, "SectionViewer-install.exe")
-                subprocess.run(eDir, shell=True)
-                return
-            else:
-                print("no such option: {0}".format(sys.argv[1]))
-                return
+    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
+        eDir = os.path.dirname(os.path.abspath(__file__))
+        eDir = os.path.join(eDir, "SectionViewer-install.exe")
+        subprocess.run(eDir, shell=True)
+        return
     app = SectionViewer(arg)
     app.mainloop()
     
@@ -133,6 +128,6 @@ def launch(file_name=None):
         root.destroy()
     if len(file_name) == 0:
         return
-    subprocess.Popen("sectionviewer {0}".format(file_name), shell=True)
+    subprocess.Popen(eDir + "SectionViewer/SectionViewer.exe {0}".format(file_name), shell=True)
     return file_name
 

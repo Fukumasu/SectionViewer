@@ -14,7 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from . import util as ut
+from . import utils as ut
 
 
 class Snapshots:
@@ -630,10 +630,11 @@ class Snapshots:
         lut = ((1/diff[:,None])*(lut - vrange[:,:1]))
         lut[lut<1/255] = 1/255
         lut[lut>1] = 1
+        im = np.empty([*frame.shape[1:], 4], np.uint8)
         if gui.white.get():
-            im = ut.calc_bgr_w(frame, lut, colors, np.arange(len(lut)))
+            ut.calc_bgr_w(frame, lut, colors, np.arange(len(lut)), im)
         else:
-            im = ut.calc_bgr(frame, lut, colors, np.arange(len(lut)))
+            ut.calc_bgr(frame, lut, colors, np.arange(len(lut)), im)
         
         if gui.b_on.get():
             im[-25:-20, -20-lpx:-20,:3] = 0 if gui.white.get() else 255

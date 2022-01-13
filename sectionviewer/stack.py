@@ -22,7 +22,7 @@ from tkinter import messagebox
 
 from .channels import Channels
 from .geometry import Geometry
-from . import util as ut
+from . import utils as ut
 
 
 class Stack:
@@ -64,12 +64,11 @@ class Stack:
         ut.calc_section(self.Hub.box, pos, self.frame1, 
                         np.array([lb//2, self.center], np.int),
                         np.arange(len(lut))[self.Hub.ch_show])
-        im = ut.calc_bgr(self.frame1, lut, colors, np.arange(len(lut))[self.Hub.ch_show])
-        a = im[:,:,3:]/255
-        im = im[:,:,:3]*a
+        image1 = np.empty([*self.frame1.shape[1:], 4], np.uint8)
         if self.Hub.gui.white.get():
-            im += 255*(1-a)
-        image1 = im.astype(np.uint8)
+            ut.calc_bgr_w(self.frame1, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image1)
+        else:
+            ut.calc_bgr(self.frame1, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image1)
         self.image1 = image1.copy()
         image1[:,self.center] = 255 - image1[:,self.center]
         
@@ -81,12 +80,11 @@ class Stack:
         ut.calc_section(self.Hub.box, pos, self.frame2, 
                         np.array([lb//2, self.center], np.int),
                         np.arange(len(lut))[self.Hub.ch_show])
-        im = ut.calc_bgr(self.frame2, lut, colors, np.arange(len(lut))[self.Hub.ch_show])
-        a = im[:,:,3:]/255
-        im = im[:,:,:3]*a
+        image2 = np.empty([*self.frame2.shape[1:], 4], np.uint8)
         if self.Hub.gui.white.get():
-            im += 255*(1-a)
-        image2 = im.astype(np.uint8)
+            ut.calc_bgr_w(self.frame2, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image2)
+        else:
+            ut.calc_bgr(self.frame2, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image2)
         self.image2 = image2.copy()
         image2[:,self.center] = 255 - image2[:,self.center]
         
@@ -94,15 +92,21 @@ class Stack:
         note.pack(padx=30)
         
         vert_frame = ttk.Frame(note)
-        self.im1 = ImageTk.PhotoImage(Image.fromarray(image1[:,:,::-1]))
+        image1 = np.append(image1[:,:,2::-1], image1[:,:,3:], axis=2)
+        self.im1 = ImageTk.PhotoImage(Image.fromarray(image1))
         self.canvas1 = tk.Canvas(vert_frame, width=la, height=lb)
+        fill = "#ffffff" if self.Hub.gui.white.get() else "#000000"
+        self.canvas1.create_rectangle(0, 0, la, lb, fill=fill, width=0)
         self.im1_id = self.canvas1.create_image(0, 0, anchor="nw", image=self.im1)
         self.canvas1.pack()
         note.add(vert_frame, text="Vertical")
         
         horiz_frame = ttk.Frame(note)
-        self.im2 = ImageTk.PhotoImage(Image.fromarray(image2[:,:,::-1]))
+        image2 = np.append(image2[:,:,2::-1], image2[:,:,3:], axis=2)
+        self.im2 = ImageTk.PhotoImage(Image.fromarray(image2))
         self.canvas2 = tk.Canvas(horiz_frame, width=la, height=lb)
+        fill = "#ffffff" if self.Hub.gui.white.get() else "#000000"
+        self.canvas2.create_rectangle(0, 0, la, lb, fill=fill, width=0)
         self.im2_id = self.canvas2.create_image(0, 0, anchor="nw", image=self.im2)
         self.canvas2.pack()
         note.add(horiz_frame, text="Horizontal")
@@ -258,7 +262,7 @@ class Stack:
                 self.i_s = 1
                 self.buttons[self.i_s].focus_set()
         
-        self.canvas1.bind("<Destroy>", lambda event: cancel())
+        self.stack_win.protocol("WM_DELETE_WINDOW", cancel)
         self.stack_win.bind("<Return>", lambda event: enter())
         self.stack_win.bind("<Left>", lambda event: left())
         self.stack_win.bind("<Right>", lambda event: right())
@@ -319,7 +323,6 @@ class Stack:
         self.stacks = np.zeros([0, *Hub.frame.shape], Hub.frame.dtype)
         
         if self.trans.get():
-            self.box_trim = self.box_trim.transpose(0,1,3,2)
             self.stacks = self.stacks.transpose(0,1,3,2)
             op = [op[0], op[2], op[1]]
             
@@ -379,11 +382,12 @@ class Stack:
         if len(self.stacks) > 0:
             
             if self.trans.get():
-                self.stacks = self.stacks.transpose(0,1,3,2)
+                self.stacks = self.stacks.transpose(0,1,3,2).copy()
             
             chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
                     c[2], c[3]] for c in Hub.channels.chs]
-            trans = int(angle == 180)
+            
+            trans = int(angle == 180 and not self.cancel)
             if trans:
                 trans += int(self.trans.get())
             stac = [self.stacks, chs, Hub.geometry.geo,
@@ -424,9 +428,9 @@ class Stack:
         
         box = Hub.box
         
-        stacks = np.empty([stop - start + 1, *Hub.frame.shape], dtype=np.uint16)
-        ut.span_section(box, pos, nz, start, stop + 1, stacks, np.array(stacks[0,0].shape)//2,
-                        np.arange(len(Hub.lut)))
+        stacks = np.empty([len(Hub.frame), stop - start + 1, *Hub.frame[0].shape], dtype=np.uint16)
+        ut.fill_box(box, pos, nz, start, stop + 1, stacks, np.array(stacks[0,0].shape)//2)
+        stacks = stacks.transpose(1,0,2,3).copy()
         
         try:
             self.stack_win.grab_release()
@@ -479,7 +483,10 @@ class Stack:
         frame = np.empty(Hub.frame.shape, dtype=np.uint16)
         ut.calc_section(box, pos, frame, np.array(frame[0].shape)//2,
                         np.arange(len(Hub.lut))[Hub.ch_show])
-        Hub.gui.section = ut.calc_bgr(frame, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show])
+        if Hub.gui.white.get():
+            ut.calc_bgr_w(frame, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show], Hub.gui.section)
+        else:
+            ut.calc_bgr(frame, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show], Hub.gui.section)
         Hub.put_axes_bar()
         
         start = int(self.s_var[0].get()*self.expansion) + self.center
@@ -489,14 +496,16 @@ class Stack:
         image1[:,start] = 255 - image1[:,start]
         if start != stop:
             image1[:,stop] = 255 - image1[:,stop]
-        self.im1 = ImageTk.PhotoImage(Image.fromarray(image1[:,:,::-1]))
+        image1 = np.append(image1[:,:,2::-1], image1[:,:,3:], axis=2)
+        self.im1 = ImageTk.PhotoImage(Image.fromarray(image1))
         self.canvas1.itemconfig(self.im1_id, image=self.im1)
         
         image2 = self.image2.copy()
         image2[:,start] = 255 - image2[:,start]
         if start != stop:
             image2[:,stop] = 255 - image2[:,stop]
-        self.im2 = ImageTk.PhotoImage(Image.fromarray(image2[:,:,::-1]))
+        image2 = np.append(image2[:,:,2::-1], image2[:,:,3:], axis=2)
+        self.im2 = ImageTk.PhotoImage(Image.fromarray(image2))
         self.canvas2.itemconfig(self.im2_id, image=self.im2)
         
         
@@ -562,6 +571,10 @@ class Stack:
         m, M = np.fmax(np.amin(peaks, axis=0), 0), np.fmin(np.amax(peaks, axis=0), np.array([lb0,la0]))
         
         la, lb = int(M[1] - m[1]), int(M[0] - m[0])
+        if self.trans:
+            la, lb = lb, la
+            la0, lb0 = lb0, la0
+            pos = pos[[0,2,1]]
         c = (np.array([lb0//2, la0//2]) - m).astype(np.int)
         
         box_trim = np.empty([len(Hub.frame), stop-start+1, lb, la], dtype=np.uint16)
@@ -599,7 +612,11 @@ class Stack:
             stop = int(stop*Hub.geometry["expansion"])
         ut.stack_section2(box, pos, nz, start, stop, stacked)
         
-        im = ut.calc_bgr(stacked, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show])
+        im = np.empty([*stacked.shape[1:], 4], np.uint8)
+        if Hub.gui.white.get():
+            ut.calc_bgr_w(stacked, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show], im)
+        else:
+            ut.calc_bgr(stacked, Hub.lut, Hub.colors, np.arange(len(Hub.lut))[Hub.ch_show], im)
         if self.trans.get():
             im = im.transpose(1,0,2)
         Hub.gui.section = im
@@ -1276,7 +1293,7 @@ class STAC(ttk.Frame):
                         self.Hub.stacked = self.Hub.stacks[i]
                     else:
                         self.Hub.stacked = self.Hub.stacks[i-len(self.Hub.stacks)+1]
-                        self.Hub.stacked = self.Hub.stacked[:,::-1] if self.trans==2 else self.Hub.stacked[:,:,::-1]
+                        self.Hub.stacked = self.Hub.stacked[:,::-1].copy() if self.trans==2 else self.Hub.stacked[:,:,::-1].copy()
                     self.Hub.calc_image()
                     if self.cancel:
                         break
@@ -1421,8 +1438,10 @@ class Hub_stack:
         
     
     def calc_image(self):
-        self.gui.image = ut.calc_bgr(self.stacked, self.lut, self.colors,
-                                     np.arange(len(self.lut))[self.ch_show])
+        if not hasattr(self.gui, "image"):
+            self.gui.image = np.empty([*self.stacked.shape[1:], 4], np.uint8)
+        ut.calc_bgr(self.stacked, self.lut, self.colors,
+                     np.arange(len(self.lut))[self.ch_show], self.gui.image)
         if hasattr(self.gui, "stack_canvas"):
             x, y, iw, ih, w, h = self.put_bar()
             self.scroll_config(x, y, iw, ih, w, h)
@@ -1481,7 +1500,7 @@ class Hub_stack:
             self.stacked = self.stacks[i]
         else:
             self.stacked = self.stacks[i-len(self.stacks)+1]
-            self.stacked = self.stacked[:,::-1] if self.gui.trans==2 else self.stacked[:,:,::-1]
+            self.stacked = self.stacked[:,::-1].copy() if self.gui.trans==2 else self.stacked[:,:,::-1].copy()
         self.calc_image()
         
         

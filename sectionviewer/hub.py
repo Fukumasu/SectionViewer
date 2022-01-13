@@ -23,7 +23,7 @@ from .points import Points
 from .stack import Stack
 from .snapshots import Snapshots
 
-from . import util as ut
+from . import utils as ut
 
 
 class Hub:
@@ -166,8 +166,11 @@ class Hub:
         self.ratio = ratio
         
         self.frame = np.empty([len(self.box), *geo["image size"][::-1]], np.uint16)
+        self.sec_raw = np.empty([*geo["image size"][::-1], 4], np.uint8)
         self.s_frame = np.empty([len(self.box), 569, 400], np.uint16)
         self.s_frame[:,284] = 0
+        self.s_frame1 = np.empty([len(self.box), 284, 400], np.uint16)
+        self.s_frame2 = np.empty([len(self.box), 284, 400], np.uint16)
         
         exp_rate = geo["expansion"]
         bar_len = geo["bar length"]
@@ -232,11 +235,11 @@ class Hub:
         
     def calc_image(self):
         if self.gui.white.get():
-            self.sec_raw = ut.calc_bgr_w(self.frame, self.lut, self.colors, 
-                                         np.arange(len(self.lut))[self.ch_show])
+            ut.calc_bgr_w(self.frame, self.lut, self.colors, 
+                          np.arange(len(self.lut))[self.ch_show], self.sec_raw)
         else:
-            self.sec_raw = ut.calc_bgr(self.frame, self.lut, self.colors, 
-                                       np.arange(len(self.lut))[self.ch_show])
+            ut.calc_bgr(self.frame, self.lut, self.colors, 
+                        np.arange(len(self.lut))[self.ch_show], self.sec_raw)
         self.put_points()
         
     
@@ -574,27 +577,30 @@ class Hub:
         pos[:,0] /= self.ratio
         pos[1:] /= exp_rate/2
         
-        ut.fast_section(self.box, pos, self.s_frame[:,:284], np.array([142, 200]),
+        ut.fast_section(self.box, pos, self.s_frame1, np.array([142, 200]),
                         np.arange(len(self.lut))[self.ch_show])
+        self.s_frame[:,:284] = self.s_frame1
         
         pos = np.array([op, ny, nz])
         pos[:,0] /= self.ratio
         pos[1:] /= exp_rate/2
         
-        ut.fast_section(self.box, pos, self.s_frame[:,285:], np.array([142, 200]),
+        ut.fast_section(self.box, pos, self.s_frame2, np.array([142, 200]),
                         np.arange(len(self.lut))[self.ch_show])
+        self.s_frame[:,285:] = self.s_frame2
         self.calc_sideimage()
         
         
     def calc_sideimage(self):
         gui = self.gui
         
+        im = gui.side if hasattr(gui, 'side') else np.empty([*self.s_frame.shape[1:], 4], np.uint8)
         if gui.white.get():
-            im = ut.calc_bgr_w(self.s_frame, self.lut, self.colors, 
-                               np.arange(len(self.lut))[self.ch_show])
+            ut.calc_bgr_w(self.s_frame, self.lut, self.colors, 
+                          np.arange(len(self.lut))[self.ch_show], im)
         else:
-            im = ut.calc_bgr(self.s_frame, self.lut, self.colors, 
-                             np.arange(len(self.lut))[self.ch_show])
+            ut.calc_bgr(self.s_frame, self.lut, self.colors, 
+                        np.arange(len(self.lut))[self.ch_show], im)
         im[:,200,:3] = 0 if gui.white.get() else 255
         im[:,200,3] = 255 - im[:,200,3]
         im[284,::5,:3] = 0 if gui.white.get() else 255
