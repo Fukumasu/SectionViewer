@@ -7,7 +7,6 @@ Created on Wed Jun  3 21:09:58 2020
 import os
 import subprocess
 import sys
-import zipfile
 
 import tkinter as tk
 from tkinter import filedialog
@@ -93,18 +92,21 @@ class SectionViewer(ttk.Frame):
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
-        zp.extractall(path=eDir+"img/")
     if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
         subprocess.run(eDir + "SectionViewer-install.exe", shell=True)
-    app = SectionViewer(arg)
-    app.mainloop()
+    if os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
+        if len(arg) > 0:
+            subprocess.run(eDir + "SectionViewer/SectionViewer.exe {0}".format(arg[0]), shell=True)
+        else:
+            subprocess.run(eDir + "SectionViewer/SectionViewer.exe", shell=True)
     
 def launch(file_name=None):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
     if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
         subprocess.run(eDir + "SectionViewer-install.exe", shell=True)
+    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
+        return
     if file_name == None:
         fTyp = [("SectionViewer projects", "*.secv"), 
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
