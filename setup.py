@@ -2,11 +2,18 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
-import numpy as np
+from setuptools.command.build_ext import build_ext as _build_ext
+
+class build_ext(_build_ext):
+  def finalize_options(self):
+    _build_ext.finalize_options(self)
+    __buildins__.__NUMPY_SETUP__ = False
+    import numpy
+    self.include_dirs.append(numpy.get_include())
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.c'])]
-cmdclass = {}
+cmdclass = {'build_ext': build_ext}
 
 def _requires_from_file(filename):
     return open(filename).read().splitlines()
@@ -23,7 +30,7 @@ if pf == "Windows":
         py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
         package_data={'': ['*.exe', '*.dll', 'img/resources.zip', 'img/SectionViewer.ico', 'SectionViewer/execute.py']},
         include_package_data=True,
-        include_dirs = [np.get_include()],
+        setup_requires=['numpy'],
         entry_points = {
             'console_scripts': [
                 'sectionviewer = sectionviewer.sectionviewer:main'
