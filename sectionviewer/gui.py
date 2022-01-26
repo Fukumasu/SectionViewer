@@ -8,7 +8,6 @@ import os
 import shutil
 import time
 import traceback
-import zipfile
 
 import cv2
 import numpy as np
@@ -29,22 +28,21 @@ class GUI(ttk.Frame):
         
         self.iDir = file_name
         
-        with zipfile.ZipFile(eDir + "img/resources.zip") as zp:
-            zp.extractall(path=eDir+"img/")
-        c_image = cv2.imread(eDir+"img/c_button.png")
+        resources = cv2.imread(eDir+'img/resources.png')
+        c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
-        p_image = cv2.imread(eDir+"img/p_button.png")
+        p_image = resources[:35,36:72]
         self.p_image = ImageTk.PhotoImage(Image.fromarray(p_image[:,:,::-1]))
-        s_image = cv2.imread(eDir+"img/s_button.png")
+        s_image = resources[:35,72:108]
         self.s_image = ImageTk.PhotoImage(Image.fromarray(s_image[:,:,::-1]))
-        k_image = cv2.imread(eDir+"img/Keyboard.png")
+        k_image = resources[35:]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
-        e_image = cv2.imread(eDir+"img/expand.png")
+        self.xyz = resources[:22,108:174]
+        e_image = resources[:14,174:188]
         self.e_image = ImageTk.PhotoImage(Image.fromarray(e_image[:,:,::-1]))
-        
-        ver_image = cv2.imread(eDir+"img/vertical.png")
+        ver_image = resources[:20,188:208]
         self.ver_image = ImageTk.PhotoImage(Image.fromarray(ver_image[:,:,::-1]))
-        hor_image = cv2.imread(eDir+"img/horizontal.png")
+        hor_image = resources[:20,208:228]
         self.hor_image = ImageTk.PhotoImage(Image.fromarray(hor_image[:,:,::-1]))
         
         self.thickness = tk.StringVar()

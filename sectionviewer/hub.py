@@ -117,7 +117,6 @@ class Hub:
         self.l = l
         self.s = s
         
-        self.xyz = cv2.imread(gui.SV.eDir + "img/xyz.png")
         self.g_l = 800
         self.g_im = np.empty([self.g_l,self.g_l,3], np.uint8)
         self.g_edges = np.array([[-1, 1, 2,-1, 3,-1,-1,-1], \
@@ -552,7 +551,7 @@ class Hub:
         im[:-20,-20:] = 240
         
         im = cv2.resize(im, (400,400))
-        im[:22,-66:] -= np.fmin(255 - self.xyz, im[:22,-66:])
+        im[:22,-66:] -= np.fmin(255 - self.gui.xyz, im[:22,-66:])
         
         gui = self.gui
         gui.guide = im

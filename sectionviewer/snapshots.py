@@ -884,7 +884,7 @@ class Snapshots:
         im[:-20,-20:] = 240
         
         im = cv2.resize(im, (400,400))
-        im[:22,-66:] -= np.fmin(255 - Hub.xyz, im[:22,-66:])
+        im[:22,-66:] -= np.fmin(255 - Hub.gui.xyz, im[:22,-66:])
         
         im = cv2.resize(im, (self.im_size, self.im_size))
         
