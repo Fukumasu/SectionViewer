@@ -2,11 +2,10 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
-from Cython.Distutils import build_ext
-    
+
 ext_modules = [Extension('sectionviewer.utils', 
-                         sources=['sectionviewer/utils.pyx'])]
-cmdclass = {'build_ext': build_ext}
+                         sources=['sectionviewer/utils.c'])]
+cmdclass = {}
 
 def _requires_from_file(filename):
     return open(filename).read().splitlines()
