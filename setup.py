@@ -7,7 +7,7 @@ from setuptools.command.build_ext import build_ext as _build_ext
 class build_ext(_build_ext):
   def finalize_options(self):
     _build_ext.finalize_options(self)
-    __buildins__.__NUMPY_SETUP__ = False
+    __builtins__.__NUMPY_SETUP__ = False
     import numpy
     self.include_dirs.append(numpy.get_include())
 
