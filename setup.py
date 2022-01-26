@@ -2,6 +2,7 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
+import numpy as np
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.c'])]
@@ -22,6 +23,7 @@ if pf == "Windows":
         py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
         package_data={'': ['*.exe', '*.dll', 'img/resources.zip', 'img/SectionViewer.ico', 'SectionViewer/execute.py']},
         include_package_data=True,
+        include_dirs = [np.get_include()],
         entry_points = {
             'console_scripts': [
                 'sectionviewer = sectionviewer.sectionviewer:main'
