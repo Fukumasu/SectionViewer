@@ -6,7 +6,7 @@ from setuptools import setup, Extension, find_packages
 try:
     from Cython.Distutils import build_ext
     USE_CYTHON = True
-   except ImportError:
+except ImportError:
     USE_CYTHON = False
 if USE_CYTHON:
     ext = '.pyx'
