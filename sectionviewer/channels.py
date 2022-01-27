@@ -477,10 +477,10 @@ class Channels:
                 if not "scale" in str(w)[-6:]:
                     w["state"] = tk.DISABLED
                 
-        self.Hub.calc_frame()
+        self.Hub.calc_image()
         if hasattr(self.Hub.gui, "g_on"):
             if self.Hub.gui.g_on.get():
-                self.Hub.calc_sideview()
+                self.Hub.calc_sideimage()
     
               
     def ch_name(self, *args):
