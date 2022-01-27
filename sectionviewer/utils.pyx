@@ -576,8 +576,8 @@ cpdef stack_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim
     
     for i in prange(m, nogil=True):
         for j in range(n):
-            for l in range(dc):
-                res[l,i,j] = 0
+            for l in range(chs):
+                res[ch_show[l],i,j] = 0
     
     za, zb, zc, zd = start, 0., 0., stop
     ze, zf, zg = 0., 0., n
@@ -1107,8 +1107,8 @@ cpdef fast_stack(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=2]
     
     for i in prange(m, nogil=True):
         for j in range(n):
-            for l in range(dc):
-                res[l,i,j] = 0
+            for l in range(chs):
+                res[ch_show[l],i,j] = 0
     
     za, zb, zc, zd = start, 0., 0., stop
     ze, zf, zg = 0., 0., n

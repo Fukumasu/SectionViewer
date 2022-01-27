@@ -466,10 +466,10 @@ class Channels:
                 if not "scale" in str(w)[-6:]:
                     w["state"] = tk.ACTIVE
             if (self.Hub.frame[x[0]] == 0).all():
-                self.Hub.calc_frame()
+                self.Hub.calc_frame(x=x)
                 if hasattr(self.Hub.gui, "g_on"):
                     if self.Hub.gui.g_on.get():
-                        self.Hub.calc_sideview()
+                        self.Hub.calc_sideview(x=x)
             else:
                 self.Hub.calc_image()
                 if hasattr(self.Hub.gui, "g_on"):

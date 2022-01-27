@@ -180,7 +180,7 @@ class Hub:
         return self.calc_frame()
         
     
-    def calc_frame(self):
+    def calc_frame(self, x=None):
         
         box = self.box
         dc, dz, dy, dx = box.shape
@@ -194,26 +194,33 @@ class Hub:
         pos[1:] /= self.geometry["expansion"]
         nz /= self.geometry["expansion"]
         
+        if type(x) == type(None):
+            ch_show = np.arange(len(self.lut))[self.ch_show]
+        else:
+            ch_show = np.array(x)
+        
         if self.thickness == 1:
             if not ut.calc_section(box, pos, self.frame, np.array(self.frame[0].shape)//2,
-                                   np.arange(len(self.lut))[self.ch_show]):
+                                   ch_show):
                 return False
         elif self.thickness <= 10:
             start = -(self.thickness//2)
             stop = start + self.thickness
             if not ut.stack_section(box, pos, nz, start, stop,
                                     self.frame, np.array(self.frame[0].shape)//2,
-                                    np.arange(len(self.lut))[self.ch_show]):
+                                    ch_show):
                 return False
         else:
             start = -(self.thickness//2)
             stop = start + self.thickness
             if not ut.fast_stack(box, pos, nz, start, stop,
                                  self.frame, np.array(self.frame[0].shape)//2,
-                                 np.arange(len(self.lut))[self.ch_show]):
+                                 ch_show):
                 return False
         
-        self.frame[~self.ch_show] = 0
+        if type(x) == type(None):
+            for i in set(range(len(self.lut))) - set(ch_show):
+                self.frame[i] = 0
         
         nz = -np.cross(ny, nx)
         n = np.array([nz, ny, nx])
@@ -563,7 +570,7 @@ class Hub:
             gui.guide_canvas.itemconfig(gui.guide_id, image=gui.guide_im)
             
             
-    def calc_sideview(self):
+    def calc_sideview(self, x=None):
         pos = self.position.asarray()
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
@@ -578,8 +585,13 @@ class Hub:
         pos[:,0] /= self.ratio
         pos[1:] /= exp_rate/2
         
+        if type(x) == type(None):
+            ch_show = np.arange(len(self.lut))[self.ch_show]
+        else:
+            ch_show = np.array(x)
+        
         ut.fast_section(self.box, pos, self.s_frame1, np.array([142, 200]),
-                        np.arange(len(self.lut))[self.ch_show])
+                        ch_show)
         self.s_frame[:,:284] = self.s_frame1
         
         pos = np.array([op, ny, nz])
@@ -587,7 +599,7 @@ class Hub:
         pos[1:] /= exp_rate/2
         
         ut.fast_section(self.box, pos, self.s_frame2, np.array([142, 200]),
-                        np.arange(len(self.lut))[self.ch_show])
+                        ch_show)
         self.s_frame[:,285:] = self.s_frame2
         self.calc_sideimage()
         

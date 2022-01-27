@@ -13274,7 +13274,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
   float __pyx_v_yg;
   float __pyx_v_xg;
   int __pyx_v_exist;
-  int __pyx_v_dc;
+  CYTHON_UNUSED int __pyx_v_dc;
   int __pyx_v_dz;
   int __pyx_v_dy;
   int __pyx_v_dx;
@@ -13310,14 +13310,14 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
-  double __pyx_t_14;
+  Py_ssize_t __pyx_t_14;
   double __pyx_t_15;
-  int __pyx_t_16;
-  __pyx_t_5utils_DTYPE_t2 __pyx_t_17;
+  double __pyx_t_16;
+  int __pyx_t_17;
   __pyx_t_5utils_DTYPE_t2 __pyx_t_18;
-  long __pyx_t_19;
-  __pyx_t_5utils_DTYPE_t2 __pyx_t_20;
-  Py_ssize_t __pyx_t_21;
+  __pyx_t_5utils_DTYPE_t2 __pyx_t_19;
+  long __pyx_t_20;
+  __pyx_t_5utils_DTYPE_t2 __pyx_t_21;
   Py_ssize_t __pyx_t_22;
   int __pyx_t_23;
   float __pyx_t_24;
@@ -13519,7 +13519,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  * 
  *     for i in prange(m, nogil=True):             # <<<<<<<<<<<<<<
  *         for j in range(n):
- *             for l in range(dc):
+ *             for l in range(chs):
  */
   {
       #ifdef WITH_THREAD
@@ -13541,7 +13541,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
             if (__pyx_t_4 > 0)
             {
                 #ifdef _OPENMP
-                #pragma omp parallel private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9)
+                #pragma omp parallel private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9)
                 #endif /* _OPENMP */
                 {
                     #ifdef _OPENMP
@@ -13558,8 +13558,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  * 
  *     for i in prange(m, nogil=True):
  *         for j in range(n):             # <<<<<<<<<<<<<<
- *             for l in range(dc):
- *                 res[l,i,j] = 0
+ *             for l in range(chs):
+ *                 res[ch_show[l],i,j] = 0
  */
                             __pyx_t_5 = __pyx_v_n;
                             __pyx_t_6 = __pyx_t_5;
@@ -13569,26 +13569,27 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                               /* "utils.pyx":579
  *     for i in prange(m, nogil=True):
  *         for j in range(n):
- *             for l in range(dc):             # <<<<<<<<<<<<<<
- *                 res[l,i,j] = 0
+ *             for l in range(chs):             # <<<<<<<<<<<<<<
+ *                 res[ch_show[l],i,j] = 0
  * 
  */
-                              __pyx_t_8 = __pyx_v_dc;
+                              __pyx_t_8 = __pyx_v_chs;
                               __pyx_t_9 = __pyx_t_8;
                               for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
                                 __pyx_v_l = __pyx_t_10;
 
                                 /* "utils.pyx":580
  *         for j in range(n):
- *             for l in range(dc):
- *                 res[l,i,j] = 0             # <<<<<<<<<<<<<<
+ *             for l in range(chs):
+ *                 res[ch_show[l],i,j] = 0             # <<<<<<<<<<<<<<
  * 
  *     za, zb, zc, zd = start, 0., 0., stop
  */
                                 __pyx_t_11 = __pyx_v_l;
-                                __pyx_t_12 = __pyx_v_i;
-                                __pyx_t_13 = __pyx_v_j;
-                                *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_13, __pyx_pybuffernd_res.diminfo[2].strides) = 0;
+                                __pyx_t_12 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                __pyx_t_13 = __pyx_v_i;
+                                __pyx_t_14 = __pyx_v_j;
+                                *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_14, __pyx_pybuffernd_res.diminfo[2].strides) = 0;
                               }
                             }
                         }
@@ -13609,7 +13610,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  * 
  *     for i in prange(m, nogil=True):             # <<<<<<<<<<<<<<
  *         for j in range(n):
- *             for l in range(dc):
+ *             for l in range(chs):
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -13624,19 +13625,19 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
   }
 
   /* "utils.pyx":582
- *                 res[l,i,j] = 0
+ *                 res[ch_show[l],i,j] = 0
  * 
  *     za, zb, zc, zd = start, 0., 0., stop             # <<<<<<<<<<<<<<
  *     ze, zf, zg = 0., 0., n
  *     if v[0] > 0:
  */
   __pyx_t_4 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_3 = __pyx_v_stop;
   __pyx_v_za = __pyx_t_4;
-  __pyx_v_zb = __pyx_t_14;
-  __pyx_v_zc = __pyx_t_15;
+  __pyx_v_zb = __pyx_t_15;
+  __pyx_v_zc = __pyx_t_16;
   __pyx_v_zd = __pyx_t_3;
 
   /* "utils.pyx":583
@@ -13646,11 +13647,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     if v[0] > 0:
  *         za = -pos[0,0]/v[0] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_3 = __pyx_v_n;
-  __pyx_v_ze = __pyx_t_15;
-  __pyx_v_zf = __pyx_t_14;
+  __pyx_v_ze = __pyx_t_16;
+  __pyx_v_zf = __pyx_t_15;
   __pyx_v_zg = __pyx_t_3;
 
   /* "utils.pyx":584
@@ -13660,9 +13661,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         za = -pos[0,0]/v[0] + 1
  *         zb = -pos[1,0]/v[0]
  */
-  __pyx_t_13 = 0;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 0;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":585
  *     ze, zf, zg = 0., 0., n
@@ -13671,16 +13672,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zb = -pos[1,0]/v[0]
  *         zc = -pos[2,0]/v[0]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 585, __pyx_L1_error)
     }
-    __pyx_v_za = ((__pyx_t_17 / __pyx_t_18) + 1.0);
+    __pyx_v_za = ((__pyx_t_18 / __pyx_t_19) + 1.0);
 
     /* "utils.pyx":586
  *     if v[0] > 0:
@@ -13689,16 +13690,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zc = -pos[2,0]/v[0]
  *         zd = (dz - pos[0,0])/v[0]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 586, __pyx_L1_error)
     }
-    __pyx_v_zb = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zb = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":587
  *         za = -pos[0,0]/v[0] + 1
@@ -13707,16 +13708,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zd = (dz - pos[0,0])/v[0]
  *     elif v[0] < 0:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 587, __pyx_L1_error)
     }
-    __pyx_v_zc = (__pyx_t_17 / __pyx_t_18);
+    __pyx_v_zc = (__pyx_t_18 / __pyx_t_19);
 
     /* "utils.pyx":588
  *         zb = -pos[1,0]/v[0]
@@ -13725,16 +13726,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     elif v[0] < 0:
  *         za = (dz - pos[0,0])/v[0] + 1
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 588, __pyx_L1_error)
     }
-    __pyx_v_zd = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zd = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":584
  *     za, zb, zc, zd = start, 0., 0., stop
@@ -13753,9 +13754,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         za = (dz - pos[0,0])/v[0] + 1
  *         zb = -pos[1,0]/v[0]
  */
-  __pyx_t_13 = 0;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 0;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":590
  *         zd = (dz - pos[0,0])/v[0]
@@ -13764,16 +13765,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zb = -pos[1,0]/v[0]
  *         zc = -pos[2,0]/v[0]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 590, __pyx_L1_error)
     }
-    __pyx_v_za = ((__pyx_t_17 / __pyx_t_18) + 1.0);
+    __pyx_v_za = ((__pyx_t_18 / __pyx_t_19) + 1.0);
 
     /* "utils.pyx":591
  *     elif v[0] < 0:
@@ -13782,16 +13783,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zc = -pos[2,0]/v[0]
  *         zd = -pos[0,0]/v[0]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 591, __pyx_L1_error)
     }
-    __pyx_v_zb = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zb = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":592
  *         za = (dz - pos[0,0])/v[0] + 1
@@ -13800,16 +13801,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         zd = -pos[0,0]/v[0]
  *     else:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 592, __pyx_L1_error)
     }
-    __pyx_v_zc = (__pyx_t_17 / __pyx_t_18);
+    __pyx_v_zc = (__pyx_t_18 / __pyx_t_19);
 
     /* "utils.pyx":593
  *         zb = -pos[1,0]/v[0]
@@ -13818,16 +13819,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     else:
  *         if pos[2,0] > 0:
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 593, __pyx_L1_error)
     }
-    __pyx_v_zd = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zd = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":589
  *         zc = -pos[2,0]/v[0]
@@ -13847,10 +13848,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             zf = -pos[1,0]/pos[2,0]
  */
   /*else*/ {
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":596
  *     else:
@@ -13859,18 +13860,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             zf = -pos[1,0]/pos[2,0]
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 596, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_ze = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_ze = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":597
  *         if pos[2,0] > 0:
@@ -13879,17 +13880,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
  *         elif pos[2,0] < 0:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 0;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 0;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 597, __pyx_L1_error)
       }
-      __pyx_v_zf = (__pyx_t_18 / __pyx_t_17);
+      __pyx_v_zf = (__pyx_t_19 / __pyx_t_18);
 
       /* "utils.pyx":598
  *             ze = -pos[0,0]/pos[2,0] + c[1] + 1
@@ -13898,18 +13899,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         elif pos[2,0] < 0:
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 598, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_zg = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_zg = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":595
  *         zd = -pos[0,0]/v[0]
@@ -13928,10 +13929,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
  *             zf = -pos[1,0]/pos[2,0]
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 0;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 0;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":600
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
@@ -13940,18 +13941,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             zf = -pos[1,0]/pos[2,0]
  *             zg = -pos[0,0]/pos[2,0] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 600, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_ze = (((__pyx_t_18 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_ze = (((__pyx_t_19 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":601
  *         elif pos[2,0] < 0:
@@ -13960,17 +13961,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             zg = -pos[0,0]/pos[2,0] + c[1]
  *         else:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 0;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 601, __pyx_L1_error)
       }
-      __pyx_v_zf = (__pyx_t_17 / __pyx_t_18);
+      __pyx_v_zf = (__pyx_t_18 / __pyx_t_19);
 
       /* "utils.pyx":602
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
@@ -13979,18 +13980,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         else:
  *             if pos[1,0] > 0:
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 602, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_zg = ((__pyx_t_18 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_zg = ((__pyx_t_19 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":599
  *             zf = -pos[1,0]/pos[2,0]
@@ -14010,10 +14011,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 i1 = int(max(min((dz - pos[0,0])/pos[1,0] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 0;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":605
  *         else:
@@ -14023,31 +14024,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             else:
  */
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 605, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_20;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i0 = ((int)__pyx_t_18);
+        __pyx_v_i0 = ((int)__pyx_t_19);
 
         /* "utils.pyx":606
  *             if pos[1,0] > 0:
@@ -14058,30 +14059,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 606, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_17 = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_3 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_3 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i1 = ((int)__pyx_t_20);
+        __pyx_v_i1 = ((int)__pyx_t_21);
 
         /* "utils.pyx":604
  *             zg = -pos[0,0]/pos[2,0] + c[1]
@@ -14102,31 +14103,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
       /*else*/ {
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_20 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_21 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 608, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_20;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i0 = ((int)__pyx_t_17);
+        __pyx_v_i0 = ((int)__pyx_t_18);
 
         /* "utils.pyx":609
  *             else:
@@ -14137,30 +14138,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 609, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i1 = ((int)__pyx_t_18);
+        __pyx_v_i1 = ((int)__pyx_t_19);
       }
       __pyx_L18:;
 
@@ -14171,12 +14172,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i0 < i1 and z0 // dz != 0:
  *                 i0 += 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
+      __pyx_t_14 = 0;
       __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 0;
-      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":611
  *                 i1 = int(max(min(-pos[0,0]/pos[1,0] + c[0], m), i0))
@@ -14189,7 +14190,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L21_bool_binop_done;
         }
         if (unlikely(__pyx_v_dz == 0)) {
@@ -14197,9 +14198,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 611, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_z0 / __pyx_v_dz) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L21_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":612
  *             z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
@@ -14218,11 +14219,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and z0 // dz != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 0;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 0;
-        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":614
@@ -14232,12 +14233,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and z0 // dz != 0:
  *                 i1 -= 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
+      __pyx_t_14 = 0;
       __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 0;
-      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":615
  *                 z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
@@ -14250,7 +14251,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L25_bool_binop_done;
         }
         if (unlikely(__pyx_v_dz == 0)) {
@@ -14258,9 +14259,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 615, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_z0 / __pyx_v_dz) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L25_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":616
  *             z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
@@ -14279,11 +14280,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 0;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 0;
-        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":618
@@ -14293,8 +14294,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":619
  *                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
@@ -14329,12 +14330,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     if v[1] > 0:
  */
   __pyx_t_3 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_4 = __pyx_v_stop;
   __pyx_v_ya = __pyx_t_3;
-  __pyx_v_yb = __pyx_t_14;
-  __pyx_v_yc = __pyx_t_15;
+  __pyx_v_yb = __pyx_t_15;
+  __pyx_v_yc = __pyx_t_16;
   __pyx_v_yd = __pyx_t_4;
 
   /* "utils.pyx":622
@@ -14344,11 +14345,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     if v[1] > 0:
  *         ya = -pos[0,1]/v[1] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_4 = __pyx_v_n;
-  __pyx_v_ye = __pyx_t_15;
-  __pyx_v_yf = __pyx_t_14;
+  __pyx_v_ye = __pyx_t_16;
+  __pyx_v_yf = __pyx_t_15;
   __pyx_v_yg = __pyx_t_4;
 
   /* "utils.pyx":623
@@ -14358,9 +14359,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         ya = -pos[0,1]/v[1] + 1
  *         yb = -pos[1,1]/v[1]
  */
-  __pyx_t_12 = 1;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_14 = 1;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":624
  *     ye, yf, yg = 0., 0., n
@@ -14369,16 +14370,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yb = -pos[1,1]/v[1]
  *         yc = -pos[2,1]/v[1]
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 624, __pyx_L1_error)
     }
-    __pyx_v_ya = ((__pyx_t_18 / __pyx_t_20) + 1.0);
+    __pyx_v_ya = ((__pyx_t_19 / __pyx_t_21) + 1.0);
 
     /* "utils.pyx":625
  *     if v[1] > 0:
@@ -14387,16 +14388,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yc = -pos[2,1]/v[1]
  *         yd = (dy - pos[0,1])/v[1]
  */
-    __pyx_t_13 = 1;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 1;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 625, __pyx_L1_error)
     }
-    __pyx_v_yb = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yb = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":626
  *         ya = -pos[0,1]/v[1] + 1
@@ -14405,16 +14406,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yd = (dy - pos[0,1])/v[1]
  *     elif v[1] < 0:
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 626, __pyx_L1_error)
     }
-    __pyx_v_yc = (__pyx_t_18 / __pyx_t_20);
+    __pyx_v_yc = (__pyx_t_19 / __pyx_t_21);
 
     /* "utils.pyx":627
  *         yb = -pos[1,1]/v[1]
@@ -14423,16 +14424,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     elif v[1] < 0:
  *         ya = (dy - pos[0,1])/v[1] + 1
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 627, __pyx_L1_error)
     }
-    __pyx_v_yd = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yd = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":623
  *     ya, yb, yc, yd = start, 0., 0., stop
@@ -14451,9 +14452,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         ya = (dy - pos[0,1])/v[1] + 1
  *         yb = -pos[1,1]/v[1]
  */
-  __pyx_t_12 = 1;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_14 = 1;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":629
  *         yd = (dy - pos[0,1])/v[1]
@@ -14462,16 +14463,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yb = -pos[1,1]/v[1]
  *         yc = -pos[2,1]/v[1]
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 629, __pyx_L1_error)
     }
-    __pyx_v_ya = ((__pyx_t_18 / __pyx_t_20) + 1.0);
+    __pyx_v_ya = ((__pyx_t_19 / __pyx_t_21) + 1.0);
 
     /* "utils.pyx":630
  *     elif v[1] < 0:
@@ -14480,16 +14481,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yc = -pos[2,1]/v[1]
  *         yd = -pos[0,1]/v[1]
  */
-    __pyx_t_13 = 1;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 1;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 630, __pyx_L1_error)
     }
-    __pyx_v_yb = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yb = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":631
  *         ya = (dy - pos[0,1])/v[1] + 1
@@ -14498,16 +14499,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         yd = -pos[0,1]/v[1]
  *     else:
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 631, __pyx_L1_error)
     }
-    __pyx_v_yc = (__pyx_t_18 / __pyx_t_20);
+    __pyx_v_yc = (__pyx_t_19 / __pyx_t_21);
 
     /* "utils.pyx":632
  *         yb = -pos[1,1]/v[1]
@@ -14516,16 +14517,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     else:
  *         if pos[2,1] > 0:
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 632, __pyx_L1_error)
     }
-    __pyx_v_yd = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yd = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":628
  *         yc = -pos[2,1]/v[1]
@@ -14545,10 +14546,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             yf = -pos[1,1]/pos[2,1]
  */
   /*else*/ {
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":635
  *     else:
@@ -14557,18 +14558,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             yf = -pos[1,1]/pos[2,1]
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 635, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_ye = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_ye = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":636
  *         if pos[2,1] > 0:
@@ -14577,17 +14578,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
  *         elif pos[2,1] < 0:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 1;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 1;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 636, __pyx_L1_error)
       }
-      __pyx_v_yf = (__pyx_t_20 / __pyx_t_18);
+      __pyx_v_yf = (__pyx_t_21 / __pyx_t_19);
 
       /* "utils.pyx":637
  *             ye = -pos[0,1]/pos[2,1] + c[1] + 1
@@ -14596,18 +14597,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         elif pos[2,1] < 0:
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 637, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_yg = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_yg = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":634
  *         yd = -pos[0,1]/v[1]
@@ -14626,10 +14627,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
  *             yf = -pos[1,1]/pos[2,1]
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 1;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 1;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":639
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
@@ -14638,18 +14639,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             yf = -pos[1,1]/pos[2,1]
  *             yg = -pos[0,1]/pos[2,1] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 639, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_ye = (((__pyx_t_20 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_ye = (((__pyx_t_21 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":640
  *         elif pos[2,1] < 0:
@@ -14658,17 +14659,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             yg = -pos[0,1]/pos[2,1] + c[1]
  *         else:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 1;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 1;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 640, __pyx_L1_error)
       }
-      __pyx_v_yf = (__pyx_t_18 / __pyx_t_20);
+      __pyx_v_yf = (__pyx_t_19 / __pyx_t_21);
 
       /* "utils.pyx":641
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
@@ -14677,18 +14678,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         else:
  *             if pos[1,1] > 0:
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 641, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_yg = ((__pyx_t_20 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_yg = ((__pyx_t_21 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":638
  *             yf = -pos[1,1]/pos[2,1]
@@ -14708,10 +14709,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 i1 = int(max(min((dy - pos[0,1])/pos[1,1] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 1;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 1;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":644
  *         else:
@@ -14721,31 +14722,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             else:
  */
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 644, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_19;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_20;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_4 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i0 = ((int)__pyx_t_20);
+        __pyx_v_i0 = ((int)__pyx_t_21);
 
         /* "utils.pyx":645
  *             if pos[1,1] > 0:
@@ -14756,30 +14757,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_4 = __pyx_v_i0;
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 645, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_18 = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_11 = 0;
+        __pyx_t_19 = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_4 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_4;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_4 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_4;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i1 = ((int)__pyx_t_17);
+        __pyx_v_i1 = ((int)__pyx_t_18);
 
         /* "utils.pyx":643
  *             yg = -pos[0,1]/pos[2,1] + c[1]
@@ -14800,31 +14801,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
       /*else*/ {
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_17 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 647, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_20 = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_19;
+        __pyx_t_11 = 0;
+        __pyx_t_21 = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_20;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i0 = ((int)__pyx_t_18);
+        __pyx_v_i0 = ((int)__pyx_t_19);
 
         /* "utils.pyx":648
  *             else:
@@ -14835,30 +14836,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_4 = __pyx_v_i0;
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 648, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_17 = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_3 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_4 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_4 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i1 = ((int)__pyx_t_20);
+        __pyx_v_i1 = ((int)__pyx_t_21);
       }
       __pyx_L30:;
 
@@ -14869,12 +14870,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i0 < i1 and y0 // dy != 0:
  *                 i0 += 1
  */
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
       __pyx_t_13 = 0;
       __pyx_t_12 = 1;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
       __pyx_t_22 = 1;
-      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":650
  *                 i1 = int(max(min(-pos[0,1]/pos[1,1] + c[0], m), i0))
@@ -14887,7 +14888,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L33_bool_binop_done;
         }
         if (unlikely(__pyx_v_dy == 0)) {
@@ -14895,9 +14896,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 650, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_y0 / __pyx_v_dy) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L33_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":651
  *             y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -14916,11 +14917,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and y0 // dy != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 1;
-        __pyx_t_11 = 0;
         __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":653
@@ -14930,12 +14931,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and y0 // dy != 0:
  *                 i1 -= 1
  */
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
       __pyx_t_13 = 0;
       __pyx_t_12 = 1;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
       __pyx_t_22 = 1;
-      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":654
  *                 y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -14948,7 +14949,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L37_bool_binop_done;
         }
         if (unlikely(__pyx_v_dy == 0)) {
@@ -14956,9 +14957,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 654, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_y0 / __pyx_v_dy) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L37_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":655
  *             y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
@@ -14977,11 +14978,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 1;
-        __pyx_t_11 = 0;
         __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":657
@@ -14991,8 +14992,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":658
  *                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
@@ -15027,12 +15028,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     if v[2] > 0:
  */
   __pyx_t_4 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_3 = __pyx_v_stop;
   __pyx_v_xa = __pyx_t_4;
-  __pyx_v_xb = __pyx_t_14;
-  __pyx_v_xc = __pyx_t_15;
+  __pyx_v_xb = __pyx_t_15;
+  __pyx_v_xc = __pyx_t_16;
   __pyx_v_xd = __pyx_t_3;
 
   /* "utils.pyx":661
@@ -15042,11 +15043,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     if v[2] > 0:
  *         xa = -pos[0,2]/v[2] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_3 = __pyx_v_n;
-  __pyx_v_xe = __pyx_t_15;
-  __pyx_v_xf = __pyx_t_14;
+  __pyx_v_xe = __pyx_t_16;
+  __pyx_v_xf = __pyx_t_15;
   __pyx_v_xg = __pyx_t_3;
 
   /* "utils.pyx":662
@@ -15056,9 +15057,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xa = -pos[0,2]/v[2] + 1
  *         xb = -pos[1,2]/v[2]
  */
-  __pyx_t_13 = 2;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 2;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":663
  *     xe, xf, xg = 0., 0., n
@@ -15067,16 +15068,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xb = -pos[1,2]/v[2]
  *         xc = -pos[2,2]/v[2]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 663, __pyx_L1_error)
     }
-    __pyx_v_xa = ((__pyx_t_20 / __pyx_t_17) + 1.0);
+    __pyx_v_xa = ((__pyx_t_21 / __pyx_t_18) + 1.0);
 
     /* "utils.pyx":664
  *     if v[2] > 0:
@@ -15085,16 +15086,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xc = -pos[2,2]/v[2]
  *         xd = (dx - pos[0,2])/v[2]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 664, __pyx_L1_error)
     }
-    __pyx_v_xb = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xb = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":665
  *         xa = -pos[0,2]/v[2] + 1
@@ -15103,16 +15104,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xd = (dx - pos[0,2])/v[2]
  *     elif v[2] < 0:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 665, __pyx_L1_error)
     }
-    __pyx_v_xc = (__pyx_t_20 / __pyx_t_17);
+    __pyx_v_xc = (__pyx_t_21 / __pyx_t_18);
 
     /* "utils.pyx":666
  *         xb = -pos[1,2]/v[2]
@@ -15121,16 +15122,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     elif v[2] < 0:
  *         xa = (dx - pos[0,2])/v[2] + 1
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 666, __pyx_L1_error)
     }
-    __pyx_v_xd = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xd = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":662
  *     xa, xb, xc, xd = start, 0., 0., stop
@@ -15149,9 +15150,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xa = (dx - pos[0,2])/v[2] + 1
  *         xb = -pos[1,2]/v[2]
  */
-  __pyx_t_13 = 2;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 2;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":668
  *         xd = (dx - pos[0,2])/v[2]
@@ -15160,16 +15161,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xb = -pos[1,2]/v[2]
  *         xc = -pos[2,2]/v[2]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 668, __pyx_L1_error)
     }
-    __pyx_v_xa = ((__pyx_t_20 / __pyx_t_17) + 1.0);
+    __pyx_v_xa = ((__pyx_t_21 / __pyx_t_18) + 1.0);
 
     /* "utils.pyx":669
  *     elif v[2] < 0:
@@ -15178,16 +15179,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xc = -pos[2,2]/v[2]
  *         xd = -pos[0,2]/v[2]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 669, __pyx_L1_error)
     }
-    __pyx_v_xb = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xb = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":670
  *         xa = (dx - pos[0,2])/v[2] + 1
@@ -15196,16 +15197,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         xd = -pos[0,2]/v[2]
  *     else:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 670, __pyx_L1_error)
     }
-    __pyx_v_xc = (__pyx_t_20 / __pyx_t_17);
+    __pyx_v_xc = (__pyx_t_21 / __pyx_t_18);
 
     /* "utils.pyx":671
  *         xb = -pos[1,2]/v[2]
@@ -15214,16 +15215,16 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *     else:
  *         if pos[2,2] > 0:
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 671, __pyx_L1_error)
     }
-    __pyx_v_xd = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xd = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":667
  *         xc = -pos[2,2]/v[2]
@@ -15243,10 +15244,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xf = -pos[1,2]/pos[2,2]
  */
   /*else*/ {
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":674
  *     else:
@@ -15255,18 +15256,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xf = -pos[1,2]/pos[2,2]
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 674, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_xe = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_xe = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":675
  *         if pos[2,2] > 0:
@@ -15275,17 +15276,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
  *         elif pos[2,2] < 0:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 2;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 2;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 675, __pyx_L1_error)
       }
-      __pyx_v_xf = (__pyx_t_17 / __pyx_t_20);
+      __pyx_v_xf = (__pyx_t_18 / __pyx_t_21);
 
       /* "utils.pyx":676
  *             xe = -pos[0,2]/pos[2,2] + c[1] + 1
@@ -15294,18 +15295,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         elif pos[2,2] < 0:
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 676, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_xg = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_xg = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":673
  *         xd = -pos[0,2]/v[2]
@@ -15324,10 +15325,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
  *             xf = -pos[1,2]/pos[2,2]
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 2;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 2;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":678
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
@@ -15336,18 +15337,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xf = -pos[1,2]/pos[2,2]
  *             xg = -pos[0,2]/pos[2,2] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 678, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_xe = (((__pyx_t_17 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_xe = (((__pyx_t_18 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":679
  *         elif pos[2,2] < 0:
@@ -15356,17 +15357,17 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             xg = -pos[0,2]/pos[2,2] + c[1]
  *         else:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 2;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 2;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 679, __pyx_L1_error)
       }
-      __pyx_v_xf = (__pyx_t_20 / __pyx_t_17);
+      __pyx_v_xf = (__pyx_t_21 / __pyx_t_18);
 
       /* "utils.pyx":680
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
@@ -15375,18 +15376,18 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         else:
  *             if pos[1,2] > 0:
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 680, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_xg = ((__pyx_t_17 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_xg = ((__pyx_t_18 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":677
  *             xf = -pos[1,2]/pos[2,2]
@@ -15406,10 +15407,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 i1 = int(max(min((dx - pos[0,2])/pos[1,2] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 2;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 2;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":683
  *         else:
@@ -15419,31 +15420,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             else:
  */
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 683, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_20;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i0 = ((int)__pyx_t_17);
+        __pyx_v_i0 = ((int)__pyx_t_18);
 
         /* "utils.pyx":684
  *             if pos[1,2] > 0:
@@ -15454,30 +15455,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 684, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i1 = ((int)__pyx_t_18);
+        __pyx_v_i1 = ((int)__pyx_t_19);
 
         /* "utils.pyx":682
  *             xg = -pos[0,2]/pos[2,2] + c[1]
@@ -15498,31 +15499,31 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
       /*else*/ {
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_19 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 686, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_17 = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_20;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_3 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i0 = ((int)__pyx_t_20);
+        __pyx_v_i0 = ((int)__pyx_t_21);
 
         /* "utils.pyx":687
  *             else:
@@ -15533,30 +15534,30 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 687, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_4;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i1 = ((int)__pyx_t_17);
+        __pyx_v_i1 = ((int)__pyx_t_18);
       }
       __pyx_L42:;
 
@@ -15567,12 +15568,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i0 < i1 and x0 // dx != 0:
  *                 i0 += 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 2;
-      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":689
  *                 i1 = int(max(min(-pos[0,2]/pos[1,2] + c[0], m), i0))
@@ -15585,7 +15586,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L45_bool_binop_done;
         }
         if (unlikely(__pyx_v_dx == 0)) {
@@ -15593,9 +15594,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 689, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_x0 / __pyx_v_dx) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L45_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":690
  *             x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
@@ -15614,11 +15615,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and x0 // dx != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 2;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 2;
-        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":692
@@ -15628,12 +15629,12 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while i1 > i0 and x0 // dx != 0:
  *                 i1 -= 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 2;
-      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":693
  *                 x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
@@ -15646,7 +15647,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L49_bool_binop_done;
         }
         if (unlikely(__pyx_v_dx == 0)) {
@@ -15654,9 +15655,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
           __PYX_ERR(0, 693, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_x0 / __pyx_v_dx) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L49_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":694
  *             x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
@@ -15675,11 +15676,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 2;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 2;
-        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":696
@@ -15689,8 +15690,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":697
  *                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
@@ -15782,7 +15783,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
             if (__pyx_t_5 > 0)
             {
                 #ifdef _OPENMP
-                #pragma omp parallel reduction(+:__pyx_v_exist) private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_16, __pyx_t_19, __pyx_t_21, __pyx_t_22, __pyx_t_23, __pyx_t_24, __pyx_t_25, __pyx_t_26, __pyx_t_27, __pyx_t_28, __pyx_t_29, __pyx_t_30, __pyx_t_31, __pyx_t_32, __pyx_t_33, __pyx_t_34, __pyx_t_35, __pyx_t_36, __pyx_t_37, __pyx_t_38, __pyx_t_39, __pyx_t_40, __pyx_t_41, __pyx_t_42, __pyx_t_43, __pyx_t_44, __pyx_t_45, __pyx_t_46, __pyx_t_47, __pyx_t_48, __pyx_t_49, __pyx_t_50, __pyx_t_51, __pyx_t_52, __pyx_t_53, __pyx_t_54, __pyx_t_55, __pyx_t_56, __pyx_t_57, __pyx_t_58, __pyx_t_59, __pyx_t_6, __pyx_t_60, __pyx_t_61, __pyx_t_62, __pyx_t_63, __pyx_t_64, __pyx_t_65, __pyx_t_66, __pyx_t_7, __pyx_t_8, __pyx_t_9) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+                #pragma omp parallel reduction(+:__pyx_v_exist) private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_17, __pyx_t_20, __pyx_t_22, __pyx_t_23, __pyx_t_24, __pyx_t_25, __pyx_t_26, __pyx_t_27, __pyx_t_28, __pyx_t_29, __pyx_t_30, __pyx_t_31, __pyx_t_32, __pyx_t_33, __pyx_t_34, __pyx_t_35, __pyx_t_36, __pyx_t_37, __pyx_t_38, __pyx_t_39, __pyx_t_40, __pyx_t_41, __pyx_t_42, __pyx_t_43, __pyx_t_44, __pyx_t_45, __pyx_t_46, __pyx_t_47, __pyx_t_48, __pyx_t_49, __pyx_t_50, __pyx_t_51, __pyx_t_52, __pyx_t_53, __pyx_t_54, __pyx_t_55, __pyx_t_56, __pyx_t_57, __pyx_t_58, __pyx_t_59, __pyx_t_6, __pyx_t_60, __pyx_t_61, __pyx_t_62, __pyx_t_63, __pyx_t_64, __pyx_t_65, __pyx_t_66, __pyx_t_7, __pyx_t_8, __pyx_t_9) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
                 #endif /* _OPENMP */
                 {
                     #ifdef _OPENMP
@@ -15838,8 +15839,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         z0 = pos[0,0] + s*pos[1,0]
  *         y0 = pos[0,1] + s*pos[1,1]
  */
-                            __pyx_t_12 = 0;
-                            __pyx_v_s = (__pyx_v_i - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+                            __pyx_t_14 = 0;
+                            __pyx_v_s = (__pyx_v_i - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
                             /* "utils.pyx":701
  *     for i in prange(i0, i1, nogil=True):
@@ -15848,11 +15849,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         y0 = pos[0,1] + s*pos[1,1]
  *         x0 = pos[0,2] + s*pos[1,2]
  */
+                            __pyx_t_14 = 0;
+                            __pyx_t_11 = 0;
+                            __pyx_t_13 = 1;
                             __pyx_t_12 = 0;
-                            __pyx_t_13 = 0;
-                            __pyx_t_11 = 1;
-                            __pyx_t_21 = 0;
-                            __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":702
  *         s = i - c[0]
@@ -15861,11 +15862,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *         x0 = pos[0,2] + s*pos[1,2]
  * 
  */
-                            __pyx_t_21 = 0;
-                            __pyx_t_11 = 1;
+                            __pyx_t_12 = 0;
                             __pyx_t_13 = 1;
-                            __pyx_t_12 = 1;
-                            __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_t_11 = 1;
+                            __pyx_t_14 = 1;
+                            __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":703
  *         z0 = pos[0,0] + s*pos[1,0]
@@ -15874,11 +15875,11 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  * 
  *         j0 = int(min(max(ze + zf*s, ye + yf*s, xe + xf*s, 0), n))
  */
-                            __pyx_t_12 = 0;
-                            __pyx_t_13 = 2;
-                            __pyx_t_11 = 1;
-                            __pyx_t_21 = 2;
-                            __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_t_14 = 0;
+                            __pyx_t_11 = 2;
+                            __pyx_t_13 = 1;
+                            __pyx_t_12 = 2;
+                            __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":705
  *         x0 = pos[0,2] + s*pos[1,2]
@@ -15890,7 +15891,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                             __pyx_t_6 = __pyx_v_n;
                             __pyx_t_24 = (__pyx_v_ye + (__pyx_v_yf * __pyx_v_s));
                             __pyx_t_25 = (__pyx_v_xe + (__pyx_v_xf * __pyx_v_s));
-                            __pyx_t_19 = 0;
+                            __pyx_t_20 = 0;
                             __pyx_t_26 = (__pyx_v_ze + (__pyx_v_zf * __pyx_v_s));
                             if (((__pyx_t_24 > __pyx_t_26) != 0)) {
                               __pyx_t_27 = __pyx_t_24;
@@ -15904,8 +15905,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                               __pyx_t_27 = __pyx_t_26;
                             }
                             __pyx_t_26 = __pyx_t_27;
-                            if (((__pyx_t_19 > __pyx_t_26) != 0)) {
-                              __pyx_t_27 = __pyx_t_19;
+                            if (((__pyx_t_20 > __pyx_t_26) != 0)) {
+                              __pyx_t_27 = __pyx_t_20;
                             } else {
                               __pyx_t_27 = __pyx_t_26;
                             }
@@ -15973,8 +15974,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             z1 = z0 + t*pos[2,0]
  *             y1 = y0 + t*pos[2,1]
  */
-                              __pyx_t_21 = 1;
-                              __pyx_v_t = (__pyx_v_j - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_c.diminfo[0].strides)));
+                              __pyx_t_12 = 1;
+                              __pyx_v_t = (__pyx_v_j - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
 
                               /* "utils.pyx":710
  *         for j in range(j0, j1):
@@ -15983,9 +15984,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             y1 = y0 + t*pos[2,1]
  *             x1 = x0 + t*pos[2,2]
  */
-                              __pyx_t_21 = 2;
-                              __pyx_t_11 = 0;
-                              __pyx_v_z1 = (__pyx_v_z0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_12 = 2;
+                              __pyx_t_13 = 0;
+                              __pyx_v_z1 = (__pyx_v_z0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":711
  *             t = j - c[1]
@@ -15994,9 +15995,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             x1 = x0 + t*pos[2,2]
  * 
  */
-                              __pyx_t_11 = 2;
-                              __pyx_t_21 = 1;
-                              __pyx_v_y1 = (__pyx_v_y0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_t_12 = 1;
+                              __pyx_v_y1 = (__pyx_v_y0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":712
  *             z1 = z0 + t*pos[2,0]
@@ -16005,9 +16006,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  * 
  *             k0 = int(min(max(za + zb*s + zc*t, ya + yb*s + yc*t, xa + xb*s + xc*t, start), stop))
  */
-                              __pyx_t_21 = 2;
-                              __pyx_t_11 = 2;
-                              __pyx_v_x1 = (__pyx_v_x0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_12 = 2;
+                              __pyx_t_13 = 2;
+                              __pyx_v_x1 = (__pyx_v_x0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":714
  *             x1 = x0 + t*pos[2,2]
@@ -16090,8 +16091,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 continue
  *             z = z1 + k0*v[0]
  */
-                              __pyx_t_16 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
-                              if (__pyx_t_16) {
+                              __pyx_t_17 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":718
  * 
@@ -16118,8 +16119,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             y = y1 + k0*v[1]
  *             x = x1 + k0*v[2]
  */
-                              __pyx_t_11 = 0;
-                              __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 0;
+                              __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":720
  *                 continue
@@ -16128,8 +16129,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             x = x1 + k0*v[2]
  *             while k0 < k1 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  */
-                              __pyx_t_11 = 1;
-                              __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 1;
+                              __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":721
  *             z = z1 + k0*v[0]
@@ -16138,8 +16139,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while k0 < k1 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  *                 k0 = k0 + 1
  */
-                              __pyx_t_11 = 2;
-                              __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":722
  *             y = y1 + k0*v[1]
@@ -16152,7 +16153,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((__pyx_v_k0 < __pyx_v_k1) != 0);
                                 if (__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dz == 0)) {
@@ -16168,7 +16169,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((floor(__pyx_v_z / __pyx_v_dz) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dy == 0)) {
@@ -16184,7 +16185,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((floor(__pyx_v_y / __pyx_v_dy) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dx == 0)) {
@@ -16198,9 +16199,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                   __PYX_ERR(0, 722, __pyx_L57_error)
                                 }
                                 __pyx_t_23 = ((floor(__pyx_v_x / __pyx_v_dx) != 0.0) != 0);
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 __pyx_L64_bool_binop_done:;
-                                if (!__pyx_t_16) break;
+                                if (!__pyx_t_17) break;
 
                                 /* "utils.pyx":723
  *             x = x1 + k0*v[2]
@@ -16218,8 +16219,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 y = y1 + k0*v[1]
  *                 x = x1 + k0*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":725
  *                 k0 = k0 + 1
@@ -16228,8 +16229,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 x = x1 + k0*v[2]
  *             z = z1 + (k1-1)*v[0]
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":726
  *                 z = z1 + k0*v[0]
@@ -16238,8 +16239,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             z = z1 + (k1-1)*v[0]
  *             y = y1 + (k1-1)*v[1]
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
                               }
 
                               /* "utils.pyx":727
@@ -16249,8 +16250,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             y = y1 + (k1-1)*v[1]
  *             x = x1 + (k1-1)*v[2]
  */
-                              __pyx_t_11 = 0;
-                              __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 0;
+                              __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":728
  *                 x = x1 + k0*v[2]
@@ -16259,8 +16260,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             x = x1 + (k1-1)*v[2]
  *             while k1 > k0 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  */
-                              __pyx_t_11 = 1;
-                              __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 1;
+                              __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":729
  *             z = z1 + (k1-1)*v[0]
@@ -16269,8 +16270,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             while k1 > k0 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  *                 k1 = k1 - 1
  */
-                              __pyx_t_11 = 2;
-                              __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":730
  *             y = y1 + (k1-1)*v[1]
@@ -16283,7 +16284,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((__pyx_v_k1 > __pyx_v_k0) != 0);
                                 if (__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dz == 0)) {
@@ -16299,7 +16300,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((floor(__pyx_v_z / __pyx_v_dz) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dy == 0)) {
@@ -16315,7 +16316,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                 __pyx_t_23 = ((floor(__pyx_v_y / __pyx_v_dy) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dx == 0)) {
@@ -16329,9 +16330,9 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                   __PYX_ERR(0, 730, __pyx_L57_error)
                                 }
                                 __pyx_t_23 = ((floor(__pyx_v_x / __pyx_v_dx) != 0.0) != 0);
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 __pyx_L70_bool_binop_done:;
-                                if (!__pyx_t_16) break;
+                                if (!__pyx_t_17) break;
 
                                 /* "utils.pyx":731
  *             x = x1 + (k1-1)*v[2]
@@ -16349,8 +16350,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 y = y1 + (k1-1)*v[1]
  *                 x = x1 + (k1-1)*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":733
  *                 k1 = k1 - 1
@@ -16359,8 +16360,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 x = x1 + (k1-1)*v[2]
  *             if k0 == k1:
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":734
  *                 z = z1 + (k1-1)*v[0]
@@ -16369,8 +16370,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *             if k0 == k1:
  *                 continue
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
                               }
 
                               /* "utils.pyx":735
@@ -16380,8 +16381,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 continue
  *             if k0 <= 0 and k1 > 0:
  */
-                              __pyx_t_16 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
-                              if (__pyx_t_16) {
+                              __pyx_t_17 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":736
  *                 x = x1 + (k1-1)*v[2]
@@ -16411,13 +16412,13 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                               __pyx_t_23 = ((__pyx_v_k0 <= 0) != 0);
                               if (__pyx_t_23) {
                               } else {
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 goto __pyx_L76_bool_binop_done;
                               }
                               __pyx_t_23 = ((__pyx_v_k1 > 0) != 0);
-                              __pyx_t_16 = __pyx_t_23;
+                              __pyx_t_17 = __pyx_t_23;
                               __pyx_L76_bool_binop_done:;
-                              if (__pyx_t_16) {
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":738
  *                 continue
@@ -16456,8 +16457,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 y = y1 + k*v[1]
  *                 x = x1 + k*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":742
  *             for k in range(k0, k1):
@@ -16466,8 +16467,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 x = x1 + k*v[2]
  *                 zg1 = int(z)
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":743
  *                 z = z1 + k*v[0]
@@ -16476,8 +16477,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                 zg1 = int(z)
  *                 yg1 = int(y)
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":744
  *                 y = y1 + k*v[1]
@@ -16606,10 +16607,10 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                               box[ch_show[l], zg1, yg1, xg2]*xd1)*yd2 + \
  *                              (box[ch_show[l], zg1, yg2, xg1]*xd2 + \
  */
-                                  __pyx_t_11 = __pyx_v_l;
-                                  __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
-                                  __pyx_t_13 = __pyx_v_zg1;
-                                  __pyx_t_12 = __pyx_v_yg1;
+                                  __pyx_t_13 = __pyx_v_l;
+                                  __pyx_t_12 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                  __pyx_t_11 = __pyx_v_zg1;
+                                  __pyx_t_14 = __pyx_v_yg1;
                                   __pyx_t_22 = __pyx_v_xg1;
 
                                   /* "utils.pyx":759
@@ -16710,7 +16711,7 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
  *                               box[ch_show[l], zg1, yg1, xg2]*xd1)*yd2 + \
  *                              (box[ch_show[l], zg1, yg2, xg1]*xd2 + \
  */
-                                  __pyx_v_r = ((int)(((((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_12, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_22, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_35, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_36, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd2) + ((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_39, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_40, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_41, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_45, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_46, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd1)) * __pyx_v_zd2) + ((((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_51, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_53, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_54, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_55, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_56, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd2) + ((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_60, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_61, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_66, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd1)) * __pyx_v_zd1)));
+                                  __pyx_v_r = ((int)(((((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_14, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_22, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_35, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_36, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd2) + ((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_39, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_40, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_41, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_45, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_46, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd1)) * __pyx_v_zd2) + ((((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_48, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_49, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_50, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_51, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_53, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_54, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_55, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_56, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd2) + ((((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_59, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_60, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_61, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd2) + ((*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_64, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_65, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_66, __pyx_pybuffernd_box.diminfo[3].strides)) * __pyx_v_xd1)) * __pyx_v_yd1)) * __pyx_v_zd1)));
 
                                   /* "utils.pyx":766
  *                              (box[ch_show[l], zg2, yg2, xg1]*xd2 + \
@@ -16723,8 +16724,8 @@ static PyObject *__pyx_f_5utils_stack_section(PyArrayObject *__pyx_v_box, PyArra
                                   __pyx_t_66 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_62, __pyx_pybuffernd_ch_show.diminfo[0].strides));
                                   __pyx_t_65 = __pyx_v_i;
                                   __pyx_t_64 = __pyx_v_j;
-                                  __pyx_t_16 = ((__pyx_v_r > (*__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_65, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_64, __pyx_pybuffernd_res.diminfo[2].strides))) != 0);
-                                  if (__pyx_t_16) {
+                                  __pyx_t_17 = ((__pyx_v_r > (*__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_66, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_65, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_64, __pyx_pybuffernd_res.diminfo[2].strides))) != 0);
+                                  if (__pyx_t_17) {
 
                                     /* "utils.pyx":767
  *                               box[ch_show[l], zg2, yg2, xg2]*xd1)*yd1)*zd1)
@@ -22954,7 +22955,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
   float __pyx_v_yg;
   float __pyx_v_xg;
   int __pyx_v_exist;
-  int __pyx_v_dc;
+  CYTHON_UNUSED int __pyx_v_dc;
   int __pyx_v_dz;
   int __pyx_v_dy;
   int __pyx_v_dx;
@@ -22990,14 +22991,14 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
   Py_ssize_t __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   Py_ssize_t __pyx_t_13;
-  double __pyx_t_14;
+  Py_ssize_t __pyx_t_14;
   double __pyx_t_15;
-  int __pyx_t_16;
-  __pyx_t_5utils_DTYPE_t2 __pyx_t_17;
+  double __pyx_t_16;
+  int __pyx_t_17;
   __pyx_t_5utils_DTYPE_t2 __pyx_t_18;
-  long __pyx_t_19;
-  __pyx_t_5utils_DTYPE_t2 __pyx_t_20;
-  Py_ssize_t __pyx_t_21;
+  __pyx_t_5utils_DTYPE_t2 __pyx_t_19;
+  long __pyx_t_20;
+  __pyx_t_5utils_DTYPE_t2 __pyx_t_21;
   Py_ssize_t __pyx_t_22;
   int __pyx_t_23;
   float __pyx_t_24;
@@ -23164,7 +23165,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *     for i in prange(m, nogil=True):             # <<<<<<<<<<<<<<
  *         for j in range(n):
- *             for l in range(dc):
+ *             for l in range(chs):
  */
   {
       #ifdef WITH_THREAD
@@ -23186,7 +23187,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
             if (__pyx_t_4 > 0)
             {
                 #ifdef _OPENMP
-                #pragma omp parallel private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9)
+                #pragma omp parallel private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9)
                 #endif /* _OPENMP */
                 {
                     #ifdef _OPENMP
@@ -23203,8 +23204,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *     for i in prange(m, nogil=True):
  *         for j in range(n):             # <<<<<<<<<<<<<<
- *             for l in range(dc):
- *                 res[l,i,j] = 0
+ *             for l in range(chs):
+ *                 res[ch_show[l],i,j] = 0
  */
                             __pyx_t_5 = __pyx_v_n;
                             __pyx_t_6 = __pyx_t_5;
@@ -23214,26 +23215,27 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                               /* "utils.pyx":1110
  *     for i in prange(m, nogil=True):
  *         for j in range(n):
- *             for l in range(dc):             # <<<<<<<<<<<<<<
- *                 res[l,i,j] = 0
+ *             for l in range(chs):             # <<<<<<<<<<<<<<
+ *                 res[ch_show[l],i,j] = 0
  * 
  */
-                              __pyx_t_8 = __pyx_v_dc;
+                              __pyx_t_8 = __pyx_v_chs;
                               __pyx_t_9 = __pyx_t_8;
                               for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
                                 __pyx_v_l = __pyx_t_10;
 
                                 /* "utils.pyx":1111
  *         for j in range(n):
- *             for l in range(dc):
- *                 res[l,i,j] = 0             # <<<<<<<<<<<<<<
+ *             for l in range(chs):
+ *                 res[ch_show[l],i,j] = 0             # <<<<<<<<<<<<<<
  * 
  *     za, zb, zc, zd = start, 0., 0., stop
  */
                                 __pyx_t_11 = __pyx_v_l;
-                                __pyx_t_12 = __pyx_v_i;
-                                __pyx_t_13 = __pyx_v_j;
-                                *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_13, __pyx_pybuffernd_res.diminfo[2].strides) = 0;
+                                __pyx_t_12 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                __pyx_t_13 = __pyx_v_i;
+                                __pyx_t_14 = __pyx_v_j;
+                                *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_14, __pyx_pybuffernd_res.diminfo[2].strides) = 0;
                               }
                             }
                         }
@@ -23254,7 +23256,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *     for i in prange(m, nogil=True):             # <<<<<<<<<<<<<<
  *         for j in range(n):
- *             for l in range(dc):
+ *             for l in range(chs):
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -23269,19 +23271,19 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
   }
 
   /* "utils.pyx":1113
- *                 res[l,i,j] = 0
+ *                 res[ch_show[l],i,j] = 0
  * 
  *     za, zb, zc, zd = start, 0., 0., stop             # <<<<<<<<<<<<<<
  *     ze, zf, zg = 0., 0., n
  *     if v[0] > 0:
  */
   __pyx_t_4 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_3 = __pyx_v_stop;
   __pyx_v_za = __pyx_t_4;
-  __pyx_v_zb = __pyx_t_14;
-  __pyx_v_zc = __pyx_t_15;
+  __pyx_v_zb = __pyx_t_15;
+  __pyx_v_zc = __pyx_t_16;
   __pyx_v_zd = __pyx_t_3;
 
   /* "utils.pyx":1114
@@ -23291,11 +23293,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     if v[0] > 0:
  *         za = -pos[0,0]/v[0] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_3 = __pyx_v_n;
-  __pyx_v_ze = __pyx_t_15;
-  __pyx_v_zf = __pyx_t_14;
+  __pyx_v_ze = __pyx_t_16;
+  __pyx_v_zf = __pyx_t_15;
   __pyx_v_zg = __pyx_t_3;
 
   /* "utils.pyx":1115
@@ -23305,9 +23307,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         za = -pos[0,0]/v[0] + 1
  *         zb = -pos[1,0]/v[0]
  */
-  __pyx_t_13 = 0;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 0;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1116
  *     ze, zf, zg = 0., 0., n
@@ -23316,16 +23318,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zb = -pos[1,0]/v[0]
  *         zc = -pos[2,0]/v[0]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1116, __pyx_L1_error)
     }
-    __pyx_v_za = ((__pyx_t_17 / __pyx_t_18) + 1.0);
+    __pyx_v_za = ((__pyx_t_18 / __pyx_t_19) + 1.0);
 
     /* "utils.pyx":1117
  *     if v[0] > 0:
@@ -23334,16 +23336,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zc = -pos[2,0]/v[0]
  *         zd = (dz - pos[0,0])/v[0]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1117, __pyx_L1_error)
     }
-    __pyx_v_zb = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zb = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":1118
  *         za = -pos[0,0]/v[0] + 1
@@ -23352,16 +23354,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zd = (dz - pos[0,0])/v[0]
  *     elif v[0] < 0:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1118, __pyx_L1_error)
     }
-    __pyx_v_zc = (__pyx_t_17 / __pyx_t_18);
+    __pyx_v_zc = (__pyx_t_18 / __pyx_t_19);
 
     /* "utils.pyx":1119
  *         zb = -pos[1,0]/v[0]
@@ -23370,16 +23372,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     elif v[0] < 0:
  *         za = (dz - pos[0,0])/v[0] + 1
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1119, __pyx_L1_error)
     }
-    __pyx_v_zd = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zd = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":1115
  *     za, zb, zc, zd = start, 0., 0., stop
@@ -23398,9 +23400,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         za = (dz - pos[0,0])/v[0] + 1
  *         zb = -pos[1,0]/v[0]
  */
-  __pyx_t_13 = 0;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 0;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1121
  *         zd = (dz - pos[0,0])/v[0]
@@ -23409,16 +23411,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zb = -pos[1,0]/v[0]
  *         zc = -pos[2,0]/v[0]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1121, __pyx_L1_error)
     }
-    __pyx_v_za = ((__pyx_t_17 / __pyx_t_18) + 1.0);
+    __pyx_v_za = ((__pyx_t_18 / __pyx_t_19) + 1.0);
 
     /* "utils.pyx":1122
  *     elif v[0] < 0:
@@ -23427,16 +23429,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zc = -pos[2,0]/v[0]
  *         zd = -pos[0,0]/v[0]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1122, __pyx_L1_error)
     }
-    __pyx_v_zb = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zb = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":1123
  *         za = (dz - pos[0,0])/v[0] + 1
@@ -23445,16 +23447,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         zd = -pos[0,0]/v[0]
  *     else:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 0;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 0;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1123, __pyx_L1_error)
     }
-    __pyx_v_zc = (__pyx_t_17 / __pyx_t_18);
+    __pyx_v_zc = (__pyx_t_18 / __pyx_t_19);
 
     /* "utils.pyx":1124
  *         zb = -pos[1,0]/v[0]
@@ -23463,16 +23465,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     else:
  *         if pos[2,0] > 0:
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 0;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 0;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 0;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 0;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1124, __pyx_L1_error)
     }
-    __pyx_v_zd = (__pyx_t_18 / __pyx_t_17);
+    __pyx_v_zd = (__pyx_t_19 / __pyx_t_18);
 
     /* "utils.pyx":1120
  *         zc = -pos[2,0]/v[0]
@@ -23492,10 +23494,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             zf = -pos[1,0]/pos[2,0]
  */
   /*else*/ {
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 0;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 0;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1127
  *     else:
@@ -23504,18 +23506,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             zf = -pos[1,0]/pos[2,0]
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1127, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_ze = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_ze = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1128
  *         if pos[2,0] > 0:
@@ -23524,17 +23526,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
  *         elif pos[2,0] < 0:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 0;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 0;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1128, __pyx_L1_error)
       }
-      __pyx_v_zf = (__pyx_t_18 / __pyx_t_17);
+      __pyx_v_zf = (__pyx_t_19 / __pyx_t_18);
 
       /* "utils.pyx":1129
  *             ze = -pos[0,0]/pos[2,0] + c[1] + 1
@@ -23543,18 +23545,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         elif pos[2,0] < 0:
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1129, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_zg = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_zg = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1126
  *         zd = -pos[0,0]/v[0]
@@ -23573,10 +23575,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
  *             zf = -pos[1,0]/pos[2,0]
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 0;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 0;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1131
  *             zg = (dz - pos[0,0])/pos[2,0] + c[1]
@@ -23585,18 +23587,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             zf = -pos[1,0]/pos[2,0]
  *             zg = -pos[0,0]/pos[2,0] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1131, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_ze = (((__pyx_t_18 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_ze = (((__pyx_t_19 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1132
  *         elif pos[2,0] < 0:
@@ -23605,17 +23607,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             zg = -pos[0,0]/pos[2,0] + c[1]
  *         else:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 0;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1132, __pyx_L1_error)
       }
-      __pyx_v_zf = (__pyx_t_17 / __pyx_t_18);
+      __pyx_v_zf = (__pyx_t_18 / __pyx_t_19);
 
       /* "utils.pyx":1133
  *             ze = (dz - pos[0,0])/pos[2,0] + c[1] + 1
@@ -23624,18 +23626,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         else:
  *             if pos[1,0] > 0:
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 0;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 0;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 0;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 0;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1133, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_zg = ((__pyx_t_18 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_zg = ((__pyx_t_19 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1130
  *             zf = -pos[1,0]/pos[2,0]
@@ -23655,10 +23657,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 i1 = int(max(min((dz - pos[0,0])/pos[1,0] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 0;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1136
  *         else:
@@ -23668,31 +23670,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             else:
  */
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1136, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_20;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i0 = ((int)__pyx_t_18);
+        __pyx_v_i0 = ((int)__pyx_t_19);
 
         /* "utils.pyx":1137
  *             if pos[1,0] > 0:
@@ -23703,30 +23705,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_18 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_19 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1137, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_17 = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_3 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_3 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i1 = ((int)__pyx_t_20);
+        __pyx_v_i1 = ((int)__pyx_t_21);
 
         /* "utils.pyx":1135
  *             zg = -pos[0,0]/pos[2,0] + c[1]
@@ -23747,31 +23749,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
       /*else*/ {
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_20 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_21 = (__pyx_v_dz - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1139, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_20;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i0 = ((int)__pyx_t_17);
+        __pyx_v_i0 = ((int)__pyx_t_18);
 
         /* "utils.pyx":1140
  *             else:
@@ -23782,30 +23784,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1140, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i1 = ((int)__pyx_t_18);
+        __pyx_v_i1 = ((int)__pyx_t_19);
       }
       __pyx_L18:;
 
@@ -23816,12 +23818,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i0 < i1 and z0 // dz != 0:
  *                 i0 += 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
+      __pyx_t_14 = 0;
       __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 0;
-      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1142
  *                 i1 = int(max(min(-pos[0,0]/pos[1,0] + c[0], m), i0))
@@ -23834,7 +23836,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L21_bool_binop_done;
         }
         if (unlikely(__pyx_v_dz == 0)) {
@@ -23842,9 +23844,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1142, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_z0 / __pyx_v_dz) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L21_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1143
  *             z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
@@ -23863,11 +23865,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and z0 // dz != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 0;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 0;
-        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1145
@@ -23877,12 +23879,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and z0 // dz != 0:
  *                 i1 -= 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 0;
+      __pyx_t_14 = 0;
       __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 0;
-      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1146
  *                 z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
@@ -23895,7 +23897,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L25_bool_binop_done;
         }
         if (unlikely(__pyx_v_dz == 0)) {
@@ -23903,9 +23905,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1146, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_z0 / __pyx_v_dz) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L25_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1147
  *             z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
@@ -23924,11 +23926,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 0;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 0;
-        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 0;
+        __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1149
@@ -23938,8 +23940,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1150
  *                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
@@ -23974,12 +23976,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     if v[1] > 0:
  */
   __pyx_t_3 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_4 = __pyx_v_stop;
   __pyx_v_ya = __pyx_t_3;
-  __pyx_v_yb = __pyx_t_14;
-  __pyx_v_yc = __pyx_t_15;
+  __pyx_v_yb = __pyx_t_15;
+  __pyx_v_yc = __pyx_t_16;
   __pyx_v_yd = __pyx_t_4;
 
   /* "utils.pyx":1153
@@ -23989,11 +23991,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     if v[1] > 0:
  *         ya = -pos[0,1]/v[1] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_4 = __pyx_v_n;
-  __pyx_v_ye = __pyx_t_15;
-  __pyx_v_yf = __pyx_t_14;
+  __pyx_v_ye = __pyx_t_16;
+  __pyx_v_yf = __pyx_t_15;
   __pyx_v_yg = __pyx_t_4;
 
   /* "utils.pyx":1154
@@ -24003,9 +24005,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         ya = -pos[0,1]/v[1] + 1
  *         yb = -pos[1,1]/v[1]
  */
-  __pyx_t_12 = 1;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_14 = 1;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1155
  *     ye, yf, yg = 0., 0., n
@@ -24014,16 +24016,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yb = -pos[1,1]/v[1]
  *         yc = -pos[2,1]/v[1]
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1155, __pyx_L1_error)
     }
-    __pyx_v_ya = ((__pyx_t_18 / __pyx_t_20) + 1.0);
+    __pyx_v_ya = ((__pyx_t_19 / __pyx_t_21) + 1.0);
 
     /* "utils.pyx":1156
  *     if v[1] > 0:
@@ -24032,16 +24034,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yc = -pos[2,1]/v[1]
  *         yd = (dy - pos[0,1])/v[1]
  */
-    __pyx_t_13 = 1;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 1;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1156, __pyx_L1_error)
     }
-    __pyx_v_yb = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yb = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":1157
  *         ya = -pos[0,1]/v[1] + 1
@@ -24050,16 +24052,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yd = (dy - pos[0,1])/v[1]
  *     elif v[1] < 0:
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1157, __pyx_L1_error)
     }
-    __pyx_v_yc = (__pyx_t_18 / __pyx_t_20);
+    __pyx_v_yc = (__pyx_t_19 / __pyx_t_21);
 
     /* "utils.pyx":1158
  *         yb = -pos[1,1]/v[1]
@@ -24068,16 +24070,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     elif v[1] < 0:
  *         ya = (dy - pos[0,1])/v[1] + 1
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1158, __pyx_L1_error)
     }
-    __pyx_v_yd = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yd = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":1154
  *     ya, yb, yc, yd = start, 0., 0., stop
@@ -24096,9 +24098,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         ya = (dy - pos[0,1])/v[1] + 1
  *         yb = -pos[1,1]/v[1]
  */
-  __pyx_t_12 = 1;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_14 = 1;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1160
  *         yd = (dy - pos[0,1])/v[1]
@@ -24107,16 +24109,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yb = -pos[1,1]/v[1]
  *         yc = -pos[2,1]/v[1]
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1160, __pyx_L1_error)
     }
-    __pyx_v_ya = ((__pyx_t_18 / __pyx_t_20) + 1.0);
+    __pyx_v_ya = ((__pyx_t_19 / __pyx_t_21) + 1.0);
 
     /* "utils.pyx":1161
  *     elif v[1] < 0:
@@ -24125,16 +24127,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yc = -pos[2,1]/v[1]
  *         yd = -pos[0,1]/v[1]
  */
-    __pyx_t_13 = 1;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 1;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1161, __pyx_L1_error)
     }
-    __pyx_v_yb = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yb = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":1162
  *         ya = (dy - pos[0,1])/v[1] + 1
@@ -24143,16 +24145,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         yd = -pos[0,1]/v[1]
  *     else:
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 1;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 1;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1162, __pyx_L1_error)
     }
-    __pyx_v_yc = (__pyx_t_18 / __pyx_t_20);
+    __pyx_v_yc = (__pyx_t_19 / __pyx_t_21);
 
     /* "utils.pyx":1163
  *         yb = -pos[1,1]/v[1]
@@ -24161,16 +24163,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     else:
  *         if pos[2,1] > 0:
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 1;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 1;
-    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_18 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 1;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_19 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_19 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1163, __pyx_L1_error)
     }
-    __pyx_v_yd = (__pyx_t_20 / __pyx_t_18);
+    __pyx_v_yd = (__pyx_t_21 / __pyx_t_19);
 
     /* "utils.pyx":1159
  *         yc = -pos[2,1]/v[1]
@@ -24190,10 +24192,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             yf = -pos[1,1]/pos[2,1]
  */
   /*else*/ {
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 1;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 1;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1166
  *     else:
@@ -24202,18 +24204,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             yf = -pos[1,1]/pos[2,1]
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1166, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_ye = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_ye = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1167
  *         if pos[2,1] > 0:
@@ -24222,17 +24224,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
  *         elif pos[2,1] < 0:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 1;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 1;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1167, __pyx_L1_error)
       }
-      __pyx_v_yf = (__pyx_t_20 / __pyx_t_18);
+      __pyx_v_yf = (__pyx_t_21 / __pyx_t_19);
 
       /* "utils.pyx":1168
  *             ye = -pos[0,1]/pos[2,1] + c[1] + 1
@@ -24241,18 +24243,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         elif pos[2,1] < 0:
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1168, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_yg = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_yg = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1165
  *         yd = -pos[0,1]/v[1]
@@ -24271,10 +24273,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
  *             yf = -pos[1,1]/pos[2,1]
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 1;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 1;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1170
  *             yg = (dy - pos[0,1])/pos[2,1] + c[1]
@@ -24283,18 +24285,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             yf = -pos[1,1]/pos[2,1]
  *             yg = -pos[0,1]/pos[2,1] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1170, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_ye = (((__pyx_t_20 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_ye = (((__pyx_t_21 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1171
  *         elif pos[2,1] < 0:
@@ -24303,17 +24305,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             yg = -pos[0,1]/pos[2,1] + c[1]
  *         else:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 1;
-      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 1;
+      __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1171, __pyx_L1_error)
       }
-      __pyx_v_yf = (__pyx_t_18 / __pyx_t_20);
+      __pyx_v_yf = (__pyx_t_19 / __pyx_t_21);
 
       /* "utils.pyx":1172
  *             ye = (dy - pos[0,1])/pos[2,1] + c[1] + 1
@@ -24322,18 +24324,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         else:
  *             if pos[1,1] > 0:
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 1;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 1;
-      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_18 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 1;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 1;
+      __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_19 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1172, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_yg = ((__pyx_t_20 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_yg = ((__pyx_t_21 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1169
  *             yf = -pos[1,1]/pos[2,1]
@@ -24353,10 +24355,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 i1 = int(max(min((dy - pos[0,1])/pos[1,1] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 1;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 1;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1175
  *         else:
@@ -24366,31 +24368,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             else:
  */
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1175, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_17 = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_19;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_20;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_4 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i0 = ((int)__pyx_t_20);
+        __pyx_v_i0 = ((int)__pyx_t_21);
 
         /* "utils.pyx":1176
  *             if pos[1,1] > 0:
@@ -24401,30 +24403,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_4 = __pyx_v_i0;
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_20 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_21 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1176, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_18 = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_11 = 0;
+        __pyx_t_19 = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_4 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_4;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_4 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_4;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i1 = ((int)__pyx_t_17);
+        __pyx_v_i1 = ((int)__pyx_t_18);
 
         /* "utils.pyx":1174
  *             yg = -pos[0,1]/pos[2,1] + c[1]
@@ -24445,31 +24447,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
       /*else*/ {
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_17 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_18 = (__pyx_v_dy - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1178, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_20 = (((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_19;
+        __pyx_t_11 = 0;
+        __pyx_t_21 = (((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_20;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i0 = ((int)__pyx_t_18);
+        __pyx_v_i0 = ((int)__pyx_t_19);
 
         /* "utils.pyx":1179
  *             else:
@@ -24480,30 +24482,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_4 = __pyx_v_i0;
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_13 = 0;
-        __pyx_t_12 = 1;
-        __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_11 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_19 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1179, __pyx_L1_error)
         }
-        __pyx_t_13 = 0;
-        __pyx_t_17 = ((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_3 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_11 = 0;
+        __pyx_t_18 = ((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_4 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_4;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_4 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_4;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i1 = ((int)__pyx_t_20);
+        __pyx_v_i1 = ((int)__pyx_t_21);
       }
       __pyx_L30:;
 
@@ -24514,12 +24516,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i0 < i1 and y0 // dy != 0:
  *                 i0 += 1
  */
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
       __pyx_t_13 = 0;
       __pyx_t_12 = 1;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
       __pyx_t_22 = 1;
-      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1181
  *                 i1 = int(max(min(-pos[0,1]/pos[1,1] + c[0], m), i0))
@@ -24532,7 +24534,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L33_bool_binop_done;
         }
         if (unlikely(__pyx_v_dy == 0)) {
@@ -24540,9 +24542,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1181, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_y0 / __pyx_v_dy) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L33_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1182
  *             y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -24561,11 +24563,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and y0 // dy != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 1;
-        __pyx_t_11 = 0;
         __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1184
@@ -24575,12 +24577,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and y0 // dy != 0:
  *                 i1 -= 1
  */
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 1;
       __pyx_t_13 = 0;
       __pyx_t_12 = 1;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
       __pyx_t_22 = 1;
-      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1185
  *                 y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -24593,7 +24595,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L37_bool_binop_done;
         }
         if (unlikely(__pyx_v_dy == 0)) {
@@ -24601,9 +24603,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1185, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_y0 / __pyx_v_dy) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L37_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1186
  *             y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
@@ -24622,11 +24624,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 1;
-        __pyx_t_11 = 0;
         __pyx_t_12 = 1;
-        __pyx_t_13 = 1;
-        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_14 = 1;
+        __pyx_t_11 = 1;
+        __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1188
@@ -24636,8 +24638,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1189
  *                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
@@ -24672,12 +24674,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     if v[2] > 0:
  */
   __pyx_t_4 = __pyx_v_start;
-  __pyx_t_14 = 0.;
   __pyx_t_15 = 0.;
+  __pyx_t_16 = 0.;
   __pyx_t_3 = __pyx_v_stop;
   __pyx_v_xa = __pyx_t_4;
-  __pyx_v_xb = __pyx_t_14;
-  __pyx_v_xc = __pyx_t_15;
+  __pyx_v_xb = __pyx_t_15;
+  __pyx_v_xc = __pyx_t_16;
   __pyx_v_xd = __pyx_t_3;
 
   /* "utils.pyx":1192
@@ -24687,11 +24689,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     if v[2] > 0:
  *         xa = -pos[0,2]/v[2] + 1
  */
+  __pyx_t_16 = 0.;
   __pyx_t_15 = 0.;
-  __pyx_t_14 = 0.;
   __pyx_t_3 = __pyx_v_n;
-  __pyx_v_xe = __pyx_t_15;
-  __pyx_v_xf = __pyx_t_14;
+  __pyx_v_xe = __pyx_t_16;
+  __pyx_v_xf = __pyx_t_15;
   __pyx_v_xg = __pyx_t_3;
 
   /* "utils.pyx":1193
@@ -24701,9 +24703,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xa = -pos[0,2]/v[2] + 1
  *         xb = -pos[1,2]/v[2]
  */
-  __pyx_t_13 = 2;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 2;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) > 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1194
  *     xe, xf, xg = 0., 0., n
@@ -24712,16 +24714,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xb = -pos[1,2]/v[2]
  *         xc = -pos[2,2]/v[2]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1194, __pyx_L1_error)
     }
-    __pyx_v_xa = ((__pyx_t_20 / __pyx_t_17) + 1.0);
+    __pyx_v_xa = ((__pyx_t_21 / __pyx_t_18) + 1.0);
 
     /* "utils.pyx":1195
  *     if v[2] > 0:
@@ -24730,16 +24732,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xc = -pos[2,2]/v[2]
  *         xd = (dx - pos[0,2])/v[2]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1195, __pyx_L1_error)
     }
-    __pyx_v_xb = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xb = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":1196
  *         xa = -pos[0,2]/v[2] + 1
@@ -24748,16 +24750,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xd = (dx - pos[0,2])/v[2]
  *     elif v[2] < 0:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1196, __pyx_L1_error)
     }
-    __pyx_v_xc = (__pyx_t_20 / __pyx_t_17);
+    __pyx_v_xc = (__pyx_t_21 / __pyx_t_18);
 
     /* "utils.pyx":1197
  *         xb = -pos[1,2]/v[2]
@@ -24766,16 +24768,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     elif v[2] < 0:
  *         xa = (dx - pos[0,2])/v[2] + 1
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1197, __pyx_L1_error)
     }
-    __pyx_v_xd = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xd = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":1193
  *     xa, xb, xc, xd = start, 0., 0., stop
@@ -24794,9 +24796,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xa = (dx - pos[0,2])/v[2] + 1
  *         xb = -pos[1,2]/v[2]
  */
-  __pyx_t_13 = 2;
-  __pyx_t_16 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
-  if (__pyx_t_16) {
+  __pyx_t_11 = 2;
+  __pyx_t_17 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides)) < 0.0) != 0);
+  if (__pyx_t_17) {
 
     /* "utils.pyx":1199
  *         xd = (dx - pos[0,2])/v[2]
@@ -24805,16 +24807,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xb = -pos[1,2]/v[2]
  *         xc = -pos[2,2]/v[2]
  */
-    __pyx_t_13 = 0;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 0;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1199, __pyx_L1_error)
     }
-    __pyx_v_xa = ((__pyx_t_20 / __pyx_t_17) + 1.0);
+    __pyx_v_xa = ((__pyx_t_21 / __pyx_t_18) + 1.0);
 
     /* "utils.pyx":1200
  *     elif v[2] < 0:
@@ -24823,16 +24825,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xc = -pos[2,2]/v[2]
  *         xd = -pos[0,2]/v[2]
  */
-    __pyx_t_12 = 1;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 1;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1200, __pyx_L1_error)
     }
-    __pyx_v_xb = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xb = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":1201
  *         xa = (dx - pos[0,2])/v[2] + 1
@@ -24841,16 +24843,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         xd = -pos[0,2]/v[2]
  *     else:
  */
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_12 = 2;
-    __pyx_t_17 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_17 == 0)) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_14 = 2;
+    __pyx_t_18 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_18 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1201, __pyx_L1_error)
     }
-    __pyx_v_xc = (__pyx_t_20 / __pyx_t_17);
+    __pyx_v_xc = (__pyx_t_21 / __pyx_t_18);
 
     /* "utils.pyx":1202
  *         xb = -pos[1,2]/v[2]
@@ -24859,16 +24861,16 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *     else:
  *         if pos[2,2] > 0:
  */
-    __pyx_t_12 = 0;
-    __pyx_t_13 = 2;
-    __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-    __pyx_t_13 = 2;
-    __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides));
-    if (unlikely(__pyx_t_20 == 0)) {
+    __pyx_t_14 = 0;
+    __pyx_t_11 = 2;
+    __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+    __pyx_t_11 = 2;
+    __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides));
+    if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
       __PYX_ERR(0, 1202, __pyx_L1_error)
     }
-    __pyx_v_xd = (__pyx_t_17 / __pyx_t_20);
+    __pyx_v_xd = (__pyx_t_18 / __pyx_t_21);
 
     /* "utils.pyx":1198
  *         xc = -pos[2,2]/v[2]
@@ -24888,10 +24890,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xf = -pos[1,2]/pos[2,2]
  */
   /*else*/ {
-    __pyx_t_13 = 2;
-    __pyx_t_12 = 2;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_11 = 2;
+    __pyx_t_14 = 2;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1205
  *     else:
@@ -24900,18 +24902,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xf = -pos[1,2]/pos[2,2]
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1205, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_xe = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_14 = 1;
+      __pyx_v_xe = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1206
  *         if pos[2,2] > 0:
@@ -24920,17 +24922,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
  *         elif pos[2,2] < 0:
  */
-      __pyx_t_12 = 1;
-      __pyx_t_13 = 2;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_14 = 1;
+      __pyx_t_11 = 2;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1206, __pyx_L1_error)
       }
-      __pyx_v_xf = (__pyx_t_17 / __pyx_t_20);
+      __pyx_v_xf = (__pyx_t_18 / __pyx_t_21);
 
       /* "utils.pyx":1207
  *             xe = -pos[0,2]/pos[2,2] + c[1] + 1
@@ -24939,18 +24941,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         elif pos[2,2] < 0:
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_13 = 2;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_11 = 2;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1207, __pyx_L1_error)
       }
-      __pyx_t_12 = 1;
-      __pyx_v_xg = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_14 = 1;
+      __pyx_v_xg = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1204
  *         xd = -pos[0,2]/v[2]
@@ -24969,10 +24971,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
  *             xf = -pos[1,2]/pos[2,2]
  */
-    __pyx_t_12 = 2;
-    __pyx_t_13 = 2;
-    __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
-    if (__pyx_t_16) {
+    __pyx_t_14 = 2;
+    __pyx_t_11 = 2;
+    __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) < 0.0) != 0);
+    if (__pyx_t_17) {
 
       /* "utils.pyx":1209
  *             xg = (dx - pos[0,2])/pos[2,2] + c[1]
@@ -24981,18 +24983,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xf = -pos[1,2]/pos[2,2]
  *             xg = -pos[0,2]/pos[2,2] + c[1]
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1209, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_xe = (((__pyx_t_17 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+      __pyx_t_11 = 1;
+      __pyx_v_xe = (((__pyx_t_18 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
 
       /* "utils.pyx":1210
  *         elif pos[2,2] < 0:
@@ -25001,17 +25003,17 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             xg = -pos[0,2]/pos[2,2] + c[1]
  *         else:
  */
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 2;
-      __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_17 == 0)) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 2;
+      __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_18 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1210, __pyx_L1_error)
       }
-      __pyx_v_xf = (__pyx_t_20 / __pyx_t_17);
+      __pyx_v_xf = (__pyx_t_21 / __pyx_t_18);
 
       /* "utils.pyx":1211
  *             xe = (dx - pos[0,2])/pos[2,2] + c[1] + 1
@@ -25020,18 +25022,18 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         else:
  *             if pos[1,2] > 0:
  */
-      __pyx_t_13 = 0;
-      __pyx_t_12 = 2;
-      __pyx_t_17 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)));
-      __pyx_t_12 = 2;
-      __pyx_t_13 = 2;
-      __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides));
-      if (unlikely(__pyx_t_20 == 0)) {
+      __pyx_t_11 = 0;
+      __pyx_t_14 = 2;
+      __pyx_t_18 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)));
+      __pyx_t_14 = 2;
+      __pyx_t_11 = 2;
+      __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides));
+      if (unlikely(__pyx_t_21 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
         __PYX_ERR(0, 1211, __pyx_L1_error)
       }
-      __pyx_t_13 = 1;
-      __pyx_v_xg = ((__pyx_t_17 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides)));
+      __pyx_t_11 = 1;
+      __pyx_v_xg = ((__pyx_t_18 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides)));
 
       /* "utils.pyx":1208
  *             xf = -pos[1,2]/pos[2,2]
@@ -25051,10 +25053,10 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 i1 = int(max(min((dx - pos[0,2])/pos[1,2] + c[0], m), i0))
  */
     /*else*/ {
-      __pyx_t_13 = 1;
-      __pyx_t_12 = 2;
-      __pyx_t_16 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_11 = 1;
+      __pyx_t_14 = 2;
+      __pyx_t_17 = (((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides)) > 0.0) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1214
  *         else:
@@ -25064,31 +25066,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             else:
  */
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1214, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = (((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = (((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_20;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i0 = ((int)__pyx_t_17);
+        __pyx_v_i0 = ((int)__pyx_t_18);
 
         /* "utils.pyx":1215
  *             if pos[1,2] > 0:
@@ -25099,30 +25101,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_17 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_18 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_19 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_19 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1215, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_20 = ((__pyx_t_17 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_21 = ((__pyx_t_18 / __pyx_t_19) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_4;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_t_20 = __pyx_t_18;
-        if (((__pyx_t_3 > __pyx_t_20) != 0)) {
-          __pyx_t_18 = __pyx_t_3;
+        __pyx_t_21 = __pyx_t_19;
+        if (((__pyx_t_3 > __pyx_t_21) != 0)) {
+          __pyx_t_19 = __pyx_t_3;
         } else {
-          __pyx_t_18 = __pyx_t_20;
+          __pyx_t_19 = __pyx_t_21;
         }
-        __pyx_v_i1 = ((int)__pyx_t_18);
+        __pyx_v_i1 = ((int)__pyx_t_19);
 
         /* "utils.pyx":1213
  *             xg = -pos[0,2]/pos[2,2] + c[1]
@@ -25143,31 +25145,31 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
       /*else*/ {
         __pyx_t_3 = __pyx_v_m;
-        __pyx_t_19 = 0;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_18 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_20 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_20 == 0)) {
+        __pyx_t_20 = 0;
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_19 = (__pyx_v_dx - (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_21 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_21 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1217, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_17 = (((__pyx_t_18 / __pyx_t_20) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
-        if (((__pyx_t_19 > __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_19;
+        __pyx_t_14 = 0;
+        __pyx_t_18 = (((__pyx_t_19 / __pyx_t_21) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides))) + 1.0);
+        if (((__pyx_t_20 > __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_20;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_t_17 = __pyx_t_20;
-        if (((__pyx_t_3 < __pyx_t_17) != 0)) {
-          __pyx_t_20 = __pyx_t_3;
+        __pyx_t_18 = __pyx_t_21;
+        if (((__pyx_t_3 < __pyx_t_18) != 0)) {
+          __pyx_t_21 = __pyx_t_3;
         } else {
-          __pyx_t_20 = __pyx_t_17;
+          __pyx_t_21 = __pyx_t_18;
         }
-        __pyx_v_i0 = ((int)__pyx_t_20);
+        __pyx_v_i0 = ((int)__pyx_t_21);
 
         /* "utils.pyx":1218
  *             else:
@@ -25178,30 +25180,30 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  */
         __pyx_t_3 = __pyx_v_i0;
         __pyx_t_4 = __pyx_v_m;
-        __pyx_t_12 = 0;
-        __pyx_t_13 = 2;
-        __pyx_t_20 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)));
-        __pyx_t_13 = 1;
-        __pyx_t_12 = 2;
-        __pyx_t_17 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides));
-        if (unlikely(__pyx_t_17 == 0)) {
+        __pyx_t_14 = 0;
+        __pyx_t_11 = 2;
+        __pyx_t_21 = (-(*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)));
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_t_18 = (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides));
+        if (unlikely(__pyx_t_18 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
           __PYX_ERR(0, 1218, __pyx_L1_error)
         }
-        __pyx_t_12 = 0;
-        __pyx_t_18 = ((__pyx_t_20 / __pyx_t_17) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
-        if (((__pyx_t_4 < __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_4;
+        __pyx_t_14 = 0;
+        __pyx_t_19 = ((__pyx_t_21 / __pyx_t_18) + (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
+        if (((__pyx_t_4 < __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_4;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_t_18 = __pyx_t_17;
-        if (((__pyx_t_3 > __pyx_t_18) != 0)) {
-          __pyx_t_17 = __pyx_t_3;
+        __pyx_t_19 = __pyx_t_18;
+        if (((__pyx_t_3 > __pyx_t_19) != 0)) {
+          __pyx_t_18 = __pyx_t_3;
         } else {
-          __pyx_t_17 = __pyx_t_18;
+          __pyx_t_18 = __pyx_t_19;
         }
-        __pyx_v_i1 = ((int)__pyx_t_17);
+        __pyx_v_i1 = ((int)__pyx_t_18);
       }
       __pyx_L42:;
 
@@ -25212,12 +25214,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i0 < i1 and x0 // dx != 0:
  *                 i0 += 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 2;
-      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1220
  *                 i1 = int(max(min(-pos[0,2]/pos[1,2] + c[0], m), i0))
@@ -25230,7 +25232,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i0 < __pyx_v_i1) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L45_bool_binop_done;
         }
         if (unlikely(__pyx_v_dx == 0)) {
@@ -25238,9 +25240,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1220, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_x0 / __pyx_v_dx) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L45_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1221
  *             x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
@@ -25259,11 +25261,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and x0 // dx != 0:
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 2;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 2;
-        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + ((__pyx_v_i0 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1223
@@ -25273,12 +25275,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while i1 > i0 and x0 // dx != 0:
  *                 i1 -= 1
  */
-      __pyx_t_12 = 0;
-      __pyx_t_13 = 2;
-      __pyx_t_11 = 0;
-      __pyx_t_21 = 1;
+      __pyx_t_14 = 0;
+      __pyx_t_11 = 2;
+      __pyx_t_13 = 0;
+      __pyx_t_12 = 1;
       __pyx_t_22 = 2;
-      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
+      __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
       /* "utils.pyx":1224
  *                 x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
@@ -25291,7 +25293,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
         __pyx_t_23 = ((__pyx_v_i1 > __pyx_v_i0) != 0);
         if (__pyx_t_23) {
         } else {
-          __pyx_t_16 = __pyx_t_23;
+          __pyx_t_17 = __pyx_t_23;
           goto __pyx_L49_bool_binop_done;
         }
         if (unlikely(__pyx_v_dx == 0)) {
@@ -25299,9 +25301,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
           __PYX_ERR(0, 1224, __pyx_L1_error)
         }
         __pyx_t_23 = ((floor(__pyx_v_x0 / __pyx_v_dx) != 0.0) != 0);
-        __pyx_t_16 = __pyx_t_23;
+        __pyx_t_17 = __pyx_t_23;
         __pyx_L49_bool_binop_done:;
-        if (!__pyx_t_16) break;
+        if (!__pyx_t_17) break;
 
         /* "utils.pyx":1225
  *             x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
@@ -25320,11 +25322,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  */
         __pyx_t_22 = 0;
-        __pyx_t_21 = 2;
-        __pyx_t_11 = 0;
-        __pyx_t_13 = 1;
         __pyx_t_12 = 2;
-        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+        __pyx_t_13 = 0;
+        __pyx_t_11 = 1;
+        __pyx_t_14 = 2;
+        __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides)) + (((__pyx_v_i1 - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_c.diminfo[0].strides))) - 1) * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
       }
 
       /* "utils.pyx":1227
@@ -25334,8 +25336,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 return False
  * 
  */
-      __pyx_t_16 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_17 = ((__pyx_v_i0 == __pyx_v_i1) != 0);
+      if (__pyx_t_17) {
 
         /* "utils.pyx":1228
  *                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
@@ -25418,7 +25420,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
             if (__pyx_t_5 > 0)
             {
                 #ifdef _OPENMP
-                #pragma omp parallel reduction(+:__pyx_v_exist) private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_16, __pyx_t_19, __pyx_t_21, __pyx_t_22, __pyx_t_23, __pyx_t_24, __pyx_t_25, __pyx_t_26, __pyx_t_27, __pyx_t_28, __pyx_t_29, __pyx_t_30, __pyx_t_31, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+                #pragma omp parallel reduction(+:__pyx_v_exist) private(__pyx_t_10, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_t_14, __pyx_t_17, __pyx_t_20, __pyx_t_22, __pyx_t_23, __pyx_t_24, __pyx_t_25, __pyx_t_26, __pyx_t_27, __pyx_t_28, __pyx_t_29, __pyx_t_30, __pyx_t_31, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
                 #endif /* _OPENMP */
                 {
                     #ifdef _OPENMP
@@ -25465,8 +25467,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         z0 = pos[0,0] + s*pos[1,0]
  *         y0 = pos[0,1] + s*pos[1,1]
  */
-                            __pyx_t_12 = 0;
-                            __pyx_v_s = (__pyx_v_i - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
+                            __pyx_t_14 = 0;
+                            __pyx_v_s = (__pyx_v_i - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_c.diminfo[0].strides)));
 
                             /* "utils.pyx":1232
  *     for i in prange(i0, i1, nogil=True):
@@ -25475,11 +25477,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         y0 = pos[0,1] + s*pos[1,1]
  *         x0 = pos[0,2] + s*pos[1,2]
  */
+                            __pyx_t_14 = 0;
+                            __pyx_t_11 = 0;
+                            __pyx_t_13 = 1;
                             __pyx_t_12 = 0;
-                            __pyx_t_13 = 0;
-                            __pyx_t_11 = 1;
-                            __pyx_t_21 = 0;
-                            __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_v_z0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":1233
  *         s = i - c[0]
@@ -25488,11 +25490,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *         x0 = pos[0,2] + s*pos[1,2]
  * 
  */
-                            __pyx_t_21 = 0;
-                            __pyx_t_11 = 1;
+                            __pyx_t_12 = 0;
                             __pyx_t_13 = 1;
-                            __pyx_t_12 = 1;
-                            __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_t_11 = 1;
+                            __pyx_t_14 = 1;
+                            __pyx_v_y0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":1234
  *         z0 = pos[0,0] + s*pos[1,0]
@@ -25501,11 +25503,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *         j0 = int(min(max(ze + zf*s, ye + yf*s, xe + xf*s, 0), n))
  */
-                            __pyx_t_12 = 0;
-                            __pyx_t_13 = 2;
-                            __pyx_t_11 = 1;
-                            __pyx_t_21 = 2;
-                            __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                            __pyx_t_14 = 0;
+                            __pyx_t_11 = 2;
+                            __pyx_t_13 = 1;
+                            __pyx_t_12 = 2;
+                            __pyx_v_x0 = ((*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides)) + (__pyx_v_s * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                             /* "utils.pyx":1236
  *         x0 = pos[0,2] + s*pos[1,2]
@@ -25517,7 +25519,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                             __pyx_t_6 = __pyx_v_n;
                             __pyx_t_24 = (__pyx_v_ye + (__pyx_v_yf * __pyx_v_s));
                             __pyx_t_25 = (__pyx_v_xe + (__pyx_v_xf * __pyx_v_s));
-                            __pyx_t_19 = 0;
+                            __pyx_t_20 = 0;
                             __pyx_t_26 = (__pyx_v_ze + (__pyx_v_zf * __pyx_v_s));
                             if (((__pyx_t_24 > __pyx_t_26) != 0)) {
                               __pyx_t_27 = __pyx_t_24;
@@ -25531,8 +25533,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                               __pyx_t_27 = __pyx_t_26;
                             }
                             __pyx_t_26 = __pyx_t_27;
-                            if (((__pyx_t_19 > __pyx_t_26) != 0)) {
-                              __pyx_t_27 = __pyx_t_19;
+                            if (((__pyx_t_20 > __pyx_t_26) != 0)) {
+                              __pyx_t_27 = __pyx_t_20;
                             } else {
                               __pyx_t_27 = __pyx_t_26;
                             }
@@ -25600,8 +25602,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             z1 = z0 + t*pos[2,0]
  *             y1 = y0 + t*pos[2,1]
  */
-                              __pyx_t_21 = 1;
-                              __pyx_v_t = (__pyx_v_j - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_c.diminfo[0].strides)));
+                              __pyx_t_12 = 1;
+                              __pyx_v_t = (__pyx_v_j - (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_c.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_c.diminfo[0].strides)));
 
                               /* "utils.pyx":1241
  *         for j in range(j0, j1):
@@ -25610,9 +25612,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             y1 = y0 + t*pos[2,1]
  *             x1 = x0 + t*pos[2,2]
  */
-                              __pyx_t_21 = 2;
-                              __pyx_t_11 = 0;
-                              __pyx_v_z1 = (__pyx_v_z0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_12 = 2;
+                              __pyx_t_13 = 0;
+                              __pyx_v_z1 = (__pyx_v_z0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":1242
  *             t = j - c[1]
@@ -25621,9 +25623,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             x1 = x0 + t*pos[2,2]
  * 
  */
-                              __pyx_t_11 = 2;
-                              __pyx_t_21 = 1;
-                              __pyx_v_y1 = (__pyx_v_y0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_t_12 = 1;
+                              __pyx_v_y1 = (__pyx_v_y0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":1243
  *             z1 = z0 + t*pos[2,0]
@@ -25632,9 +25634,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *             k0 = int(min(max(za + zb*s + zc*t, ya + yb*s + yc*t, xa + xb*s + xc*t, start), stop))
  */
-                              __pyx_t_21 = 2;
-                              __pyx_t_11 = 2;
-                              __pyx_v_x1 = (__pyx_v_x0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_pos.diminfo[1].strides))));
+                              __pyx_t_12 = 2;
+                              __pyx_t_13 = 2;
+                              __pyx_v_x1 = (__pyx_v_x0 + (__pyx_v_t * (*__Pyx_BufPtrStrided2d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_pos.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_pos.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_pos.diminfo[1].strides))));
 
                               /* "utils.pyx":1245
  *             x1 = x0 + t*pos[2,2]
@@ -25717,8 +25719,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 continue
  *             z = z1 + k0*v[0]
  */
-                              __pyx_t_16 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
-                              if (__pyx_t_16) {
+                              __pyx_t_17 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":1249
  * 
@@ -25745,8 +25747,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             y = y1 + k0*v[1]
  *             x = x1 + k0*v[2]
  */
-                              __pyx_t_11 = 0;
-                              __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 0;
+                              __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1251
  *                 continue
@@ -25755,8 +25757,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             x = x1 + k0*v[2]
  *             while k0 < k1 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  */
-                              __pyx_t_11 = 1;
-                              __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 1;
+                              __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1252
  *             z = z1 + k0*v[0]
@@ -25765,8 +25767,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while k0 < k1 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  *                 k0 = k0 + 1
  */
-                              __pyx_t_11 = 2;
-                              __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1253
  *             y = y1 + k0*v[1]
@@ -25779,7 +25781,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((__pyx_v_k0 < __pyx_v_k1) != 0);
                                 if (__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dz == 0)) {
@@ -25795,7 +25797,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((floor(__pyx_v_z / __pyx_v_dz) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dy == 0)) {
@@ -25811,7 +25813,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((floor(__pyx_v_y / __pyx_v_dy) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L64_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dx == 0)) {
@@ -25825,9 +25827,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                   __PYX_ERR(0, 1253, __pyx_L57_error)
                                 }
                                 __pyx_t_23 = ((floor(__pyx_v_x / __pyx_v_dx) != 0.0) != 0);
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 __pyx_L64_bool_binop_done:;
-                                if (!__pyx_t_16) break;
+                                if (!__pyx_t_17) break;
 
                                 /* "utils.pyx":1254
  *             x = x1 + k0*v[2]
@@ -25845,8 +25847,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 y = y1 + k0*v[1]
  *                 x = x1 + k0*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1256
  *                 k0 = k0 + 1
@@ -25855,8 +25857,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 x = x1 + k0*v[2]
  *             z = z1 + (k1-1)*v[0]
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1257
  *                 z = z1 + k0*v[0]
@@ -25865,8 +25867,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             z = z1 + (k1-1)*v[0]
  *             y = y1 + (k1-1)*v[1]
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k0 * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
                               }
 
                               /* "utils.pyx":1258
@@ -25876,8 +25878,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             y = y1 + (k1-1)*v[1]
  *             x = x1 + (k1-1)*v[2]
  */
-                              __pyx_t_11 = 0;
-                              __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 0;
+                              __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1259
  *                 x = x1 + k0*v[2]
@@ -25886,8 +25888,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             x = x1 + (k1-1)*v[2]
  *             while k1 > k0 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  */
-                              __pyx_t_11 = 1;
-                              __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 1;
+                              __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1260
  *             z = z1 + (k1-1)*v[0]
@@ -25896,8 +25898,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             while k1 > k0 and (z//dz!=0 or y//dy!=0 or x//dx!=0):
  *                 k1 = k1 - 1
  */
-                              __pyx_t_11 = 2;
-                              __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                              __pyx_t_13 = 2;
+                              __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                               /* "utils.pyx":1261
  *             y = y1 + (k1-1)*v[1]
@@ -25910,7 +25912,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((__pyx_v_k1 > __pyx_v_k0) != 0);
                                 if (__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dz == 0)) {
@@ -25926,7 +25928,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((floor(__pyx_v_z / __pyx_v_dz) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dy == 0)) {
@@ -25942,7 +25944,7 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                 __pyx_t_23 = ((floor(__pyx_v_y / __pyx_v_dy) != 0.0) != 0);
                                 if (!__pyx_t_23) {
                                 } else {
-                                  __pyx_t_16 = __pyx_t_23;
+                                  __pyx_t_17 = __pyx_t_23;
                                   goto __pyx_L70_bool_binop_done;
                                 }
                                 if (unlikely(__pyx_v_dx == 0)) {
@@ -25956,9 +25958,9 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                                   __PYX_ERR(0, 1261, __pyx_L57_error)
                                 }
                                 __pyx_t_23 = ((floor(__pyx_v_x / __pyx_v_dx) != 0.0) != 0);
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 __pyx_L70_bool_binop_done:;
-                                if (!__pyx_t_16) break;
+                                if (!__pyx_t_17) break;
 
                                 /* "utils.pyx":1262
  *             x = x1 + (k1-1)*v[2]
@@ -25976,8 +25978,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 y = y1 + (k1-1)*v[1]
  *                 x = x1 + (k1-1)*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1264
  *                 k1 = k1 - 1
@@ -25986,8 +25988,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 x = x1 + (k1-1)*v[2]
  *             if k0 == k1:
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1265
  *                 z = z1 + (k1-1)*v[0]
@@ -25996,8 +25998,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *             if k0 == k1:
  *                 continue
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + ((__pyx_v_k1 - 1) * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
                               }
 
                               /* "utils.pyx":1266
@@ -26007,8 +26009,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 continue
  *             if k0 <= 0 and k1 > 0:
  */
-                              __pyx_t_16 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
-                              if (__pyx_t_16) {
+                              __pyx_t_17 = ((__pyx_v_k0 == __pyx_v_k1) != 0);
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":1267
  *                 x = x1 + (k1-1)*v[2]
@@ -26038,13 +26040,13 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
                               __pyx_t_23 = ((__pyx_v_k0 <= 0) != 0);
                               if (__pyx_t_23) {
                               } else {
-                                __pyx_t_16 = __pyx_t_23;
+                                __pyx_t_17 = __pyx_t_23;
                                 goto __pyx_L76_bool_binop_done;
                               }
                               __pyx_t_23 = ((__pyx_v_k1 > 0) != 0);
-                              __pyx_t_16 = __pyx_t_23;
+                              __pyx_t_17 = __pyx_t_23;
                               __pyx_L76_bool_binop_done:;
-                              if (__pyx_t_16) {
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":1269
  *                 continue
@@ -26071,8 +26073,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 k0 = k0 + (i+j)%2
  *             else:
  */
-                              __pyx_t_16 = ((__Pyx_mod_long(__pyx_v_k0, 2) == 0) != 0);
-                              if (__pyx_t_16) {
+                              __pyx_t_17 = ((__Pyx_mod_long(__pyx_v_k0, 2) == 0) != 0);
+                              if (__pyx_t_17) {
 
                                 /* "utils.pyx":1271
  *                 exist += True
@@ -26124,8 +26126,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 y = y1 + k*v[1]
  *                 x = x1 + k*v[2]
  */
-                                __pyx_t_11 = 0;
-                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 0;
+                                __pyx_v_z = (__pyx_v_z1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1277
  *             for k in range(k0, k1, 2):
@@ -26134,8 +26136,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 x = x1 + k*v[2]
  *                 gz = int(z)
  */
-                                __pyx_t_11 = 1;
-                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 1;
+                                __pyx_v_y = (__pyx_v_y1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1278
  *                 z = z1 + k*v[0]
@@ -26144,8 +26146,8 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                 gz = int(z)
  *                 gy = int(y)
  */
-                                __pyx_t_11 = 2;
-                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_v.diminfo[0].strides))));
+                                __pyx_t_13 = 2;
+                                __pyx_v_x = (__pyx_v_x1 + (__pyx_v_k * (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t2 *, __pyx_pybuffernd_v.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_v.diminfo[0].strides))));
 
                                 /* "utils.pyx":1279
  *                 y = y1 + k*v[1]
@@ -26193,12 +26195,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                     if r > res[ch_show[l],i,j]:
  *                         res[ch_show[l],i,j] = r
  */
-                                  __pyx_t_11 = __pyx_v_l;
-                                  __pyx_t_21 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
-                                  __pyx_t_13 = __pyx_v_gz;
-                                  __pyx_t_12 = __pyx_v_gy;
+                                  __pyx_t_13 = __pyx_v_l;
+                                  __pyx_t_12 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                  __pyx_t_11 = __pyx_v_gz;
+                                  __pyx_t_14 = __pyx_v_gy;
                                   __pyx_t_22 = __pyx_v_gx;
-                                  __pyx_v_r = (*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_12, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_22, __pyx_pybuffernd_box.diminfo[3].strides));
+                                  __pyx_v_r = (*__Pyx_BufPtrStrided4d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_box.diminfo[0].strides, __pyx_t_11, __pyx_pybuffernd_box.diminfo[1].strides, __pyx_t_14, __pyx_pybuffernd_box.diminfo[2].strides, __pyx_t_22, __pyx_pybuffernd_box.diminfo[3].strides));
 
                                   /* "utils.pyx":1285
  *                 for l in range(chs):
@@ -26207,12 +26209,12 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  *                         res[ch_show[l],i,j] = r
  * 
  */
-                                  __pyx_t_11 = __pyx_v_l;
-                                  __pyx_t_22 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
-                                  __pyx_t_12 = __pyx_v_i;
-                                  __pyx_t_13 = __pyx_v_j;
-                                  __pyx_t_16 = ((__pyx_v_r > (*__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_13, __pyx_pybuffernd_res.diminfo[2].strides))) != 0);
-                                  if (__pyx_t_16) {
+                                  __pyx_t_13 = __pyx_v_l;
+                                  __pyx_t_22 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                  __pyx_t_14 = __pyx_v_i;
+                                  __pyx_t_11 = __pyx_v_j;
+                                  __pyx_t_17 = ((__pyx_v_r > (*__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_11, __pyx_pybuffernd_res.diminfo[2].strides))) != 0);
+                                  if (__pyx_t_17) {
 
                                     /* "utils.pyx":1286
  *                     r = box[ch_show[l], gz, gy, gx]
@@ -26221,11 +26223,11 @@ static PyObject *__pyx_f_5utils_fast_stack(PyArrayObject *__pyx_v_box, PyArrayOb
  * 
  *     return exist
  */
-                                    __pyx_t_11 = __pyx_v_l;
-                                    __pyx_t_13 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_ch_show.diminfo[0].strides));
-                                    __pyx_t_12 = __pyx_v_i;
+                                    __pyx_t_13 = __pyx_v_l;
+                                    __pyx_t_11 = (*__Pyx_BufPtrStrided1d(__pyx_t_5utils_DTYPE_t3 *, __pyx_pybuffernd_ch_show.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_ch_show.diminfo[0].strides));
+                                    __pyx_t_14 = __pyx_v_i;
                                     __pyx_t_22 = __pyx_v_j;
-                                    *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_22, __pyx_pybuffernd_res.diminfo[2].strides) = __pyx_v_r;
+                                    *__Pyx_BufPtrStrided3d(__pyx_t_5utils_DTYPE_t *, __pyx_pybuffernd_res.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_res.diminfo[0].strides, __pyx_t_14, __pyx_pybuffernd_res.diminfo[1].strides, __pyx_t_22, __pyx_pybuffernd_res.diminfo[2].strides) = __pyx_v_r;
 
                                     /* "utils.pyx":1285
  *                 for l in range(chs):
@@ -26907,7 +26909,7 @@ static PyObject *__pyx_f_5utils_calc_bgr(PyArrayObject *__pyx_v_frame, PyArrayOb
  *                 res[i,j,1] = 0
  *                 res[i,j,2] = 0             # <<<<<<<<<<<<<<
  *                 res[i,j,3] = 0
- *         return res
+ *         return
  */
                                 __pyx_t_9 = __pyx_v_i;
                                 __pyx_t_10 = __pyx_v_j;
@@ -26918,7 +26920,7 @@ static PyObject *__pyx_f_5utils_calc_bgr(PyArrayObject *__pyx_v_frame, PyArrayOb
  *                 res[i,j,1] = 0
  *                 res[i,j,2] = 0
  *                 res[i,j,3] = 0             # <<<<<<<<<<<<<<
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  */
                                 __pyx_t_11 = __pyx_v_i;
@@ -26961,13 +26963,12 @@ static PyObject *__pyx_f_5utils_calc_bgr(PyArrayObject *__pyx_v_frame, PyArrayOb
     /* "utils.pyx":1306
  *                 res[i,j,2] = 0
  *                 res[i,j,3] = 0
- *         return res             # <<<<<<<<<<<<<<
+ *         return             # <<<<<<<<<<<<<<
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  *     for k in range(chs):
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(((PyObject *)__pyx_v_res));
-    __pyx_r = ((PyObject *)__pyx_v_res);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
     /* "utils.pyx":1299
@@ -26981,7 +26982,7 @@ static PyObject *__pyx_f_5utils_calc_bgr(PyArrayObject *__pyx_v_frame, PyArrayOb
 
   /* "utils.pyx":1307
  *                 res[i,j,3] = 0
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])             # <<<<<<<<<<<<<<
  *     for k in range(chs):
  *         clr[k] = colors[ch_show[k]]/255
@@ -27032,7 +27033,7 @@ static PyObject *__pyx_f_5utils_calc_bgr(PyArrayObject *__pyx_v_frame, PyArrayOb
   __pyx_t_12 = 0;
 
   /* "utils.pyx":1308
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  *     for k in range(chs):             # <<<<<<<<<<<<<<
  *         clr[k] = colors[ch_show[k]]/255
@@ -27962,7 +27963,7 @@ static PyObject *__pyx_f_5utils_calc_bgr_w(PyArrayObject *__pyx_v_frame, PyArray
  *                 res[i,j,1] = 0
  *                 res[i,j,2] = 0             # <<<<<<<<<<<<<<
  *                 res[i,j,3] = 0
- *         return res
+ *         return
  */
                                 __pyx_t_9 = __pyx_v_i;
                                 __pyx_t_10 = __pyx_v_j;
@@ -27973,7 +27974,7 @@ static PyObject *__pyx_f_5utils_calc_bgr_w(PyArrayObject *__pyx_v_frame, PyArray
  *                 res[i,j,1] = 0
  *                 res[i,j,2] = 0
  *                 res[i,j,3] = 0             # <<<<<<<<<<<<<<
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  */
                                 __pyx_t_11 = __pyx_v_i;
@@ -28016,13 +28017,12 @@ static PyObject *__pyx_f_5utils_calc_bgr_w(PyArrayObject *__pyx_v_frame, PyArray
     /* "utils.pyx":1348
  *                 res[i,j,2] = 0
  *                 res[i,j,3] = 0
- *         return res             # <<<<<<<<<<<<<<
+ *         return             # <<<<<<<<<<<<<<
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  *     for k in range(chs):
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(((PyObject *)__pyx_v_res));
-    __pyx_r = ((PyObject *)__pyx_v_res);
+    __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
     /* "utils.pyx":1341
@@ -28036,7 +28036,7 @@ static PyObject *__pyx_f_5utils_calc_bgr_w(PyArrayObject *__pyx_v_frame, PyArray
 
   /* "utils.pyx":1349
  *                 res[i,j,3] = 0
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])             # <<<<<<<<<<<<<<
  *     for k in range(chs):
  *         clr[k] = 1 - colors[ch_show[k]]/255
@@ -28087,7 +28087,7 @@ static PyObject *__pyx_f_5utils_calc_bgr_w(PyArrayObject *__pyx_v_frame, PyArray
   __pyx_t_12 = 0;
 
   /* "utils.pyx":1350
- *         return res
+ *         return
  *     cdef cnp.ndarray[DTYPE_t2, ndim=2] clr = np.empty([chs,3])
  *     for k in range(chs):             # <<<<<<<<<<<<<<
  *         clr[k] = 1 - colors[ch_show[k]]/255
