@@ -12,7 +12,9 @@ class build_ext(_build_ext):
     self.include_dirs.append(numpy.get_include())
 
 ext_modules = [Extension('sectionviewer.utils', 
-                         sources=['sectionviewer/utils.c'])]
+                         sources=['sectionviewer/utils.c'],
+                         extra_compile_args=['/openmp'],
+                         extra_link_args=['/openmp'])]
 cmdclass = {'build_ext': build_ext}
 
 def _requires_from_file(filename):
