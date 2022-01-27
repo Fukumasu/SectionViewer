@@ -465,6 +465,16 @@ class Channels:
             for w in self.vnx_frame.grid_slaves():
                 if not "scale" in str(w)[-6:]:
                     w["state"] = tk.ACTIVE
+            if (self.Hub.frame[x[0]] == 0).all():
+                self.Hub.calc_frame()
+                if hasattr(self.Hub.gui, "g_on"):
+                    if self.Hub.gui.g_on.get():
+                        self.Hub.calc_sideview()
+            else:
+                self.Hub.calc_image()
+                if hasattr(self.Hub.gui, "g_on"):
+                    if self.Hub.gui.g_on.get():
+                        self.Hub.calc_sideimage()
         else:
             self.entry_nm["state"] = tk.DISABLED
             for w in self.rgb_frame.grid_slaves():
@@ -476,11 +486,10 @@ class Channels:
             for w in self.vnx_frame.grid_slaves():
                 if not "scale" in str(w)[-6:]:
                     w["state"] = tk.DISABLED
-                
-        self.Hub.calc_image()
-        if hasattr(self.Hub.gui, "g_on"):
-            if self.Hub.gui.g_on.get():
-                self.Hub.calc_sideimage()
+            self.Hub.calc_image()
+            if hasattr(self.Hub.gui, "g_on"):
+                if self.Hub.gui.g_on.get():
+                    self.Hub.calc_sideimage()
     
               
     def ch_name(self, *args):

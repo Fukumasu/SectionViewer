@@ -213,6 +213,8 @@ class Hub:
                                  np.arange(len(self.lut))[self.ch_show]):
                 return False
         
+        self.frame[~self.ch_show] = 0
+        
         nz = -np.cross(ny, nx)
         n = np.array([nz, ny, nx])
         dz *= self.ratio
