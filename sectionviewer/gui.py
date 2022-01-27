@@ -40,10 +40,10 @@ class GUI(ttk.Frame):
         self.xyz = resources[:22,108:174]
         e_image = resources[:14,174:188]
         self.e_image = ImageTk.PhotoImage(Image.fromarray(e_image[:,:,::-1]))
-        ver_image = resources[:20,188:208]
-        self.ver_image = ImageTk.PhotoImage(Image.fromarray(ver_image[:,:,::-1]))
-        hor_image = resources[:20,208:228]
+        hor_image = resources[:20,188:208]
         self.hor_image = ImageTk.PhotoImage(Image.fromarray(hor_image[:,:,::-1]))
+        ver_image = resources[:20,208:228]
+        self.ver_image = ImageTk.PhotoImage(Image.fromarray(ver_image[:,:,::-1]))
         
         self.thickness = tk.StringVar()
         self.a_on = tk.BooleanVar()

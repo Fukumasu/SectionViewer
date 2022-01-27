@@ -88,6 +88,9 @@ class SectionViewer(ttk.Frame):
             if close:
                 self.root.destroy()
         
+def _test():
+    app = SectionViewer([])
+    app.mainloop()
 
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))

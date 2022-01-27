@@ -654,9 +654,10 @@ class STAC(ttk.Frame):
         
         self.iDir = file_name
         
-        c_image = cv2.imread(eDir+"img/c_button.png")
+        resources = cv2.imread(eDir+'img/resources.png')
+        c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
-        e_image = cv2.imread(eDir+"img/expand.png")
+        e_image = resources[:14,174:188]
         self.e_image = ImageTk.PhotoImage(Image.fromarray(e_image[:,:,::-1]))
         
         self.b_on = tk.BooleanVar()
@@ -1207,7 +1208,7 @@ class STAC(ttk.Frame):
                 if opt == 1:
                     sort = np.argsort(Hub.channels.getnames())
                     try:
-                        tif.imwrite(path, Hub.stacked[sort])
+                        tif.imwrite(path, Hub.frame[sort])
                     except Exception as e:
                         messagebox.showerror("Error", "Failed to export TIFF file :\n"\
                                              + traceback.format_exception_only(type(e), e)[0])
@@ -1290,10 +1291,10 @@ class STAC(ttk.Frame):
                     pb.configure(value=i)
                     pb.update()
                     if i < len(self.Hub.stacks):
-                        self.Hub.stacked = self.Hub.stacks[i]
+                        self.Hub.frame = self.Hub.stacks[i]
                     else:
-                        self.Hub.stacked = self.Hub.stacks[i-len(self.Hub.stacks)+1]
-                        self.Hub.stacked = self.Hub.stacked[:,::-1].copy() if self.trans==2 else self.Hub.stacked[:,:,::-1].copy()
+                        self.Hub.frame = self.Hub.stacks[i-len(self.Hub.stacks)+1]
+                        self.Hub.frame = self.Hub.frame[:,::-1].copy() if self.trans==2 else self.Hub.frame[:,:,::-1].copy()
                     self.Hub.calc_image()
                     if self.cancel:
                         break
@@ -1426,7 +1427,7 @@ class Hub_stack:
             gui.to = len(self.stacks) - 1 if gui.trans==0 else len(self.stacks)*2 - 3
         
         self.ch_show = np.ones(len(self.channels), np.bool)
-        self.stacked = self.stacks[0]
+        self.frame = self.stacks[0]
         
         self.history = [[0,empty()]]
         self.hidx = -1
@@ -1437,10 +1438,10 @@ class Hub_stack:
         self.load_success = True
         
     
-    def calc_image(self):
+    def calc_image(self, x=None):
         if not hasattr(self.gui, "image"):
-            self.gui.image = np.empty([*self.stacked.shape[1:], 4], np.uint8)
-        ut.calc_bgr(self.stacked, self.lut, self.colors,
+            self.gui.image = np.empty([*self.frame.shape[1:], 4], np.uint8)
+        ut.calc_bgr(self.frame, self.lut, self.colors,
                      np.arange(len(self.lut))[self.ch_show], self.gui.image)
         if hasattr(self.gui, "stack_canvas"):
             x, y, iw, ih, w, h = self.put_bar()
@@ -1497,10 +1498,10 @@ class Hub_stack:
     def mlt_update(self, v):
         i = self.gui.mlt_frm.get()
         if i < len(self.stacks):
-            self.stacked = self.stacks[i]
+            self.frame = self.stacks[i]
         else:
-            self.stacked = self.stacks[i-len(self.stacks)+1]
-            self.stacked = self.stacked[:,::-1].copy() if self.gui.trans==2 else self.stacked[:,:,::-1].copy()
+            self.frame = self.stacks[i-len(self.stacks)+1]
+            self.frame = self.frame[:,::-1].copy() if self.gui.trans==2 else self.frame[:,:,::-1].copy()
         self.calc_image()
         
         
