@@ -20,32 +20,32 @@ class Geometry:
         self.Hub = Hub
         geo = Hub.geometry
         
-        if not "xy" in geo: geo["xy"] = None
-        if not "z" in geo: geo["z"] = None
-        if geo["xy"] == None and "xy_oib" in geo: geo["xy"] = geo["xy_oib"]
-        if geo["z"] == None and "z_oib" in geo: geo["z"] = geo["z_oib"]
+        if not "res_xy" in geo: geo["res_xy"] = None
+        if not "res_z" in geo: geo["res_z"] = None
+        if geo["res_xy"] == None and "xy_oib" in geo: geo["res_xy"] = geo["xy_oib"]
+        if geo["res_z"] == None and "z_oib" in geo: geo["res_z"] = geo["z_oib"]
         
-        if None in (geo["xy"], geo["z"]):
-            if geo["xy"] != None:
-                geo["z"] = geo["xy"]
+        if None in (geo["res_xy"], geo["res_z"]):
+            if geo["res_xy"] != None:
+                geo["res_z"] = geo["res_xy"]
             else:
-                geo["xy"] = geo["z"]
-        Hub.ratio = 1. if geo["xy"] == None else geo["z"]/geo["xy"]
+                geo["res_xy"] = geo["res_z"]
+        Hub.ratio = 1. if geo["res_xy"] == None else geo["res_z"]/geo["res_xy"]
         if hasattr(Hub, "box"):
             dc, dz, dy, dx = Hub.box.shape
             Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
                 
-        if not "image size" in geo: 
-            geo["image size"] = (dx,dy)
-        if not "expansion" in geo: geo["expansion"] = 1
-        elif geo["expansion"] == 0: geo["expansion"] = 1
-        if not "bar length" in geo: geo["bar length"] = None
+        if not "im_size" in geo: 
+            geo["im_size"] = (dx,dy)
+        if not "exp_rate" in geo: geo["exp_rate"] = 1
+        elif geo["exp_rate"] == 0: geo["exp_rate"] = 1
+        if not "bar_len" in geo: geo["bar_len"] = None
         
-        if geo["xy"] != None:
-            if geo["bar length"] == None:
-                a = geo["xy"]/geo["expansion"]
-                geo["bar length"] = round(80*a, -int(np.log10(80*a)))
-            Hub.lpx = int(geo["bar length"]/geo["xy"]*geo["expansion"])
+        if geo["res_xy"] != None:
+            if geo["bar_len"] == None:
+                a = geo["res_xy"]/geo["exp_rate"]
+                geo["bar_len"] = round(80*a, -int(np.log10(80*a)))
+            Hub.lpx = int(geo["bar_len"]/geo["res_xy"]*geo["exp_rate"])
         else: Hub.lpx = 0
         
         self.geo = geo
@@ -103,8 +103,8 @@ class Geometry:
         
         self.d_widgets = {}
         
-        self.res_xy = tk.StringVar(value=str(self.geo["xy"]))
-        self.res_z = tk.StringVar(value=str(self.geo["z"]))
+        self.res_xy = tk.StringVar(value=str(self.geo["res_xy"]))
+        self.res_z = tk.StringVar(value=str(self.geo["res_z"]))
         self.d_widgets["resol_xy"] = ttk.Entry(resol_entries, textvariable=self.res_xy, 
                                                width=8, justify=tk.RIGHT)
         self.d_widgets["resol_xy"].grid(row=0, column=0, sticky=tk.W, pady=2)
@@ -118,26 +118,26 @@ class Geometry:
             self.res_xy.set(str(self.geo["xy_oib"]))
             self.res_z.set(str(self.geo["z_oib"]))
         ttk.Label(resol_title, text="Resolution").grid(row=0, column=0, sticky=tk.NW)
-        oib_button = ttk.Button(resol_title, text=" Use data value ", command=oib_res)
+        oib_button = ttk.Button(resol_title, text=" Use data values ", command=oib_res)
         oib_button.grid(row=1, column=0, sticky=tk.NW)
         if not "xy_oib" in self.geo:
             oib_button["state"] = tk.DISABLED
         
-        self.exp_rate = tk.StringVar(value=str(self.geo["expansion"]))
+        self.exp_rate = tk.StringVar(value=str(self.geo["exp_rate"]))
         self.d_widgets["exp"] = ttk.Entry(exp_frame, textvariable=self.exp_rate,
                                           width=8)
         self.d_widgets["exp"].grid(row=0, column=0, sticky=tk.W)
             
         ttk.Label(im_size_set, text="width = ").grid(row=0, column=0, sticky=tk.E)
         self.size_x = tk.StringVar()
-        self.size_x.set(str(self.geo["image size"][0]))
+        self.size_x.set(str(self.geo["im_size"][0]))
         self.d_widgets["size_x"] = ttk.Entry(im_size_set, textvariable=self.size_x,
                                              width=5, justify=tk.RIGHT)
         self.d_widgets["size_x"].grid(row=0, column=1)
         ttk.Label(im_size_set, text=" px").grid(row=0, column=2)
         ttk.Label(im_size_set, text="height = ").grid(row=1, column=0, sticky=tk.E)
         self.size_y = tk.StringVar()
-        self.size_y.set(str(self.geo["image size"][1]))
+        self.size_y.set(str(self.geo["im_size"][1]))
         self.d_widgets["size_y"] = ttk.Entry(im_size_set, textvariable=self.size_y,
                                              width=5, justify=tk.RIGHT)
         self.d_widgets["size_y"].grid(row=1, column=1)
@@ -296,19 +296,19 @@ class Geometry:
             h = len(self.Hub.history)
             try:
                 new += [float(self.res_xy.get())]
-                key += ["xy"]
+                key += ["res_xy"]
             except: pass
             try:
                 new += [float(self.res_z.get())]
-                key += ["z"]
+                key += ["res_z"]
             except: pass
             try: 
                 new += [float(self.exp_rate.get())]
-                key += ["expansion"]
+                key += ["exp_rate"]
             except: pass
             try:
                 new += [(int(self.size_x.get()), int(self.size_y.get()))]
-                key += ["image size"]
+                key += ["im_size"]
             except: pass
             self.new(key, new)
             try:
@@ -450,7 +450,7 @@ class Geometry:
         label1 = ttk.Label(frame1, text="Length : ")
         label1.pack(side=tk.LEFT)
         number = tk.StringVar()
-        number.set(str(self.geo["bar length"]))
+        number.set(str(self.geo["bar_len"]))
         entry = ttk.Entry(frame1, textvariable=number, width=6, justify=tk.RIGHT)
         entry.pack(side=tk.LEFT)
         label2 = ttk.Label(frame1, text=" μm")
@@ -466,8 +466,8 @@ class Geometry:
         def ok():
             try:
                 bar_len = float(number.get())
-                if self.geo["bar length"] != bar_len:
-                    self.new(["bar length"], [bar_len])
+                if self.geo["bar_len"] != bar_len:
+                    self.new(["bar_len"], [bar_len])
             except:
                 pass
             self.bar_win.grab_release()
@@ -511,23 +511,23 @@ class Geometry:
         
         for k, n in zip(key, new):
             self.geo[k] = n
-        if "xy" in key and not "z" in key and self.geo["z"] == None:
-            new += [self.geo["xy"]]
-            key += ["z"]
+        if "res_xy" in key and not "res_z" in key and self.geo["res_z"] == None:
+            new += [self.geo["res_xy"]]
+            key += ["res_z"]
             old += [None]
-            self.geo["z"] = self.geo["xy"]
-        if not "xy" in key and "z" in key and self.geo["xy"] == None:
-            new += [self.geo["z"]]
-            key += ["xy"]
+            self.geo["res_z"] = self.geo["res_xy"]
+        if not "res_xy" in key and "res_z" in key and self.geo["res_xy"] == None:
+            new += [self.geo["res_z"]]
+            key += ["res_xy"]
             old += [None]
-            self.geo["xy"] = self.geo["z"]
-        if ("expansion" in key or "xy" in key) \
-            and not "bar length" in key and self.geo["xy"] != None:
-            xy_rs, exp = self.geo["xy"], self.geo["expansion"]
+            self.geo["res_xy"] = self.geo["res_z"]
+        if ("exp_rate" in key or "res_xy" in key) \
+            and not "bar_len" in key and self.geo["res_xy"] != None:
+            xy_rs, exp = self.geo["res_xy"], self.geo["exp_rate"]
             new += [round(80*xy_rs/exp, -math.floor(np.log10(80*xy_rs/exp)))]
-            key += ["bar length"]
-            old += [self.geo["bar length"]]
-            self.geo["bar length"] = new[-1]
+            key += ["bar_len"]
+            old += [self.geo["bar_len"]]
+            self.geo["bar_len"] = new[-1]
             
         if old == new:
             return None
@@ -536,7 +536,7 @@ class Geometry:
         if idx != -1:
             hist[idx:] = hist[idx:idx+1]
         
-        if "bar length" in key and None in old:
+        if "bar_len" in key and None in old:
             Hub.gui.bar_button.configure(state=tk.NORMAL)
             
         hist += [[self, [key, old, new]]]
@@ -551,12 +551,12 @@ class Geometry:
         gui.edit_menu.entryconfig("Redo", state="disable")
         gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
-        if key == ["bar length"]:
-            self.Hub.lpx = int(self.geo["bar length"]/self.geo["xy"]*self.geo["expansion"])
+        if key == ["bar_len"]:
+            self.Hub.lpx = int(self.geo["bar_len"]/self.geo["res_xy"]*self.geo["exp_rate"])
             self.Hub.put_points()
         else:
-            if "image size" in key:
-                num = key.index("image size")
+            if "im_size" in key:
+                num = key.index("im_size")
                 n1, n2 = new[num]
                 o1, o2 = old[num]
                 n1, n2 = n1*Hub.zoom, n2*Hub.zoom
@@ -572,7 +572,7 @@ class Geometry:
                     self.geo[k] = o
                 del hist[-1]
                 Hub.hidx_saved += 1
-                if "bar length" in key and None in old:
+                if "bar_len" in key and None in old:
                     Hub.gui.bar_button.configure(state=tk.DISABLED)
                 if len(hist) == 1:
                     gui.edit_menu.entryconfig("Undo", state="disable")
@@ -586,24 +586,24 @@ class Geometry:
                 else:
                     self.Hub.calc_sideview()
         
-        self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar length"]))
+        self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar_len"]))
         
             
     def undo(self, arg):
         for k, n in zip(arg[0], arg[1]):
             self.geo[k] = n
-        if "bar length" in arg[0]:
-            self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar length"]))
-            if self.geo["bar length"] == None:
+        if "bar_len" in arg[0]:
+            self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar_len"]))
+            if self.geo["bar_len"] == None:
                 self.Hub.gui.bar_button.configure(state=tk.DISABLED)
-        if arg[0] == ["bar length"]:
-            self.Hub.lpx = int(self.geo["bar length"]/self.geo["xy"]*self.geo["expansion"])
+        if arg[0] == ["bar_len"]:
+            self.Hub.lpx = int(self.geo["bar_len"]/self.geo["res_xy"]*self.geo["exp_rate"])
             self.Hub.put_points()
         else:
-            if "image size" in arg[0]:
+            if "im_size" in arg[0]:
                 Hub = self.Hub
                 gui = Hub.gui
-                num = arg[0].index("image size")
+                num = arg[0].index("im_size")
                 n1, n2 = arg[1][num]
                 o1, o2 = arg[2][num]
                 n1, n2 = n1*Hub.zoom, n2*Hub.zoom
@@ -621,20 +621,20 @@ class Geometry:
                     self.Hub.calc_sideview()
         
     def redo(self, arg):
-        if "bar length" in arg[0] and self.geo["bar length"] == None:
+        if "bar_len" in arg[0] and self.geo["bar_len"] == None:
             self.Hub.gui.bar_button.configure(state=tk.NORMAL)
         for k, n in zip(arg[0], arg[2]):
             self.geo[k] = n
-        if "bar length" in arg[0]:
-            self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar length"]))
-        if arg[0] == ["bar length"]:
-            self.Hub.lpx = int(self.geo["bar length"]/self.geo["xy"]*self.geo["expansion"])
+        if "bar_len" in arg[0]:
+            self.Hub.gui.bar_text.set("Scale bar: {0} μm".format(self.geo["bar_len"]))
+        if arg[0] == ["bar_len"]:
+            self.Hub.lpx = int(self.geo["bar_len"]/self.geo["res_xy"]*self.geo["exp_rate"])
             self.Hub.put_points()
         else:
-            if "image size" in arg[0]:
+            if "im_size" in arg[0]:
                 Hub = self.Hub
                 gui = Hub.gui
-                num = arg[0].index("image size")
+                num = arg[0].index("im_size")
                 n1, n2 = arg[2][num]
                 o1, o2 = arg[1][num]
                 n1, n2 = n1*Hub.zoom, n2*Hub.zoom
@@ -654,28 +654,31 @@ class Geometry:
     def reload(self, geo):
         Hub = self.Hub
         
-        if not "xy" in geo: geo["xy"] = None
-        if not "z" in geo: geo["z"] = None
-        if None in (geo["xy"], geo["z"]):
-            if geo["xy"] != None:
-                geo["z"] = geo["xy"]
+        if not "res_xy" in geo: geo["res_xy"] = None
+        if not "res_z" in geo: geo["res_z"] = None
+        if geo["res_xy"] == None and "xy_oib" in geo: geo["res_xy"] = geo["xy_oib"]
+        if geo["res_z"] == None and "z_oib" in geo: geo["res_z"] = geo["z_oib"]
+        
+        if None in (geo["res_xy"], geo["res_z"]):
+            if geo["res_xy"] != None:
+                geo["res_z"] = geo["res_xy"]
             else:
-                geo["xy"] = geo["z"]
-        Hub.ratio = 1. if None in (geo["xy"], geo["z"]) else geo["z"]/geo["xy"]
+                geo["res_xy"] = geo["res_z"]
+        Hub.ratio = 1. if None in (geo["res_xy"], geo["res_z"]) else geo["res_z"]/geo["res_xy"]
         if hasattr(Hub, "box"):
             dc, dz, dy, dx = Hub.box.shape
             Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
                 
-        if not "image size" in geo: geo["image size"] = (dx,dy)
-        if not "expansion" in geo: geo["expansion"] = 1
-        elif geo["expansion"] == 0: geo["expansion"] = 1
-        if not "bar length" in geo: geo["bar length"] = None
+        if not "im_size" in geo: geo["im_size"] = (dx,dy)
+        if not "exp_rate" in geo: geo["exp_rate"] = 1
+        elif geo["exp_rate"] == 0: geo["exp_rate"] = 1
+        if not "bar_len" in geo: geo["bar_len"] = None
         
-        if geo["xy"] != None:
-            if geo["bar length"] == None:
-                a = geo["xy"]/geo["expansion"]
-                geo["bar length"] = round(80*a, -int(np.log10(80*a)))
-            Hub.lpx = int(geo["bar length"]/geo["xy"]*geo["expansion"])
+        if geo["res_xy"] != None:
+            if geo["bar_len"] == None:
+                a = geo["res_xy"]/geo["exp_rate"]
+                geo["bar_len"] = round(80*a, -int(np.log10(80*a)))
+            Hub.lpx = int(geo["bar_len"]/geo["res_xy"]*geo["exp_rate"])
         else: Hub.lpx = 0
         
         if self.geo == geo:

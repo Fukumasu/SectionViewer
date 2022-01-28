@@ -56,7 +56,7 @@ class Position:
             self.set_pos(key, ang)
         
     def clicked(self, click):
-        la, lb = self.Hub.geometry["image size"]
+        la, lb = self.Hub.geometry["im_size"]
         v = click - np.array([la//2, lb//2])
         v = v*np.array([1, la/lb])
         if np.linalg.norm(v) > la/6:

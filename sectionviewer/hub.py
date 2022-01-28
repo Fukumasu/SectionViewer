@@ -157,22 +157,22 @@ class Hub:
     
     def calc_geometry(self):
         geo = self.geometry
-        xy_rs, z_rs = geo["xy"], geo["z"]
+        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
             ratio = z_rs / xy_rs
         self.ratio = ratio
         
-        self.frame = np.empty([len(self.box), *geo["image size"][::-1]], np.uint16)
-        self.sec_raw = np.empty([*geo["image size"][::-1], 4], np.uint8)
+        self.frame = np.empty([len(self.box), *geo["im_size"][::-1]], np.uint16)
+        self.sec_raw = np.empty([*geo["im_size"][::-1], 4], np.uint8)
         self.s_frame = np.empty([len(self.box), 569, 400], np.uint16)
         self.s_frame[:,284] = 0
         self.s_frame1 = np.empty([len(self.box), 284, 400], np.uint16)
         self.s_frame2 = np.empty([len(self.box), 284, 400], np.uint16)
         
-        exp_rate = geo["expansion"]
-        bar_len = geo["bar length"]
+        exp_rate = geo["exp_rate"]
+        bar_len = geo["bar_len"]
         
         lpx = int(bar_len/xy_rs*exp_rate) if xy_rs != None else 0
         self.lpx = lpx
@@ -191,8 +191,8 @@ class Hub:
         pos[:,0] /= self.ratio
         nz[0] /= self.ratio
         pos[0] += np.array([dz, dy, dx])//2
-        pos[1:] /= self.geometry["expansion"]
-        nz /= self.geometry["expansion"]
+        pos[1:] /= self.geometry["exp_rate"]
+        nz /= self.geometry["exp_rate"]
         
         if type(x) == type(None):
             ch_show = np.arange(len(self.lut))[self.ch_show]
@@ -277,8 +277,8 @@ class Hub:
             colors = colors[show]
             names = names[show]
             points = points[show]
-            points[:,1:3] *= self.geometry["expansion"]
-            la, lb = self.geometry["image size"]
+            points[:,1:3] *= self.geometry["exp_rate"]
+            la, lb = self.geometry["im_size"]
             points[:,1:3] += np.array([lb//2, la//2])
             show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=np.bool)
             colors = colors[show]
@@ -385,9 +385,9 @@ class Hub:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = self.geometry["expansion"]
+        exp_rate = self.geometry["exp_rate"]
         
-        im_size = np.array(self.geometry["image size"])
+        im_size = np.array(self.geometry["im_size"])
         
         edges = self.g_edges
         vivid = self.g_vivid
@@ -484,7 +484,7 @@ class Hub:
         
         if rect:
             if hasattr(self, "zoom") and hasattr(self.gui, "sec_cf"):
-                iw, ih = self.geometry["image size"]
+                iw, ih = self.geometry["im_size"]
                 iw, ih = iw*self.zoom, ih*self.zoom
                 w, h = self.gui.sec_cf.winfo_width()-4, self.gui.sec_cf.winfo_height()-4
                 x0, y0 = self.gui.upperleft
@@ -575,7 +575,7 @@ class Hub:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = self.geometry["expansion"]
+        exp_rate = self.geometry["exp_rate"]
         
         dc, dz, dy, dx = self.box.shape
         dz *= self.ratio
@@ -629,7 +629,7 @@ class Hub:
             nz = -np.cross(ny, nx)
             
             la, lb = 400, 284
-            exp_rate = self.geometry["expansion"]/2
+            exp_rate = self.geometry["exp_rate"]/2
             th_show = 10
             
             points -= np.array([dz//2,dy//2,dx//2])
@@ -928,7 +928,7 @@ class Reload:
             snp = []
         
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["image size"]
+        iw0, ih0 = self.Hub.geometry["im_size"]
         
         typ, old, new = [], [], []
         try:
@@ -959,7 +959,7 @@ class Reload:
             gui.edit_menu.entryconfig("Redo", state="disable")
             gui.master.title(gui.title)
             
-            iw1, ih1 = self.Hub.geometry["image size"]
+            iw1, ih1 = self.Hub.geometry["im_size"]
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
@@ -978,10 +978,10 @@ class Reload:
         
     def reload(self, typ, new):
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["image size"]
+        iw0, ih0 = self.Hub.geometry["im_size"]
         for t, n in zip(typ, new):
             t.val = n
-        iw1, ih1 = self.Hub.geometry["image size"]
+        iw1, ih1 = self.Hub.geometry["im_size"]
         self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
         if not self.Hub.calc_geometry():
             self.Hub.position.pos = [[0.,0.,0.], [0.,1.,0.], [0.,0.,1.]]

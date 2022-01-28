@@ -503,8 +503,8 @@ class Points:
         hst_org = Hub.history.copy()
         hdx_org = Hub.hidx, Hub.hidx_saved
         pos_org = Hub.position.asarray().tolist()
-        exp_org = Hub.geometry["expansion"]
-        ims_org = Hub.geometry["image size"]
+        exp_org = Hub.geometry["exp_rate"]
+        ims_org = Hub.geometry["im_size"]
         pts_org = self.pts.copy()
         
         Hub.history = [[0,empty()]]
@@ -522,13 +522,13 @@ class Points:
             Hub.hidx, Hub.hidx_saved = hdx_org
             self.pts = pts_org
             
-            a, b = Hub.geometry["image size"]
+            a, b = Hub.geometry["im_size"]
             click = np.array([a,b])//2
             self.clicked(click, num=int(i))
             
             Hub.position.pos = pos_org
-            Hub.geometry.geo["expansion"] = exp_org
-            Hub.geometry.geo["image size"] = ims_org
+            Hub.geometry.geo["exp_rate"] = exp_org
+            Hub.geometry.geo["im_size"] = ims_org
             Hub.calc_geometry()
             if gui.g_on.get():
                 if gui.guide_mode == "guide":
@@ -546,8 +546,8 @@ class Points:
             Hub.history = hst_org
             Hub.hidx, Hub.hidx_saved = hdx_org
             Hub.position.pos = pos_org
-            Hub.geometry.geo["expansion"] = exp_org
-            Hub.geometry.geo["image size"] = ims_org
+            Hub.geometry.geo["exp_rate"] = exp_org
+            Hub.geometry.geo["im_size"] = ims_org
             self.pts = pts_org
             Hub.calc_geometry()
             if gui.g_on.get():
@@ -576,12 +576,12 @@ class Points:
                 Hub.position.new(pos.tolist(), 0)
                 gui.angle = 0
             elif gui.expand != 1:
-                Hub.geometry.new(["expansion"], [gui.expand*Hub.geometry["expansion"]])
+                Hub.geometry.new(["exp_rate"], [gui.expand*Hub.geometry["exp_rate"]])
                 gui.expand = 1.
             elif (gui.trim != 0).any():
-                im_size = np.array(list(Hub.geometry["image size"]))
+                im_size = np.array(list(Hub.geometry["im_size"]))
                 im_size += gui.trim
-                Hub.geometry.new(["image size"], [tuple(im_size)])
+                Hub.geometry.new(["im_size"], [tuple(im_size)])
                 gui.trim[:] = 0
             elif time.time() - gui.click_time < 0.5:
                 if gui.mode == 1:
@@ -595,8 +595,8 @@ class Points:
                         return
                     self.clicked(gui.click, num=int(i))
                     Hub.position.pos = pos_org
-                    Hub.geometry.geo["expansion"] = exp_org
-                    Hub.geometry.geo["image size"] = ims_org
+                    Hub.geometry.geo["exp_rate"] = exp_org
+                    Hub.geometry.geo["im_size"] = ims_org
                     Hub.calc_geometry()
                     if gui.g_on.get():
                         if gui.guide_mode == "guide":
@@ -905,11 +905,11 @@ class Points:
     def clicked(self, click, num=None):
         Hub = self.Hub
         
-        la, lb = Hub.geometry["image size"]
+        la, lb = Hub.geometry["im_size"]
         dc, dz, dy, dx = Hub.box.shape
         op, ny, nx = Hub.position.asarray()
         v = click - np.array([la//2, lb//2])
-        coor = op + (ny*v[1] + nx*v[0])/Hub.geometry["expansion"]
+        coor = op + (ny*v[1] + nx*v[0])/Hub.geometry["exp_rate"]
         coor[0] /= Hub.ratio
         coor += np.array([dz//2, dy//2, dx//2])
         if (coor < -np.array([dz//2, dy//2, dx//2])).any() or \

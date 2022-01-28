@@ -424,7 +424,7 @@ class Stack:
         pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz//2, dy//2, dx//2])
         nz[0] /= Hub.ratio
-        pos[1:] /= Hub.geometry["expansion"]
+        pos[1:] /= Hub.geometry["exp_rate"]
         
         box = Hub.box
         
@@ -478,7 +478,7 @@ class Stack:
         pos = np.float64(pos)
         pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz, dy, dx])//2
-        pos[1:] /= Hub.geometry["expansion"]
+        pos[1:] /= Hub.geometry["exp_rate"]
         
         frame = np.empty(Hub.frame.shape, dtype=np.uint16)
         ut.calc_section(box, pos, frame, np.array(frame[0].shape)//2,
@@ -523,14 +523,14 @@ class Stack:
         pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz//2, dy//2, dx//2])
         nz[0] /= Hub.ratio
-        pos[1:] /= Hub.geometry["expansion"]
+        pos[1:] /= Hub.geometry["exp_rate"]
         
         box = Hub.box
         
-        if Hub.geometry["expansion"] < 1:
-            nz /= Hub.geometry["expansion"]
-            start = int(start*Hub.geometry["expansion"])
-            stop = int(stop*Hub.geometry["expansion"])
+        if Hub.geometry["exp_rate"] < 1:
+            nz /= Hub.geometry["exp_rate"]
+            start = int(start*Hub.geometry["exp_rate"])
+            stop = int(stop*Hub.geometry["exp_rate"])
         
         stacked = np.empty(Hub.frame.shape, dtype=np.uint16)
         ut.stack_section(box, pos, nz, start, stop, stacked, np.array(stacked[0].shape)//2,
@@ -548,22 +548,22 @@ class Stack:
         
         dc, dz, dy, dx = Hub.box.shape
         
-        la0, lb0 = Hub.geometry["image size"]
+        la0, lb0 = Hub.geometry["im_size"]
         
-        if Hub.geometry["expansion"] < 1:
+        if Hub.geometry["exp_rate"] < 1:
             if self.trans.get():
-                pos[1] *= Hub.geometry["expansion"]
-                lb0 = int(lb0/Hub.geometry["expansion"])
+                pos[1] *= Hub.geometry["exp_rate"]
+                lb0 = int(lb0/Hub.geometry["exp_rate"])
             else:
-                pos[2] *= Hub.geometry["expansion"]
-                la0 = int(la0/Hub.geometry["expansion"])
+                pos[2] *= Hub.geometry["exp_rate"]
+                la0 = int(la0/Hub.geometry["exp_rate"])
         
         pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz, dy, dx])//2
         op, ny, nx = pos
         nz[0] /= Hub.ratio
         n = np.array([nz, ny, nx])
-        pos[1:] /= Hub.geometry["expansion"]
+        pos[1:] /= Hub.geometry["exp_rate"]
             
         peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],[dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
         peaks -= op
@@ -596,7 +596,7 @@ class Stack:
         box = self.box_trim
         dc, dz, dy, dx = box.shape
         
-        imsize = Hub.geometry["image size"]
+        imsize = Hub.geometry["im_size"]
         if not self.trans.get():
             imsize = imsize[::-1]
         
@@ -605,11 +605,11 @@ class Stack:
         pos[0] += np.array([dz, dy, dx])//2
         stacked = np.empty([dc, *imsize], dtype=np.uint16)
         
-        if Hub.geometry["expansion"] < 1:
-            pos[2] /= Hub.geometry["expansion"]
-            nz /= Hub.geometry["expansion"]
-            start = int(start*Hub.geometry["expansion"])
-            stop = int(stop*Hub.geometry["expansion"])
+        if Hub.geometry["exp_rate"] < 1:
+            pos[2] /= Hub.geometry["exp_rate"]
+            nz /= Hub.geometry["exp_rate"]
+            start = int(start*Hub.geometry["exp_rate"])
+            stop = int(stop*Hub.geometry["exp_rate"])
         ut.stack_section2(box, pos, nz, start, stop, stacked)
         
         im = np.empty([*stacked.shape[1:], 4], np.uint8)
@@ -791,7 +791,7 @@ class STAC(ttk.Frame):
         self.bar_frame = ttk.Frame(self.bottom)
         self.bar_frame.pack(side=tk.RIGHT)
         self.bar_text = tk.StringVar()
-        self.bar_text.set("Scale bar: {0} μm".format(self.Hub.geometry["bar length"]))
+        self.bar_text.set("Scale bar: {0} μm".format(self.Hub.geometry["bar_len"]))
         self.bar_button = ttk.Button(self.bar_frame, textvariable=self.bar_text, 
                                      command=self.Hub.geometry.set_bar_length)
         self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=10, pady=10)

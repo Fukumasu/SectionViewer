@@ -59,19 +59,19 @@ class Data:
 class Geometry(dict):
     def __init__(self, hub, val):
         _val = {}
-        if not 'xy' in val:
-            val['xy'] = None
-        if not 'z' in val:
-            val['z'] = None
+        if not 'res_xy' in val:
+            val['res_xy'] = None
+        if not 'res_z' in val:
+            val['res_z'] = None
         if 'xy_oib' in val:
             _val['xy_oib'] = val['xy_oib']
         if 'z_oib' in val:
             _val['z_oib'] = val['z_oib']
-        _val['res_xy'] = val['xy'] if val['xy'] == None else float(val['xy'])
-        _val['res_z'] = val['z'] if val['z'] == None else float(val['z'])
-        _val['im_size'] = (int(val['image size'][0]), int(val['image size'][1]))
-        _val['exp_rate'] = float(val['expansion'])
-        _val['bar_len'] = val['bar length'] if val['bar length'] == None else float(val['bar length'])
+        _val['res_xy'] = val['res_xy'] if val['res_xy'] == None else float(val['res_xy'])
+        _val['res_z'] = val['res_z'] if val['res_z'] == None else float(val['res_z'])
+        _val['im_size'] = (int(val['im_size'][0]), int(val['im_size'][1]))
+        _val['exp_rate'] = float(val['exp_rate'])
+        _val['bar_len'] = val['bar_len'] if val['bar_len'] == None else float(val['bar_len'])
         _val['shape'] = (int(val['shape'][0]), int(val['shape'][1]), 
                          int(val['shape'][2]), int(val['shape'][3]))
         try:

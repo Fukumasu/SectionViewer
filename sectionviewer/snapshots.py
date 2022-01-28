@@ -497,7 +497,7 @@ class Snapshots:
             b += [Hub.points]
         
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["image size"]
+        iw0, ih0 = self.Hub.geometry["im_size"]
         try:
             for v, m in zip(a, b):
                 old += [m.val]
@@ -526,7 +526,7 @@ class Snapshots:
             gui.edit_menu.entryconfig("Redo", state="disable")
             gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
             
-            iw1, ih1 = self.Hub.geometry["image size"]
+            iw1, ih1 = self.Hub.geometry["im_size"]
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
@@ -550,10 +550,10 @@ class Snapshots:
     
     def jump(self, typ, new):
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["image size"]
+        iw0, ih0 = self.Hub.geometry["im_size"]
         for t, n in zip(typ, new):
             t.val = n
-        iw1, ih1 = self.Hub.geometry["image size"]
+        iw1, ih1 = self.Hub.geometry["im_size"]
         self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
         self.Hub.calc_geometry()
         if self.Hub.gui.g_on.get():
@@ -570,16 +570,16 @@ class Snapshots:
         Hub = self.Hub
         
         geo = secv["geometry"]
-        xy_rs, z_rs = geo["xy"], geo["z"]
+        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
             ratio = z_rs / xy_rs
         
-        frame = np.empty([len(Hub.box), *geo["image size"][::-1]], np.uint16)
+        frame = np.empty([len(Hub.box), *geo["im_size"][::-1]], np.uint16)
         
-        exp_rate = geo["expansion"]
-        bar_len = geo["bar length"]
+        exp_rate = geo["exp_rate"]
+        bar_len = geo["bar_len"]
         
         lpx = int(bar_len/xy_rs*exp_rate) if xy_rs != None else 0
         
@@ -718,7 +718,7 @@ class Snapshots:
         Hub = self.Hub
         
         geo = secv["geometry"]
-        xy_rs, z_rs = geo["xy"], geo["z"]
+        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
@@ -736,8 +736,8 @@ class Snapshots:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = geo["expansion"]
-        im_size = np.array(geo["image size"])
+        exp_rate = geo["exp_rate"]
+        im_size = np.array(geo["im_size"])
         
         edges = Hub.g_edges
         vivid = Hub.g_vivid

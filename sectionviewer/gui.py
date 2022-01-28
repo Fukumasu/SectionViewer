@@ -279,10 +279,10 @@ class GUI(ttk.Frame):
         self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
         
         self.bar_text = tk.StringVar()
-        self.bar_text.set("Scale bar: {0} μm".format(Hub.geometry["bar length"]))
+        self.bar_text.set("Scale bar: {0} μm".format(Hub.geometry["bar_len"]))
         self.bar_button = ttk.Button(self.bottom, textvariable=self.bar_text, 
                                      command=Hub.geometry.set_bar_length)
-        if Hub.geometry["bar length"] == None:
+        if Hub.geometry["bar_len"] == None:
             self.bar_button.configure(state=tk.DISABLED)
         self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         
@@ -510,7 +510,7 @@ class GUI(ttk.Frame):
         vy0, vy1 = self.bary.get()
         
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["image size"]
+        iw, ih = self.Hub.geometry["im_size"]
         iw0, ih0 = int(iw*self.Hub.zoom), int(ih*self.Hub.zoom)
         iw, ih = int(iw*zoom), int(ih*zoom)
         x, y = w//2 - iw//2, h//2 - ih//2
@@ -599,7 +599,7 @@ class GUI(ttk.Frame):
     
     def sec_configure(self, event):
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["image size"]
+        iw, ih = self.Hub.geometry["im_size"]
         if not hasattr(self.Hub, "zoom"):
             zoom = min((w-10)/iw, (h-10)/ih)
             self.zoom.set(str(int(zoom*100)))
@@ -627,7 +627,7 @@ class GUI(ttk.Frame):
     
     def fit_frame(self):
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["image size"]
+        iw, ih = self.Hub.geometry["im_size"]
         zoom = min((w-10)/iw, (h-10)/ih)
         iw1, ih1 = int(iw*zoom), int(ih*zoom)
         ul = (int(iw1//2-w//2), int(ih1//2-h//2))
@@ -660,7 +660,7 @@ class GUI(ttk.Frame):
         vy, vx = self.bary.get(), self.barx.get()
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
         zoom = self.Hub.zoom
-        iw, ih = self.Hub.geometry["image size"]
+        iw, ih = self.Hub.geometry["im_size"]
         iw, ih = int(iw*zoom), int(ih*zoom)
         u1 = int(vx[0]*(2*w+iw-100) - w + 50)
         u2 = int(vy[0]*(2*h+ih-100) - h + 50)
@@ -677,7 +677,7 @@ class GUI(ttk.Frame):
         x, y = self.sec_canvas.canvasx(event.x), self.sec_canvas.canvasy(event.y)
         x, y = x - self.imx, y - self.imy
         zoom = self.Hub.zoom
-        a, b = self.Hub.geometry["image size"]
+        a, b = self.Hub.geometry["im_size"]
         a, b = int(a*zoom), int(b*zoom)
         if x > a or y > b or x < 0 or y < 0:
             return None
@@ -696,7 +696,7 @@ class GUI(ttk.Frame):
         self.sec_canvas.bind("<Motion>", self.track_sec)
         if (self.shift != 0).any():
             pos = self.Hub.position.asarray()
-            pos[0] -= (self.shift[0]*pos[2] + self.shift[1]*pos[1])/self.Hub.geometry["expansion"]
+            pos[0] -= (self.shift[0]*pos[2] + self.shift[1]*pos[1])/self.Hub.geometry["exp_rate"]
             self.Hub.position.new(pos, 0)
             self.shift = np.array([0.,0.])
         elif  self.angle != 0:
@@ -707,12 +707,12 @@ class GUI(ttk.Frame):
             self.Hub.position.new(pos, 0)
             self.angle = 0
         elif self.expand != 1:
-            self.Hub.geometry.new(["expansion"], [self.expand*self.Hub.geometry["expansion"]])
+            self.Hub.geometry.new(["exp_rate"], [self.expand*self.Hub.geometry["exp_rate"]])
             self.expand = 1.
         elif (self.trim != 0).any():
-            im_size = np.array(list(self.Hub.geometry["image size"]))
+            im_size = np.array(list(self.Hub.geometry["im_size"]))
             im_size += self.trim
-            self.Hub.geometry.new(["image size"], [tuple(im_size)])
+            self.Hub.geometry.new(["im_size"], [tuple(im_size)])
             self.trim[:] = 0
         elif time.time() - self.click_time < 0.5:
             if self.mode == 1:
@@ -738,13 +738,13 @@ class GUI(ttk.Frame):
         x, y = x - self.imx, y - self.imy
         zoom = self.Hub.zoom
         x, y = x/zoom, y/zoom
-        la, lb = self.Hub.geometry["image size"]
+        la, lb = self.Hub.geometry["im_size"]
         iw, ih = len(self.section[0]), len(self.section)
         op, ny, nx = self.Hub.position.asarray()
         if (event.state//self.flags[3])%2 == 0:
             dc, dz, dy, dx = self.Hub.box.shape
             v = np.array([x, y], np.float) - np.array([la//2, lb//2])
-            p = op + ny*v[1]/self.Hub.geometry["expansion"] + nx*v[0]/self.Hub.geometry["expansion"]
+            p = op + ny*v[1]/self.Hub.geometry["exp_rate"] + nx*v[0]/self.Hub.geometry["exp_rate"]
             p[0] /= self.Hub.ratio
             p += np.array([dz//2, dy//2, dx//2])
             sort = np.argsort(self.Hub.channels.getnames())
@@ -802,7 +802,7 @@ class GUI(ttk.Frame):
                 self.shift[np.argmin(np.abs(self.shift))] = 0
             pos = self.Hub.position.asarray()
             pos_ = pos.copy()
-            pos[0] -= (self.shift[0]*nx + self.shift[1]*ny)/self.Hub.geometry["expansion"]
+            pos[0] -= (self.shift[0]*nx + self.shift[1]*ny)/self.Hub.geometry["exp_rate"]
             self.Hub.position.pos = pos.tolist()
             sec_raw = self.Hub.sec_raw
             M = np.float32([[1,0,self.shift[0]],[0,1,self.shift[1]]])
@@ -844,8 +844,8 @@ class GUI(ttk.Frame):
             v = np.array([x, y], np.float) - np.array([la//2, lb//2])
             self.expand = np.linalg.norm(v)/np.linalg.norm(v0)
             
-            exp_rate = self.Hub.geometry["expansion"]
-            self.Hub.geometry.geo["expansion"] *= self.expand
+            exp_rate = self.Hub.geometry["exp_rate"]
+            self.Hub.geometry.geo["exp_rate"] *= self.expand
             sec_raw = self.Hub.sec_raw
             M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), 0, self.expand)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
@@ -855,14 +855,14 @@ class GUI(ttk.Frame):
                     self.Hub.calc_guide()
                 else:
                     self.Hub.calc_sideview()
-            self.Hub.geometry.geo["expansion"] = exp_rate
+            self.Hub.geometry.geo["exp_rate"] = exp_rate
             self.Hub.sec_raw = sec_raw
         
         elif self.mode == 3:
             r = self.click - np.array([la//2, lb//2])
             fr = np.abs(r) > np.array([la//8, lb//8])
             if fr.any():
-                self.trim = np.array(list(self.Hub.geometry["image size"]))
+                self.trim = np.array(list(self.Hub.geometry["im_size"]))
                 if fr.all():
                     self.trim = self.trim*np.array([x-iw//2,y-ih//2])/r
                 elif fr[0]:
@@ -873,8 +873,8 @@ class GUI(ttk.Frame):
                 self.trim = self.trim.astype(np.int)
                 self.trim[self.trim < 50] = 50
                 
-                im_size = self.Hub.geometry["image size"]
-                self.Hub.geometry.geo["image size"] = tuple(self.trim)
+                im_size = self.Hub.geometry["im_size"]
+                self.Hub.geometry.geo["im_size"] = tuple(self.trim)
                 
                 zoom = self.Hub.zoom
                 t0, t1 = (self.trim*zoom).astype(np.int)
@@ -901,7 +901,7 @@ class GUI(ttk.Frame):
                 if self.g_on.get():
                     if self.guide_mode == "guide":
                         self.Hub.calc_guide(rect=False)
-                self.Hub.geometry.geo["image size"] = im_size
+                self.Hub.geometry.geo["im_size"] = im_size
                 self.upperleft = (u0, u1)
                     
                 self.trim -= np.array(list(im_size))
