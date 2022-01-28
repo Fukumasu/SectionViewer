@@ -565,7 +565,7 @@ class Points:
             gui.sec_canvas.bind("<Motion>", gui.track_sec)
             if (gui.shift != 0).any():
                 pos = Hub.position.asarray()
-                pos[0] -= (gui.shift[0]*pos[2] + gui.shift[1]*pos[1])/Hub.geometry["expansion"]
+                pos[0] -= (gui.shift[0]*pos[2] + gui.shift[1]*pos[1])/Hub.geometry["exp_rate"]
                 Hub.position.new(pos.tolist(), 0)
                 gui.shift = np.array([0.,0.])
             elif  gui.angle != 0:
