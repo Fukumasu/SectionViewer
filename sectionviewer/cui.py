@@ -18,7 +18,7 @@ class Data:
     def __init__(self, hub, val):
         _val = []
         for v in val:
-            _val += [[os.path.abspath(str(v[0])), tuple(v[1])]]
+            _val += [[os.path.abspath(str(v[0])).replace("\\", "/"), tuple(v[1])]]
         object.__setattr__(self, "_val" , _val)
         object.__setattr__(self, "_hub" , hub)
         tuple.__init__(self)
