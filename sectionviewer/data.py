@@ -36,7 +36,7 @@ Please choose data file to open.''')
             dat = [[file]]
         else:
             for i in range(len(dat)):
-                dat[i][0] = dat[i][0].replace("\\", "/")
+                dat[i][0] = os.path.abspath(str(dat[i][0])).replace("\\", "/")
         
         self.dat = dat
         
@@ -243,7 +243,7 @@ Please specify the file.'''.format(os.path.basename(path)))
     
     def reload(self, dat):
         data = self.dat
-        files = [d[0] for d in data]
+        files = [os.path.apspath(str(d[0])).replace('\\', '/') for d in data]
         ch_load = [d[1] for d in data]
         data = []
         for f, c in zip(files, ch_load):
@@ -251,7 +251,7 @@ Please specify the file.'''.format(os.path.basename(path)))
                 data += [[f, c]]
         data = tuple(data)
         
-        files = [d[0] for d in dat]
+        files = [os.path.apspath(str(d[0])).replace('\\', '/') for d in dat]
         ch_load = [d[1] for d in dat]
         dat0 = []
         for f, c in zip(files, ch_load):
