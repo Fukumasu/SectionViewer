@@ -11,16 +11,14 @@ import numpy as np
 import oiffile as oif
 import tifffile as tif
 
-from . import utils as ut
-
-def open(path):
+def load(path):
     return SectionViewer(path)
 
 class Data:
     def __init__(self, hub, val):
         _val = []
         for v in val:
-            _val += [[os.path.abspath(str(v[0])).replace("\\", "/"), tuple(v[1])]]
+            _val += [[os.path.abspath(str(v[0])), tuple(v[1])]]
         object.__setattr__(self, "_val" , _val)
         object.__setattr__(self, "_hub" , hub)
         tuple.__init__(self)
@@ -61,19 +59,19 @@ class Data:
 class Geometry(dict):
     def __init__(self, hub, val):
         _val = {}
-        if not 'res_xy' in val:
-            val['res_xy'] = None
-        if not 'res_z' in val:
-            val['res_z'] = None
+        if not 'xy' in val:
+            val['xy'] = None
+        if not 'z' in val:
+            val['z'] = None
         if 'xy_oib' in val:
             _val['xy_oib'] = val['xy_oib']
         if 'z_oib' in val:
             _val['z_oib'] = val['z_oib']
-        _val['res_xy'] = val['res_xy'] if val['res_xy'] == None else float(val['res_xy'])
-        _val['res_z'] = val['res_z'] if val['res_z'] == None else float(val['res_z'])
-        _val['im_size'] = (int(val['im_size'][0]), int(val['im_size'][1]))
-        _val['exp_rate'] = float(val['exp_rate'])
-        _val['bar_len'] = val['bar_len'] if val['bar_len'] == None else float(val['bar_len'])
+        _val['res_xy'] = val['xy'] if val['xy'] == None else float(val['xy'])
+        _val['res_z'] = val['z'] if val['z'] == None else float(val['z'])
+        _val['im_size'] = (int(val['image size'][0]), int(val['image size'][1]))
+        _val['exp_rate'] = float(val['expansion'])
+        _val['bar_len'] = val['bar length'] if val['bar length'] == None else float(val['bar length'])
         _val['shape'] = (int(val['shape'][0]), int(val['shape'][1]), 
                          int(val['shape'][2]), int(val['shape'][3]))
         try:
@@ -124,7 +122,7 @@ class Geometry(dict):
     def __repr__(self):
          return str(self)
         
-class Position(list):
+class Position:
     def __init__(self, hub, val, mode="all"):
         ratio = hub.geometry._ratio
         if mode == "all":
@@ -147,7 +145,6 @@ class Position(list):
         object.__setattr__(self, "_mode", mode)
         object.__setattr__(self, "_val" , _val)
         object.__setattr__(self, "_hub" , hub)
-        list.__init__(self, _val)
     def __str__(self):
         if self._mode == "all":
             pos = self.asarray()
@@ -192,14 +189,15 @@ class Position(list):
 
 class Channels:
     def __init__(self, hub, val):
-        if type(val) != SuperList:
+        if type(val) == SuperList:
+            object.__setattr__(self, "_val" , val)
+            self._refresh()
+        else:
             _val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
                      max(0, min(65534, int(c[2]))), 
                      max(1, min(65535, max(int(c[2])+1, int(c[3]))))] for c in val]
-            _val = SuperList(_val)
-        object.__setattr__(self, "_val" , val)
+            object.__setattr__(self, "_val" , SuperList(_val))
         object.__setattr__(self, "_hub" , hub)
-        self._refresh()
     def __str__(self):
         ch_nm = self.getnames()
         m = max([len(nm) for nm in ch_nm])
@@ -262,14 +260,6 @@ class Channels:
             val[i][1][2] = _val[i][1][2]
             val[i][2] = _val[i][2]
             val[i][3] = _val[i][3]
-        object.__setattr__(self._hub, "colors", np.array(self.getcolors(), np.uint8))
-        vrange = np.array(self.getvranges())
-        lut = np.arange(65536)[None]
-        diff = vrange[:,1] - vrange[:,0]
-        lut = ((1/diff[:,None])*(lut - vrange[:,:1]))
-        lut[lut<1/255] = 1/255
-        lut[lut>1] = 1
-        object.__setattr__(self._hub, "lut", lut)
 class Channel:
     def __init__(self, sup, val):
         object.__setattr__(self, "_val" , val)
@@ -653,6 +643,7 @@ class SectionViewer(dict):
     def imread(self):
         files = self.data.files_to_load()
         channels = self.data.channels_to_load()
+        
         boxes = []    
         for i, f in enumerate(files):
                 
@@ -667,6 +658,7 @@ class SectionViewer(dict):
                 raise TypeError("file type '{0}' is not supported".format(os.path.splitext(f)[1]))
             
         boxes = [boxes[i][None] if boxes[i].ndim == 3 else boxes[i] for i in range(len(boxes))]
+        
         box = boxes[0][np.array(channels[0])]
         del boxes[0]
         n = 1
@@ -679,43 +671,7 @@ class SectionViewer(dict):
             box = np.append(box, b, axis=0)
             del b, boxes[0]
             n += 1
-        object.__setattr__(self, "image", box)
-    def calc_section_values(self):
-        if not hasattr(self, "image"):
-            raise AttributeError("Attribute 'image' not found. Call 'imread' method beforehand.")
-        geo = self.geometry
-        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
-        if None in [xy_rs, z_rs]:
-            ratio = 1.
-        else:
-            ratio = z_rs / xy_rs
-        res = np.empty([len(self.image), *geo["im_size"][::-1]], np.uint16)
-        box = self.image
-        dc, dz, dy, dx = box.shape
-        pos = self.position.asarray()
-        pos[0] -= np.array([dz, dy, dx])//2
-        pos[:,0] *= ratio
-        op, ny, nx = pos.copy()
-        nz = -np.cross(ny, nx)
-        pos[:,0] /= ratio
-        nz[0] /= ratio
-        pos[0] += np.array([dz, dy, dx])//2
-        pos[1:] /= self.geometry["exp_rate"]
-        nz /= self.geometry["exp_rate"]
-        if not ut.calc_section(box, pos, res, np.array(res[0].shape)//2,
-                               np.arange(len(res))):
-            res[:] = 0
-        exp_rate = geo["exp_rate"]
-        resol = xy_rs/exp_rate if xy_rs != None else None
-        print("resolution: {0} um/px".format(resol))
-        return res
-    def calc_section_image(self, frame=None):
-        if type(frame) == type(None):
-            frame = self.calc_section_values()
-        res = np.empty([*frame[0].shape, 4], np.uint8)
-        ut.calc_bgr(frame, self.lut, self.colors, np.arange(len(frame)), res)
-        return res
-    
+        return box
     
 class SuperList:
     def __init__(self, val, focus=None):
