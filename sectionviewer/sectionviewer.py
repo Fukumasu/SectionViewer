@@ -95,21 +95,40 @@ def _test():
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
-        subprocess.run(eDir + "SectionViewer-install.exe", shell=True)
-    if os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
-        if len(arg) > 0:
-            subprocess.run(eDir + "SectionViewer/SectionViewer.exe {0}".format(arg[0]), shell=True)
+    with open(eDir + ".epath.txt", "r") as f:
+        epath = f.read()
+    if not os.path.isfile(epath):
+        print("preparing installer...")
+        subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
+                       stdout=subprocess.PIPE, shell=True)
+        with open(eDir + ".epath.txt", "r") as f:
+            epath = f.read()
+        if os.path.isfile(epath):
+            print("successfully installed")
         else:
-            subprocess.run(eDir + "SectionViewer/SectionViewer.exe", shell=True)
+            print("canceled")
+            return
+    if len(arg) > 0:
+        subprocess.run(epath + " {0}".format(arg[0]), shell=True)
+    else:
+        subprocess.run(epath, shell=True)
     
 def launch(file_name=None):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
-        subprocess.run(eDir + "SectionViewer-install.exe", shell=True)
-    if not os.path.isfile(eDir + "SectionViewer/SectionViewer.exe"):
-        return
+    with open(eDir + ".epath.txt", "r") as f:
+        epath = f.read()
+    if not os.path.isfile(epath):
+        print("preparing installer...")
+        subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
+                       stdout=subprocess.PIPE, shell=True)
+        with open(eDir + ".epath.txt", "r") as f:
+            epath = f.read()
+        if os.path.isfile(epath):
+            print("successfully installed")
+        else:
+            print("canceled")
+            return
     if file_name == None:
         fTyp = [("SectionViewer projects", "*.secv"), 
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
@@ -132,6 +151,6 @@ def launch(file_name=None):
         root.destroy()
     if len(file_name) == 0:
         return
-    subprocess.Popen(eDir + "SectionViewer/SectionViewer.exe {0}".format(file_name), shell=True)
+    subprocess.Popen(epath + " {0}".format(file_name), shell=True)
     return file_name
 
