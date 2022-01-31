@@ -95,13 +95,13 @@ def _test():
 def main(*arg):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    with open(eDir + ".epath.txt", "r") as f:
+    with open(eDir + "epath.txt", "r") as f:
         epath = f.read()
     if not os.path.isfile(epath):
         print("preparing installer...")
         subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
                        stdout=subprocess.PIPE, shell=True)
-        with open(eDir + ".epath.txt", "r") as f:
+        with open(eDir + "epath.txt", "r") as f:
             epath = f.read()
         if os.path.isfile(epath):
             print("successfully installed")
@@ -116,13 +116,13 @@ def main(*arg):
 def launch(file_name=None):
     eDir = os.path.dirname(os.path.abspath(__file__))
     eDir = eDir.replace("\\", "/") + "/"
-    with open(eDir + ".epath.txt", "r") as f:
+    with open(eDir + "epath.txt", "r") as f:
         epath = f.read()
     if not os.path.isfile(epath):
         print("preparing installer...")
         subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
                        stdout=subprocess.PIPE, shell=True)
-        with open(eDir + ".epath.txt", "r") as f:
+        with open(eDir + "epath.txt", "r") as f:
             epath = f.read()
         if os.path.isfile(epath):
             print("successfully installed")

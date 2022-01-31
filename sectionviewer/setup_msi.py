@@ -88,5 +88,5 @@ epath = proc.communicate()[0].decode("utf-8")
 epath = epath.split(";")[-1]
 epath = epath.replace("\\", "/") + "/SectionViewer.exe"
 epath = epath.replace("\n", "").replace("\r", "")
-with open(".epath.txt", "w") as f:
+with open("epath.txt", "w") as f:
     f.write(epath)
