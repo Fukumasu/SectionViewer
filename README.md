@@ -6,7 +6,7 @@
 
 A viewer of sections in 3-dimensional image data (.oib, .tif), which also supports recording of coordinate values of points in the image data.
 
-## Requirement
+## Requirements
 
 - Windows
 - python >= 3.6
