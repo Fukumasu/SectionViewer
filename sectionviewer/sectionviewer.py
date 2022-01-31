@@ -102,6 +102,8 @@ def main(*arg):
         else:
             print("canceled")
             return
+    if len(arg) == 0:
+        arg = sys.argv[1:]
     if len(arg) > 0:
         subprocess.run(epath + " {0}".format(arg[0]), shell=True)
     else:
