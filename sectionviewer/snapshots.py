@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 18 16:07:12 2020
-
-@author: kazuu
-"""
 import traceback
 
 import cv2
