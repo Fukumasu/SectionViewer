@@ -3,7 +3,8 @@ import shutil
 import subprocess
 import sys
 from cx_Freeze import setup, Executable
-from . import __version__
+
+import info
 
 path = os.path.dirname(os.path.abspath(__file__))
 path = path.replace("\\", "/")
@@ -52,7 +53,7 @@ extensions = [{"extension": "secv",
 bdist_msi_options = {"add_to_path": True,
                      "install_icon": icon,
                      "target_name": "SectionViewer.msi",
-                     "upgrade_code": "{6bd9a5e4-428c-4053-8956-9c452ebeefcf}",
+                     "upgrade_code": info.upgrade_code,
                      "extensions": extensions}
 
 base = None
@@ -61,13 +62,13 @@ if sys.platform == "win32":
 
 setup(
       name = "SectionViewer",
-      version = __version__,
-      author="Kazushi Fukumasu",
-      url="https://github.com/Fukumasu/SectionViewer",
+      version = info.version,
+      author = info.author,
+      url = info.url,
       description = "SectionViewer app launcher",
       options = {"build_exe": build_exe_options,
                  "bdist_msi": bdist_msi_options},
-      executables = [Executable(script="executable.py", 
+      executables = [Executable(script="executable.py",
                                 base=base,
                                 icon=icon,
                                 target_name="SectionViewer",
