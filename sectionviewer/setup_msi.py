@@ -36,8 +36,7 @@ build_exe_options = {"packages": ["os"],
                                   "unicodedata",
                                   "unittest",
                                   "urllib",
-                                  "xml"],
-                     "silent_level": 2}
+                                  "xml"]}
 
 extensions = [{"extension": "secv",
                "verb": "open",
