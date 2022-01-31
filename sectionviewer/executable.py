@@ -3,7 +3,7 @@ import os
 import sys
 import subprocess
 
-pDir = "c:/users/kazuu/anaconda3/envs/secview/lib/site-packages/sectionviewer"
+pDir = ""
 eDir = pDir
 eDir = os.path.join(eDir, "subdir/launcher.py")
 if len(sys.argv) > 1:
