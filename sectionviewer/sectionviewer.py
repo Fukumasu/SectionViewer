@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun  3 21:09:58 2020
-
-@author: kazuu
-"""
 import os
 import subprocess
 import sys
