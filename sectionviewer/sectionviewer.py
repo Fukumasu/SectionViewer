@@ -91,7 +91,7 @@ def main(*arg):
     eDir = eDir.replace("\\", "/") + "/"
     with open(eDir + "epath.txt", "r") as f:
         epath = f.read()
-    if not os.path.isfile(epath):
+    if '--reinstall' in sys.argv[1:] or not os.path.isfile(epath):
         print("preparing installer...")
         subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
                        stdout=subprocess.PIPE, shell=True)
@@ -99,6 +99,8 @@ def main(*arg):
             epath = f.read()
         if os.path.isfile(epath):
             print("successfully installed")
+            if '--reinstall' in sys.argv[1:]:
+                return
         else:
             print("canceled")
             return
