@@ -4,7 +4,7 @@
 
 ## Overview
 
-A viewer of sections in 3-dimensional image data (.oib, .tif), which supports recording of coordinate values of points in the image data.
+Viewer for sections in 3-dimensional image data (.oib, .tif), which allows to record points with coordinate values in the data.
 
 ## Requirements
 
