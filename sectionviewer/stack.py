@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul  2 11:15:59 2020
-
-@author: kazuu
-"""
 import gzip
 import os
 import pickle
