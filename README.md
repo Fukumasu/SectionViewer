@@ -10,6 +10,7 @@ A viewer of sections in 3-dimensional image data (.oib, .tif), which also suppor
 
 - Windows
 - python >= 3.6
+- Microsoft Visual C++ compiler
 
 ## Installation
 
