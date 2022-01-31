@@ -1097,8 +1097,8 @@ class STAC(ttk.Frame):
         if path == None:
             fTyp = [("SV multi-stack", "*.stac")]
             
-            if os.path.isfile(self.SV.eDir + ".stck_dir.txt"):
-                with open(self.SV.eDir + ".stck_dir.txt", "r") as f:
+            if os.path.isfile(self.SV.eDir + "init_dir.txt"):
+                with open(self.SV.eDir + "init_dir.txt", "r") as f:
                     stDir = f.read()
                 if not os.path.isdir(stDir):
                     stDir = os.path.dirname(self.iDir)
@@ -1121,7 +1121,7 @@ class STAC(ttk.Frame):
             byt = gzip.compress(byt, compresslevel=1)
             with open(path, "wb") as f:
                 f.write(byt)
-            with open(self.SV.eDir + ".stck_dir.txt", "w") as f:
+            with open(self.SV.eDir + "init_dir.txt", "w") as f:
                 f.write(os.path.dirname(path))
             self.title = os.path.basename(path)
         
@@ -1170,8 +1170,8 @@ class STAC(ttk.Frame):
                     ("Portable image format", "*.pbm"),
                     ("Sun rasters", "*.sr")]
         
-        if os.path.isfile(self.SV.eDir + ".expo_dir.txt"):
-            with open(self.SV.eDir + ".expo_dir.txt", "r") as f:
+        if os.path.isfile(self.SV.eDir + "init_dir.txt"):
+            with open(self.SV.eDir + "init_dir.txt", "r") as f:
                 exDir = f.read()
             if not os.path.isdir(exDir):
                 exDir = os.path.dirname(self.iDir)
@@ -1187,7 +1187,7 @@ class STAC(ttk.Frame):
             path = path.replace("\\", "/")
             if path[-4:] == ".mp4":
                 self.ask_fps(path)
-                with open(self.SV.eDir + ".expo_dir.txt", "w") as f:
+                with open(self.SV.eDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(path))
                 return
             Hub = self.Hub
@@ -1213,7 +1213,7 @@ class STAC(ttk.Frame):
                         messagebox.showerror("Error", "Failed to export TIFF file :\n"\
                                              + traceback.format_exception_only(type(e), e)[0])
                         return
-                    with open(self.SV.eDir + ".expo_dir.txt", "w") as f:
+                    with open(self.SV.eDir + "init_dir.txt", "w") as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -1226,7 +1226,7 @@ class STAC(ttk.Frame):
                 return
             
             if self.imwrite(path, im):
-                with open(self.SV.eDir + ".expo_dir.txt", "w") as f:
+                with open(self.SV.eDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(path))
             
             

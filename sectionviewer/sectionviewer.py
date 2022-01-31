@@ -48,10 +48,10 @@ class SectionViewer(ttk.Frame):
                     ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
                     ("SV multi-stack files", "*.stac"),
                     ("All files", "*")]
-            if not os.path.isfile(self.eDir + ".init_dir.txt"):
-                with open(self.eDir + ".init_dir.txt", "w") as f:
+            if not os.path.isfile(self.eDir + "init_dir.txt"):
+                with open(self.eDir + "init_dir.txt", "w") as f:
                     f.write(os.path.expanduser("~/Desktop"))
-            with open(self.eDir + ".init_dir.txt", "r") as f:
+            with open(self.eDir + "init_dir.txt", "r") as f:
                 iDir = f.read()
             if not os.path.isdir(iDir):
                 iDir = os.path.expanduser("~/Desktop")
@@ -71,7 +71,7 @@ class SectionViewer(ttk.Frame):
                 gui = GUI(self, master, file_name)
             
             if gui.Hub.load_success:
-                with open(self.eDir + ".init_dir.txt", "w") as f:
+                with open(self.eDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(file_name))
                 self.root.withdraw()
             else:
@@ -134,10 +134,10 @@ def launch(file_name=None):
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
                 ("SV multi-stack files", "*.stac"),
                 ("All files", "*")]
-        if not os.path.isfile(eDir + ".init_dir.txt"):
-            with open(eDir + ".init_dir.txt", "w") as f:
+        if not os.path.isfile(eDir + "init_dir.txt"):
+            with open(eDir + "init_dir.txt", "w") as f:
                 f.write(os.path.expanduser("~/Desktop"))
-        with open(eDir + ".init_dir.txt", "r") as f:
+        with open(eDir + "init_dir.txt", "r") as f:
             iDir = f.read()
         if not os.path.isdir(iDir):
             iDir = os.path.expanduser("~/Desktop")
