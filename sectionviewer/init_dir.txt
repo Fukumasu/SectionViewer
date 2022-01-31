@@ -1,0 +1,1 @@
+Initial directory to open files will be written here.
