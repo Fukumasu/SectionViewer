@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 11 11:26:11 2020
-
-@author: kazuu
-"""
 import numpy as np
 from PIL import Image, ImageTk
 import tkinter as tk
