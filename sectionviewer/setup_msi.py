@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 from cx_Freeze import setup, Executable
+from . import __version__
 
 path = os.path.dirname(os.path.abspath(__file__))
 path = path.replace("\\", "/")
@@ -66,7 +67,7 @@ if sys.platform == "win32":
 
 setup(
       name = "SectionViewer",
-      version = "1.0.0",
+      version = __version__,
       author="Kazushi Fukumasu",
       url="https://github.com/Fukumasu/SectionViewer",
       description = "SectionViewer app launcher",
