@@ -22,3 +22,7 @@ sectionviewer
 ## Description
 
 Coming soon
+
+## License
+
+Preparing
