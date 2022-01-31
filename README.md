@@ -1,6 +1,6 @@
 # SectionViewer
 
-![image](https://github.com/Fukumasu/SectionViewer/blob/master/sectionviewer/img/SectionViewer.ico)
+![gif](https://github.com/Fukumasu/SectionViewer/blob/master/sectionviewer/img/SectionViewer.gif)
 
 ## Overview
 
