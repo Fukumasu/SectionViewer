@@ -1,7 +1,7 @@
 # SectionViewer
 
 ![image]
-(https://github.com/FUkumasu/SectionViewer/sectionviewer/img/SectionViewer.ico)
+(https://github.com/FUkumasu/SectionViewer/sectionviewer/img/resources.png)
 
 ## Overview
 
