@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 11 11:27:40 2020
-
-@author: kazuu
-"""
 import time
 
 import cv2
