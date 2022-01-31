@@ -30,7 +30,7 @@ if pf == "Windows":
         cmdclass=cmdclass,
         install_requires=_requires_from_file('requirements.txt'),
         py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-        package_data={'': ['*.exe', 'img/resources.png', 'img/SectionViewer.ico', 'SectionViewer/execute.py']},
+        package_data={'': ['*.txt', "*.pyx", 'img/resources.png', 'img/SectionViewer.ico', 'subdir/launcher.py']},
         include_package_data=True,
         setup_requires=['numpy'],
         entry_points = {
