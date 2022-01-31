@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Sep 10 19:00:13 2020
-
-@author: kazuu
-"""
 import os
 import shutil
 import time
