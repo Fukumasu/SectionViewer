@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov  4 11:59:40 2020
-
-@author: kazuu
-"""
 import cython
 from cython.parallel import prange
 from libc.stdlib cimport rand, RAND_MAX
