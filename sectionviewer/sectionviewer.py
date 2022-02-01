@@ -143,7 +143,7 @@ def launch(file_name=None):
         icon = cv2.imread(eDir +'img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
-        canvas.create_rectangle(0, 0, 2000, 2000, fill="#666666", width=0)
+        canvas.create_rectangle(0, 0, 2000, 2000, fill="#606060", width=0)
         canvas.create_image(56, 11, image=icon, anchor="nw")
         canvas.pack()
         root.title('SectionViewer')
