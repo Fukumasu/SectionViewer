@@ -4,7 +4,7 @@ import subprocess
 
 def main():
 
-    pDir = "c:/users/kazuu/anaconda3/envs/secview/lib/site-packages/sectionviewer"
+    pDir = ""
     eDir = os.path.join(pDir, "epath.txt")
     with open(eDir, "r") as f:
         epath = f.read()
