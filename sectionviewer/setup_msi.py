@@ -10,6 +10,9 @@ path = os.path.dirname(os.path.abspath(__file__))
 path = path.replace("\\", "/")
 os.chdir(path)
 
+with open("epath.txt", "w") as f:
+    f.write("")
+
 with open("executable.txt", "r") as f:
     code = f.read()
 code = code.format(path)
@@ -54,7 +57,12 @@ extensions = [{"extension": "secv",
                "executable": "SectionViewer.exe",
                "context": "View with SectionViewer",
                "argument": '"%1"'}]
-bdist_msi_options = {"add_to_path": True,
+
+msi_data = {"CustomAction": [("EXECUTE_EXE", 18, "SectionViewer.exe", None)],
+            "InstallUISequence": [("EXECUTE_EXE", None, 10000)]}
+
+bdist_msi_options = {"add_to_path": False,
+                     "data": msi_data,
                      "install_icon": icon,
                      "target_name": "SectionViewer.msi",
                      "upgrade_code": info.upgrade_code,
@@ -82,11 +90,3 @@ setup(
 shutil.rmtree("build")
 subprocess.run("dist\\SectionViewer.msi", shell=True)
 shutil.rmtree("dist")
-
-proc = subprocess.Popen("echo %Path%", stdout=subprocess.PIPE, shell=True)
-epath = proc.communicate()[0].decode("utf-8")
-epath = epath.split(";")[-1]
-epath = epath.replace("\\", "/") + "/SectionViewer.exe"
-epath = epath.replace("\n", "").replace("\r", "")
-with open("epath.txt", "w") as f:
-    f.write(epath)

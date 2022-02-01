@@ -2,9 +2,18 @@ import os
 import sys
 import subprocess
 
-if __name__ == '__main__':
+def main():
 
     pDir = "{0}"
+    eDir = os.path.join(pDir, "epath.txt")
+    with open(eDir, "r") as f:
+        epath = f.read()
+    epath0 = sys.argv[0].replace("\\", "/")
+    if epath != epath0:
+        with open(eDir, "w") as f:
+            f.write(epath0)
+        return
+    
     eDir = pDir
     eDir = os.path.join(eDir, "subdir/launcher.py")
     if len(sys.argv) > 1:
@@ -14,3 +23,6 @@ if __name__ == '__main__':
     pDir = os.path.join(pDir, "python")
     pDir = pDir + " " + eDir
     subprocess.run(pDir, shell=True)
+    
+if __name__ == '__main__':
+    main()
