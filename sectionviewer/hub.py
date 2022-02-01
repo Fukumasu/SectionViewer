@@ -80,13 +80,9 @@ class Hub:
         else:
             self.data = [[path]]
             self.secv_name = None
-        
-        self.box = []
-        self.data = Data(self)
-        
-        if len(self.box) == 0:
-            self.load_success = False
-            return None
+            
+            self.box = []
+            self.data = Data(self)
         
         self.geometry = Geometry(self)
         self.position = Position(self)
@@ -124,6 +120,29 @@ class Hub:
         self.g_vivid = [(160,130,110), ( 23, 23,170), ( 23,170, 23), (170, 23, 23)]
         self.g_thick = [2, 3, 3, 3]
         
+        self.calc_guide()
+        self.gui.master.update()
+        
+        if path[-5:] == ".secv":
+            self.box = []
+            self.data = Data(self)
+        else:
+            w, h = gui.sec_cf.winfo_width()-4, gui.sec_cf.winfo_height()-4
+            iw, ih = self.geometry["im_size"]
+            zoom = min((w-10)/iw, (h-10)/ih)
+            iw1, ih1 = int(iw*zoom), int(ih*zoom)
+            ul = (int(iw1//2-w//2), int(ih1//2-h//2))
+            zs = str(int(zoom*100))
+            gui.zoom.set(zs)
+            self.zoom = float(gui.zoom.get())/100
+            gui.upperleft = ul
+
+        if len(self.box) == 0:
+            messagebox.showerror("Error", 
+                                 "No data couldn't be extracted")
+            self.load_success = False
+            return
+        
         if not self.calc_geometry():
             self.position = [[0.,0.,0.], [0.,1.,0.], [0.,0.,1.]]
             self.position = Position(self)
@@ -131,7 +150,7 @@ class Hub:
                 messagebox.showerror("Error", 
                                      "Data shape is invalid\n CZYX = {0}".format(self.box.shape))
                 self.load_success = False
-                return None
+                return
         if self.secv_name==None:
             mx = np.amax(self.frame, axis=(1,2))
             for i in range(len(mx)):
@@ -139,7 +158,6 @@ class Hub:
             self.channels.val = self.channels.val
             self.calc_image()
         
-        self.calc_guide()
         self.calc_sideview()
         
         self.history = [[0,empty()]]
@@ -387,7 +405,7 @@ class Hub:
         vivid = self.g_vivid
         thick = self.g_thick
         
-        dc, dz, dy, dx = self.box.shape
+        dc, dz, dy, dx = self.geometry["shape"]
         n = np.array([nz, ny, nx])
         
         points = np.array(self.points.getcoordinates())

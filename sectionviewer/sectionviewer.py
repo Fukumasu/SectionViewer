@@ -72,17 +72,9 @@ class SectionViewer(ttk.Frame):
             else:
                 gui = GUI(self, master, file_name)
             
-            if gui.Hub.load_success:
+            if hasattr(gui, "Hub"):
                 with open(self.eDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(file_name))
-                self.root.withdraw()
-            else:
-                master.destroy()
-                close = True
-                for w in self.wins:
-                    close = close and not bool(w.winfo_exists())
-                if close:
-                    self.root.destroy()
         else:
             close = True
             for w in self.wins:

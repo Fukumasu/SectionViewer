@@ -10,9 +10,8 @@ class Channels:
         self.Hub = Hub
         chs = Hub.channels
         
-        if hasattr(Hub, "box"):
-            data = Hub.box
-            dc = len(data)
+        if hasattr(Hub, "geometry"):
+            dc = Hub.geometry["shape"][0]
         elif hasattr(Hub, "stacks"):
             data = Hub.stacks
             dc = len(data[0])

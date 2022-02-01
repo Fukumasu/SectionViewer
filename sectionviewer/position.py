@@ -6,7 +6,7 @@ class Position:
         self.Hub = Hub
         pos = Hub.position
         
-        dc, dz, dy, dx = Hub.box.shape
+        dc, dz, dy, dx = Hub.geometry["shape"]
         ratio = Hub.ratio
         
         try:

@@ -11,7 +11,6 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from .hub import Hub
-from .hub import empty
 
 
 class GUI(ttk.Frame):
@@ -65,14 +64,26 @@ class GUI(ttk.Frame):
             self.palette.withdraw()
         self.palette.protocol("WM_DELETE_WINDOW", hide)
         
+        self.SV.root.withdraw()
+        self.create_widgets()
+        self.master.update()
+        
+        def close():
+            self.master.destroy()
+            close = True
+            for w in self.SV.wins:
+                close = close and not bool(w.winfo_exists())
+            if close:
+                self.SV.root.destroy()
         try:
             self.Hub = Hub(self, file_name)
         except Exception as e:
             messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
-            self.Hub = empty()
-            self.Hub.load_success = False
+            close()
+            return
         if not self.Hub.load_success:
-            return None
+            close()
+            return
         def switch(event):
             if str(self.palette.focus_get())[-5:] != "entry":
                 key = event.keysym
@@ -92,8 +103,7 @@ class GUI(ttk.Frame):
         self.palette.bind("<Control-y>", lambda event: self.Hub.redo())
         self.palette.bind("<Return>", lambda event: [self.palette.grab_release(), self.palette.withdraw()])
         
-        self.create_widgets()
-        
+        self.create_commands()
         self.master.deiconify()
         
         self.shift = np.array([0.,0.])
@@ -109,8 +119,137 @@ class GUI(ttk.Frame):
         
         self.first = True
         
-    
+        
     def create_widgets(self):
+        # Guide
+        self.guide_note = ttk.Notebook(self.master)
+        self.guide_note.pack(padx=10, pady=10, side=tk.RIGHT)
+        
+        self.guide_frame = ttk.Frame(self.guide_note)
+        self.guide_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
+        bary = tk.Scrollbar(self.guide_frame, orient=tk.VERTICAL)
+        bary.pack(side=tk.RIGHT, fill=tk.Y)
+        bary.config(command=self.guide_canvas.yview)
+        self.guide_canvas.config(yscrollcommand=bary.set)
+        self.guide_canvas.config(scrollregion=(0,0,400,569))
+        self.guide_id = self.guide_canvas.create_image(0, 0, anchor="nw")
+        self.guide_canvas.create_image(0, 400, anchor="nw", image=self.k_image)
+        self.guide_canvas.pack()
+        self.guide_note.add(self.guide_frame, text="Guide")
+        
+        self.side_frame = ttk.Frame(self.guide_note)
+        self.side_canvas = tk.Canvas(self.side_frame, width=400, height=569)
+        bary = tk.Scrollbar(self.side_frame, orient=tk.VERTICAL)
+        bary.pack(side=tk.RIGHT, fill=tk.Y)
+        bary.config(command=self.side_canvas.yview)
+        self.side_canvas.config(yscrollcommand=bary.set)
+        self.side_canvas.config(scrollregion=(0,0,400,569))
+        fill = "#ffffff" if self.white.get() else "#000000"
+        self.side_back = self.side_canvas.create_rectangle(0, 0, 400, 569, fill=fill, width=0)
+        self.side_id = self.side_canvas.create_image(0, 0, anchor="nw")
+        self.side_canvas.pack()
+        self.guide_note.add(self.side_frame, text="Side view")
+        
+        name = self.guide_note.tab(self.guide_note.select(), "text")
+        if name == "Guide":
+            self.guide_mode = "guide"
+        else:
+            self.guide_mode = "sideview"
+        
+        # Main
+        self.main_frame = ttk.Frame(self.master)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        self.top = ttk.Frame(self.main_frame)
+        self.top.pack(side=tk.TOP, anchor=tk.N, fill=tk.X, expand=True)
+        
+        self.buttons = ttk.Frame(self.top)
+        self.buttons.pack(side=tk.LEFT, padx=5, pady=5)
+        self.c_button = ttk.Button(self.buttons, image=self.c_image)
+        self.c_button.grid(column=0, row=0)
+        self.p_button = ttk.Button(self.buttons, image=self.p_image)
+        self.p_button.grid(column=1, row=0)
+        self.s_button = ttk.Button(self.buttons, image=self.s_image)
+        self.s_button.grid(column=2, row=0)
+        
+        self.display = ttk.LabelFrame(self.top, text="Display")
+        self.display.pack(side=tk.RIGHT, ipady=3)
+        
+        ttk.Label(self.display, text="Zoom [%]").grid(column=0, row=0, padx=5, sticky=tk.W)
+        self.e_button = ttk.Button(self.display, width=4, image=self.e_image)
+        self.e_button.grid(column=1, row=0, sticky=tk.W)
+        self.zm_values = [  10,  13,  16,  20,  25,  32,  40,  50,  63,  79,
+                           100, 126, 158, 200, 251, 316, 398, 501, 631, 794,
+                          1000,1259,1585,1995]
+        self.combo_zm = ttk.Combobox(self.display, values=self.zm_values, width=12, textvariable=self.zoom)
+        self.combo_zm.grid(column=0, row=1, columnspan=2, padx=5, sticky=tk.W)
+        ttk.Label(self.display, text="Thickness [px]").grid(column=2, row=0, padx=5, sticky=tk.W)
+        values = [1,2,3,4,5,7,10,15,20,25,30,40,50,70,100,150,200,250,300,400,500,700,1000]
+        self.combo_th = ttk.Combobox(self.display, values=values, width=12, textvariable=self.thickness)
+        self.combo_th.grid(column=2, row=1, padx=5, sticky=tk.W)
+        self.chk_a = ttk.Checkbutton(self.display, variable=self.a_on, text="Axes (A)")
+        self.chk_a.grid(column=3, row=0, padx=5, sticky=tk.W)
+        self.chk_b = ttk.Checkbutton(self.display, variable=self.b_on, text="Scale bar (B)")
+        self.chk_b.grid(column=3, row=1, padx=5, sticky=tk.W)
+        self.chk_p = ttk.Checkbutton(self.display, variable=self.p_on, text="Points")
+        self.chk_p.grid(column=4, row=0, padx=5, sticky=tk.W)
+        self.chk_g = ttk.Checkbutton(self.display, variable=self.g_on, text="Guide (G)")
+        self.chk_g.grid(column=4, row=1, padx=5, sticky=tk.W)
+        self.rad_b = ttk.Radiobutton(self.display, text="Black", value=False, 
+                                     variable=self.white)
+        self.rad_b.grid(column=5, row=0, padx=5, sticky=tk.W)
+        self.rad_w = ttk.Radiobutton(self.display, text="White", value=True, 
+                                     variable=self.white)
+        self.rad_w.grid(column=5, row=1, padx=5, sticky=tk.W)
+        
+        self.bottom = ttk.Frame(self.main_frame)
+        self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
+        
+        self.bar_text = tk.StringVar()
+        self.bar_text.set("Scale bar: None μm")
+        self.bar_button = ttk.Button(self.bottom, textvariable=self.bar_text)
+        self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
+        
+        self.coor_text = tk.StringVar()
+        self.coor_text.set("[x,y,z] =\n    vals =")
+        self.coor_info = ttk.Label(self.bottom, textvariable=self.coor_text, width=30)
+        self.coor_info.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
+        
+        self.scale_frame = ttk.Frame(self.bottom)
+        self.scale_frame.pack(side=tk.TOP, fill=tk.X)
+        
+        self.scale = tk.Scale(self.scale_frame, length=2000, variable=self.depth,
+                              orient="horizontal", showvalue=False)
+        self.scale.pack(side=tk.LEFT)
+        
+        self.sec_frame = ttk.Frame(self.main_frame)
+        self.sec_frame.pack(padx=2, pady=3)
+        self.sec_cf = ttk.Frame(self.sec_frame)
+        self.sec_canvas = tk.Canvas(self.sec_cf, width=2000, height=2000)
+        self.barx = tk.Scrollbar(self.sec_frame, orient=tk.HORIZONTAL)
+        self.barx.pack(side=tk.BOTTOM, fill=tk.X)
+        self.barx.config(command=self.sec_canvas.xview)
+        self.bary = tk.Scrollbar(self.sec_frame, orient=tk.VERTICAL)
+        self.bary.pack(side=tk.RIGHT, fill=tk.Y)
+        self.bary.config(command=self.sec_canvas.yview)
+        self.sec_canvas.config(xscrollcommand=self.barx.set)
+        self.sec_canvas.config(yscrollcommand=self.bary.set)
+        self.sec_canvas.config(scrollregion=(0,0,0,0))
+        
+        self.sec_canvas.pack(side=tk.LEFT, anchor=tk.NW)
+        self.sec_cf.pack(side=tk.LEFT)
+        
+        self.master.state("zoomed")
+        fill = "#ffffff" if self.white.get() else "#000000"
+        self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
+        self.sec_id = self.sec_canvas.create_image(0, 0, anchor="nw")
+        if self.g_on.get():
+            self.master.minsize(850, 400)
+        else:
+            self.master.minsize(400, 400)
+            
+
+    def create_commands(self):
         Hub = self.Hub
         
         self.menu_bar = tk.Menu(self.master)
@@ -168,147 +307,48 @@ class GUI(ttk.Frame):
             self.edit_menu.entryconfig("Undo", state="disable")
         if Hub.hidx == -1:
             self.edit_menu.entryconfig("Redo", state="disable")
-        
-        # Guide
-        self.guide_note = ttk.Notebook(self.master)
-        if self.g_on.get():
-            self.guide_note.pack(padx=10, pady=10, side=tk.RIGHT)
-        
-        self.guide_frame = ttk.Frame(self.guide_note)
-        self.guide_im = ImageTk.PhotoImage(Image.fromarray(self.guide[:,:,::-1]))
-        self.guide_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
-        bary = tk.Scrollbar(self.guide_frame, orient=tk.VERTICAL)
-        bary.pack(side=tk.RIGHT, fill=tk.Y)
-        bary.config(command=self.guide_canvas.yview)
-        self.guide_canvas.config(yscrollcommand=bary.set)
-        self.guide_canvas.config(scrollregion=(0,0,400,569))
-        self.guide_id = self.guide_canvas.create_image(0, 0, anchor="nw", image=self.guide_im)
-        self.guide_canvas.create_image(0, 400, anchor="nw", image=self.k_image)
-        self.guide_canvas.bind('<Motion>', self.track_guide)
+            
         self.guide_canvas.bind('<Button-1>', lambda event: [self.master.focus_set(),
                                                             Hub.points.settings(select=self.p_num)])
+        self.guide_canvas.bind('<Motion>', self.track_guide)
         self.guide_canvas.bind("<MouseWheel>", lambda event: 
                                self.guide_canvas.\
                                    yview_scroll(int(-event.delta/120), "units"))
-        self.guide_canvas.pack()
-        self.guide_note.add(self.guide_frame, text="Guide")
-        
-        self.side_frame = ttk.Frame(self.guide_note)
+        self.guide_im = ImageTk.PhotoImage(Image.fromarray(self.guide[:,:,::-1]))
+        self.guide_canvas.itemconfig(self.guide_id, image=self.guide_im)
         self.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(self.side[:,:,2::-1], 
                                                                     self.side[:,:,3:], axis=2)))
-        self.side_canvas = tk.Canvas(self.side_frame, width=400, height=569)
-        bary = tk.Scrollbar(self.side_frame, orient=tk.VERTICAL)
-        bary.pack(side=tk.RIGHT, fill=tk.Y)
-        bary.config(command=self.side_canvas.yview)
-        self.side_canvas.config(yscrollcommand=bary.set)
-        self.side_canvas.config(scrollregion=(0,0,400,569))
-        fill = "#ffffff" if self.white.get() else "#000000"
-        self.side_back = self.side_canvas.create_rectangle(0, 0, 400, 569, fill=fill, width=0)
-        self.side_id = self.side_canvas.create_image(0, 0, anchor="nw", image=self.side_im)
-        self.side_canvas.bind("<Button-1>", lambda event: self.master.focus_set())
-        self.side_canvas.bind("<MouseWheel>", lambda event:
-                              self.side_canvas.\
-                                  yview_scroll(int(-event.delta/120), "units"))
-        self.side_canvas.pack()
-        self.guide_note.add(self.side_frame, text="Side view")
-        
+        self.side_canvas.itemconfig(self.side_id, image=self.side_im)
         self.guide_note.bind("<<NotebookTabChanged>>", self.guide_note_changed)
         
-        # Main
-        self.main_frame = ttk.Frame(self.master)
-        self.main_frame.pack(fill=tk.BOTH, expand=True)
-        
-        self.top = ttk.Frame(self.main_frame)
-        self.top.pack(side=tk.TOP, anchor=tk.N, fill=tk.X, expand=True)
-        
-        self.buttons = ttk.Frame(self.top)
-        self.buttons.pack(side=tk.LEFT, padx=5, pady=5)
         self.buttons.bind("<Button-1>", lambda event: self.master.focus_set())
-        self.c_button = ttk.Button(self.buttons, image=self.c_image, command=Hub.channels.settings)
-        self.c_button.grid(column=0, row=0)
-        self.p_button = ttk.Button(self.buttons, image=self.p_image, command=Hub.points.settings)
-        self.p_button.grid(column=1, row=0)
-        self.s_button = ttk.Button(self.buttons, image=self.s_image, command=Hub.snapshots.settings)
-        self.s_button.grid(column=2, row=0)
+        self.c_button.configure(command=Hub.channels.settings)
+        self.p_button.configure(command=Hub.points.settings)
+        self.s_button.configure(command=Hub.snapshots.settings)
         
-        self.display = ttk.LabelFrame(self.top, text="Display")
-        self.display.pack(side=tk.RIGHT, ipady=3)
-        
-        ttk.Label(self.display, text="Zoom [%]").grid(column=0, row=0, padx=5, sticky=tk.W)
-        ttk.Button(self.display, width=4, image=self.e_image, command=self.fit_frame).grid(column=1, row=0, sticky=tk.W)
-        self.zm_values = [  10,  13,  16,  20,  25,  32,  40,  50,  63,  79,
-                           100, 126, 158, 200, 251, 316, 398, 501, 631, 794,
-                          1000,1259,1585,1995]
-        self.combo_zm = ttk.Combobox(self.display, values=self.zm_values, width=12, textvariable=self.zoom)
+        self.e_button.configure(command=self.fit_frame)
         self.combo_zm.bind("<Return>", lambda event: self.zm_enter())
         self.combo_zm.bind("<FocusOut>", lambda event: self.zm_enter())
         self.combo_zm.bind("<<ComboboxSelected>>", lambda event: self.zm_enter())
-        self.combo_zm.grid(column=0, row=1, columnspan=2, padx=5, sticky=tk.W)
-        ttk.Label(self.display, text="Thickness [px]").grid(column=2, row=0, padx=5, sticky=tk.W)
-        values = [1,2,3,4,5,7,10,15,20,25,30,40,50,70,100,150,200,250,300,400,500,700,1000]
-        self.combo_th = ttk.Combobox(self.display, values=values, width=12, textvariable=self.thickness)
         self.combo_th.bind("<Return>", lambda event: self.th_enter())
         self.combo_th.bind("<FocusOut>", lambda event: self.th_enter())
         self.combo_th.bind("<<ComboboxSelected>>", lambda event: self.th_enter())
-        self.combo_th.grid(column=2, row=1, padx=5, sticky=tk.W)
-        self.chk_a = ttk.Checkbutton(self.display, variable=self.a_on, text="Axes (A)", 
-                                     command=self.a_switch)
-        self.chk_a.grid(column=3, row=0, padx=5, sticky=tk.W)
-        self.chk_b = ttk.Checkbutton(self.display, variable=self.b_on, text="Scale bar (B)",
-                                     command=self.b_switch)
-        self.chk_b.grid(column=3, row=1, padx=5, sticky=tk.W)
-        self.chk_p = ttk.Checkbutton(self.display, variable=self.p_on, text="Points",
-                                     command=lambda: [Hub.put_points(), Hub.calc_guide()])
-        self.chk_p.grid(column=4, row=0, padx=5, sticky=tk.W)
-        self.chk_g = ttk.Checkbutton(self.display, variable=self.g_on, text="Guide (G)", command=self.g_switch)
-        self.chk_g.grid(column=4, row=1, padx=5, sticky=tk.W)
-        self.rad_b = ttk.Radiobutton(self.display, text="Black", value=False, 
-                                     variable=self.white, command=self.wb_switch)
-        self.rad_b.grid(column=5, row=0, padx=5, sticky=tk.W)
-        self.rad_w = ttk.Radiobutton(self.display, text="White", value=True, 
-                                     variable=self.white, command=self.wb_switch)
-        self.rad_w.grid(column=5, row=1, padx=5, sticky=tk.W)
+        self.chk_a.configure(command=self.a_switch)
+        self.chk_b.configure(command=self.b_switch)
+        self.chk_p.configure(command=lambda: [Hub.put_points(), Hub.calc_guide()])
+        self.chk_g.configure(command=self.g_switch)
+        self.rad_b.configure(command=self.wb_switch)
+        self.rad_w.configure(command=self.wb_switch)
         
-        self.bottom = ttk.Frame(self.main_frame)
-        self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
-        
-        self.bar_text = tk.StringVar()
         self.bar_text.set("Scale bar: {0} μm".format(Hub.geometry["bar_len"]))
-        self.bar_button = ttk.Button(self.bottom, textvariable=self.bar_text, 
-                                     command=Hub.geometry.set_bar_length)
+        self.bar_button.configure(command=Hub.geometry.set_bar_length)
         if Hub.geometry["bar_len"] == None:
             self.bar_button.configure(state=tk.DISABLED)
-        self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
-        
-        self.coor_text = tk.StringVar()
-        self.coor_text.set("[x,y,z] =\n    vals =")
-        self.coor_info = ttk.Label(self.bottom, textvariable=self.coor_text, width=30)
-        self.coor_info.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
-        
-        self.scale_frame = ttk.Frame(self.bottom)
-        self.scale_frame.pack(side=tk.TOP, fill=tk.X)
-        
-        self.scale = tk.Scale(self.scale_frame, length=2000, variable=self.depth,
-                              to=self.scale_to, orient="horizontal", showvalue=False,
-                              command=Hub.position.scale)
+        self.scale.configure(command=Hub.position.scale)
+        self.scale.configure(to=self.scale_to)
         self.scale.bind("<Button-1>", Hub.position.scale_clicked)
         self.scale.bind("<ButtonRelease-1>", Hub.position.scale_released)
-        self.scale.pack(side=tk.LEFT)
-        
         self.scale_frame.bind("<Configure>", self.scale_configure)
-        
-        self.sec_frame = ttk.Frame(self.main_frame)
-        self.sec_frame.pack(padx=2, pady=3)
-        self.sec_cf = ttk.Frame(self.sec_frame)
-        self.sec_canvas = tk.Canvas(self.sec_cf, width=2000, height=2000)
-        self.barx = tk.Scrollbar(self.sec_frame, orient=tk.HORIZONTAL)
-        self.barx.pack(side=tk.BOTTOM, fill=tk.X)
-        self.barx.config(command=self.sec_canvas.xview)
-        self.bary = tk.Scrollbar(self.sec_frame, orient=tk.VERTICAL)
-        self.bary.pack(side=tk.RIGHT, fill=tk.Y)
-        self.bary.config(command=self.sec_canvas.yview)
-        self.sec_canvas.config(yscrollcommand=self.bary_set)
-        self.sec_canvas.config(xscrollcommand=self.barx_set)
         
         self.sec_canvas.bind('<Motion>', self.track_sec)
         self.sec_canvas.bind('<Button-1>', self.click_sec)
@@ -319,21 +359,10 @@ class GUI(ttk.Frame):
         self.sec_canvas.bind("<Shift-MouseWheel>", lambda event: 
                                  self.sec_canvas.\
                                      xview_scroll(int(-event.delta/120), "units"))
+        self.sec_canvas.config(yscrollcommand=self.bary_set)
+        self.sec_canvas.config(xscrollcommand=self.barx_set)
         self.sec_canvas.bind("<Control-MouseWheel>", self.zm_scroll)
-        
-        self.sec_canvas.pack(side=tk.LEFT, anchor=tk.NW)
-        self.sec_cf.pack(side=tk.LEFT)
-            
         self.sec_cf.bind("<Configure>", self.sec_configure)
-        
-        self.master.state("zoomed")
-        fill = "#ffffff" if self.white.get() else "#000000"
-        self.sec_back = self.sec_canvas.create_rectangle(0, 0, 2000, 2000, fill=fill, width=0)
-        self.sec_id = self.sec_canvas.create_image(0, 0, anchor="nw")
-        if self.g_on.get():
-            self.master.minsize(850, 400)
-        else:
-            self.master.minsize(400, 400)
         
         self.master.bind("<Key>", self.key)
         self.master.bind("<KeyRelease>", lambda event: self.key_bind())

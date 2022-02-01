@@ -42,8 +42,7 @@ Please choose data file to open.''')
             return object.__getattribute__(self, name)
     def __setattr__(self, name, val):
         if name == "dat":
-            if self.load(val) == 0:
-                return None
+            self.load(val)
         elif name == "val":
             self.dat = val
         else:
@@ -186,6 +185,8 @@ Please specify the file.'''.format(os.path.basename(f)))
         
         if add: object.__setattr__(self, "dat", tuple(list(self.dat) + dat))
         else: object.__setattr__(self, "dat", tuple(dat))
+        
+        Hub.geometry["shape"] = box.shape
         
         return len(box)
     

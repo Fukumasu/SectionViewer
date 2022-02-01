@@ -25,9 +25,9 @@ class Geometry:
             else:
                 geo["res_xy"] = geo["res_z"]
         Hub.ratio = 1. if geo["res_xy"] == None else geo["res_z"]/geo["res_xy"]
-        if hasattr(Hub, "box"):
-            dc, dz, dy, dx = Hub.box.shape
-            Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
+        
+        dc, dz, dy, dx = geo["shape"]
+        Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
                 
         if not "im_size" in geo: 
             geo["im_size"] = (dx,dy)
@@ -59,6 +59,8 @@ class Geometry:
     
     def __getitem__(self, x):
         return self.geo[x]
+    def __setitem__(self, x, v):
+        self.geo[x] = v
     
     
     def details(self):
