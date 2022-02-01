@@ -3,7 +3,6 @@ import subprocess
 import sys
 
 import cv2
-import numpy as np
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
@@ -28,6 +27,7 @@ class SectionViewer(ttk.Frame):
         canvas.create_rectangle(0, 0, 2000, 2000, fill="#606060", width=0)
         canvas.create_image(56, 11, image=icon, anchor="nw")
         canvas.pack()
+        root.geometry("+0+0")
         root.title('SectionViewer')
         super().__init__(root)
         self.root = root
@@ -147,6 +147,7 @@ def launch(file_name=None):
         canvas.create_image(56, 11, image=icon, anchor="nw")
         canvas.pack()
         root.title('SectionViewer')
+        root.geometry("+0+0")
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
                                                initialdir=iDir, title="Open")
         root.destroy()
