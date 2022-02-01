@@ -2,6 +2,9 @@ import os
 import subprocess
 import sys
 
+import cv2
+import numpy as np
+from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -19,8 +22,13 @@ class SectionViewer(ttk.Frame):
         root = tk.Tk()
         root.withdraw()
         root.iconbitmap(eDir + "img/SectionViewer.ico")
-        label = ttk.Label(root, text="Open OIB, TIFF, or SECV file")
-        label.pack(padx=50, pady=30)
+        icon = cv2.imread(eDir +'img/icon_128x128.png', -1)
+        icon = np.append(icon[:,:,2::-1], icon[:,:,3:], axis=2)
+        icon = ImageTk.PhotoImage(Image.fromarray(icon))
+        canvas = tk.Canvas(root, width=240, height=150)
+        canvas.create_rectangle(0, 0, 2000, 2000, fill="#666666", width=0)
+        canvas.create_image(56, 11, image=icon, anchor="nw")
+        canvas.pack()
         root.title('SectionViewer')
         super().__init__(root)
         self.root = root
@@ -140,10 +148,15 @@ def launch(file_name=None):
         if not os.path.isdir(iDir):
             iDir = os.path.expanduser("~/Desktop")
         root = tk.Tk()
-        root.title('SectionViewer')
-        label = ttk.Label(root, text="Open OIB, TIFF, or SECV file")
-        label.pack(padx=50, pady=30)
         root.iconbitmap(eDir + "img/SectionViewer.ico")
+        icon = cv2.imread(eDir +'img/icon_128x128.png', -1)
+        icon = np.append(icon[:,:,2::-1], icon[:,:,3:], axis=2)
+        icon = ImageTk.PhotoImage(Image.fromarray(icon))
+        canvas = tk.Canvas(root, width=240, height=150)
+        canvas.create_rectangle(0, 0, 2000, 2000, fill="#666666", width=0)
+        canvas.create_image(56, 11, image=icon, anchor="nw")
+        canvas.pack()
+        root.title('SectionViewer')
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
                                                initialdir=iDir, title="Open")
         root.destroy()

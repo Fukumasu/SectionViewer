@@ -29,7 +29,7 @@ class GUI(ttk.Frame):
         self.p_image = ImageTk.PhotoImage(Image.fromarray(p_image[:,:,::-1]))
         s_image = resources[:35,72:108]
         self.s_image = ImageTk.PhotoImage(Image.fromarray(s_image[:,:,::-1]))
-        k_image = resources[35:]
+        k_image = resources[35:204]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
         self.xyz = resources[:22,108:174]
         e_image = resources[:14,174:188]
