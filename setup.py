@@ -2,14 +2,26 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext as _build_ext
+# from setuptools.command.build_ext import build_ext as _build_ext
 
-class build_ext(_build_ext):
-  def finalize_options(self):
-    _build_ext.finalize_options(self)
-    __builtins__.__NUMPY_SETUP__ = False
-    import numpy
-    self.include_dirs.append(numpy.get_include())
+try:
+    from Cython.Distutils import build_ext as build_ext_cy
+    class build_ext(build_ext_cy):
+        def finalize_options(self):
+            build_ext_cy.finalize_options(self)
+            __builtins__.__NUMPY_SETUP__ = False
+            import numpy
+            self.include_dirs.append(numpy.get_include())
+except ImportError:
+    def build_ext(*args, **kwargs):
+        from Cython.Distutils import build_ext as _build_ext
+        class _build_ext(build_ext_cy):
+            def finalize_options(self):
+                build_ext_cy.finalize_options(self)
+                __builtins__.__NUMPY_SETUP__ = False
+                import numpy
+                self.include_dirs.append(numpy.get_include())
+        return _build_ext(*args, **kwargs)
 
 pf = platform.system()
 if pf == 'Windows':
@@ -41,9 +53,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
     package_data={'': ['*.txt', "*.pyx", 'img/*.png', icon, 'subdir/launcher.py']},
     include_package_data=True,
-    setup_requires=['setuptools>=18.0',
-                    'numpy',
-                    'cython'],
+    setup_requires=['numpy', 'cython'],
     entry_points = {
         'console_scripts': [
             'sectionviewer = sectionviewer.sectionviewer:main'
