@@ -23,7 +23,7 @@ else:
     icon = 'img/SectionViewer.ico'
 
 ext_modules = [Extension('sectionviewer.utils', 
-                         sources=['sectionviewer/utils.c'],
+                         sources=['sectionviewer/utils.pyx'],
                          extra_compile_args=[omp],
                          extra_link_args=[omp])]
 cmdclass = {'build_ext': build_ext}
@@ -41,7 +41,9 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
     package_data={'': ['*.txt', "*.pyx", 'img/*.png', icon, 'subdir/launcher.py']},
     include_package_data=True,
-    setup_requires=['numpy'],
+    setup_requires=['setuptools>=18.0',
+                    'numpy',
+                    'cython'],
     entry_points = {
         'console_scripts': [
             'sectionviewer = sectionviewer.sectionviewer:main'
