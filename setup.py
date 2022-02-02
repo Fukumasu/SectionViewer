@@ -16,13 +16,13 @@ def build_ext(*args, **kwargs):
 pf = platform.system()
 if pf == 'Windows':
     omp = '/openmp'
-    icon = 'img/SectionViewer.ico'
+    icon = 'img/icon.ico'
 elif pf == 'Darwin':
     omp = '-fopenmp'
-    icon = 'img/SectionViewer.icns'
+    icon = 'img/icon.icns'
 else:
     omp = '-fopenmp'
-    icon = 'img/SectionViewer.ico'
+    icon = 'img/icon.ico'
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.pyx'],
