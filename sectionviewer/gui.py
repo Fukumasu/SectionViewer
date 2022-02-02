@@ -56,7 +56,7 @@ class GUI(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap('img/SectionViewer.ico')
+        self.palette.iconbitmap('img/icon.ico')
         self.palette.resizable(height=False, width=False)
         def hide():
             self.palette.grab_release()
@@ -426,7 +426,7 @@ class GUI(ttk.Frame):
         else:
             self.close_win = tk.Toplevel(self.master)
             self.close_win.withdraw()
-            self.close_win.iconbitmap('img/SectionViewer.ico')
+            self.close_win.iconbitmap('img/icon.ico')
             self.close_win.title('Closing')
             self.close_win.resizable(width=False, height=False)
             
@@ -978,7 +978,7 @@ class GUI(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap('img/SectionViewer.ico')
+        self.fps_win.iconbitmap('img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1101,7 +1101,7 @@ class GUI(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap('img/SectionViewer.ico')
+        win.iconbitmap('img/icon.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

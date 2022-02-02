@@ -44,7 +44,7 @@ code = code.format(mDir)
 with open('executable.py', 'w') as f:
     f.write(code)
 
-icon = 'img/SectionViewer.ico'
+icon = 'img/icon.ico'
 
 build_exe_options = {'packages': ['os'], 
                      'excludes': ['asyncio',

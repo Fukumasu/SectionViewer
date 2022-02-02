@@ -17,7 +17,7 @@ class SectionViewer(ttk.Frame):
         
         root = tk.Tk()
         root.withdraw()
-        root.iconbitmap('img/SectionViewer.ico')
+        root.iconbitmap('img/icon.ico')
         icon = cv2.imread('img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
@@ -61,7 +61,7 @@ class SectionViewer(ttk.Frame):
                 
             master = tk.Toplevel(self.root)
             master.withdraw()
-            master.iconbitmap('img/SectionViewer.ico')
+            master.iconbitmap('img/icon.ico')
             self.wins += [master]
             if file_path[-5:] == '.stac':
                 gui = STAC(self, master, file_path)
@@ -102,7 +102,7 @@ def launch(file_path=None):
         file_path = sys.argv[1]
     if not os.path.isfile(str(file_path)):
         root = tk.Tk()
-        root.iconbitmap('img/SectionViewer.ico')
+        root.iconbitmap('img/icon.ico')
         icon = cv2.imread('img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
