@@ -4,8 +4,9 @@ import platform
 from setuptools import setup, Extension, find_packages
 import shutil
 
-exec(open('info.py', 'r').read())
-shutil.move('info.py', 'sectionviewer/')
+info = open('info.txt').read()
+exec(info)
+open('sectionviewer/info.py', 'w').write(info)
 
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
