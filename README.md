@@ -15,8 +15,8 @@ Viewer for sections in 3-dimensional image data (.oib, .tif), which allows to re
 ## Installation
 
 ```
-pip install git+https://github.com/Fukumasu/SectionViewer
-sectionviewer
+>pip install git+https://github.com/Fukumasu/SectionViewer
+>sectionviewer
 ```
 
 ## Description
