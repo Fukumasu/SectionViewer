@@ -4,7 +4,7 @@
 
 ## Overview
 
-Viewer for sections in 3-dimensional image data (.oib, .tif), which allows to record points with coordinate values in the data.
+Viewer for 3-dimensional images (.oib, .tif) with multi-planar reconstruction.
 
 ## Requirements
 
