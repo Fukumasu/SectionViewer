@@ -14,7 +14,7 @@ try:
             self.include_dirs.append(numpy.get_include())
 except ImportError:
     def build_ext(*args, **kwargs):
-        from Cython.Distutils import build_ext as _build_ext
+        from Cython.Distutils import build_ext as build_ext_cy
         class _build_ext(build_ext_cy):
             def finalize_options(self):
                 build_ext_cy.finalize_options(self)
