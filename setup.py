@@ -3,6 +3,10 @@ from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
 
+version = '1.0.0'
+with open('sectionviewer/version.txt', 'w') as f:
+    f.write(version)
+
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
     class _build_ext(build_ext_cy):
@@ -35,7 +39,7 @@ def _requires_from_file(filename):
 
 setup(
     name = 'sectionviewer',
-    version = '1.0.0',
+    version = version,
     packages=['sectionviewer'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
