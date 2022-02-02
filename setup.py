@@ -2,11 +2,6 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
-import shutil
-
-info = open('info.txt').read()
-exec(info)
-open('sectionviewer/info.py', 'w').write(info)
 
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
@@ -37,6 +32,10 @@ cmdclass = {'build_ext': build_ext}
 
 def _requires_from_file(filename):
     return open(filename).read().splitlines()
+
+info = open('info.txt').read()
+exec(info)
+open('sectionviewer/info.py', 'w').write(info)
 
 setup(
     name = 'sectionviewer',
