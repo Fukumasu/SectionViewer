@@ -94,6 +94,7 @@ def launch(file_name=None):
             epath0 = f.read()
         if os.path.isfile(epath0):
             print('successfully installed')
+            epath = epath0
         else:
             with open('exe_path.txt', 'w') as f:
                 f.write(epath)
