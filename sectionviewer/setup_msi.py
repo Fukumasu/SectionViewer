@@ -62,28 +62,7 @@ build_exe_options = {'packages': ['os'],
                                   'urllib',
                                   'xml']}
 
-extensions = [{'extension': 'secv',
-               'verb': 'open',
-               'executable': 'SectionViewer.exe',
-               'context': 'Edit with SectionViewer',
-               'argument': '"%1"'},
-              {'extension': 'stac',
-               'verb': 'open',
-               'executable': 'SectionViewer.exe',
-               'context': 'Edit with SectionViewer',
-               'argument': '"%1"'},
-              {'extension': 'oib',
-               'verb': 'view',
-               'executable': 'SectionViewer.exe',
-               'context': 'View with SectionViewer',
-               'argument': '"%1"'},
-              {'extension': 'tif',
-               'verb': 'view',
-               'executable': 'SectionViewer.exe',
-               'context': 'View with SectionViewer',
-               'argument': '"%1"'}]
-
-msi_data = {'CustomAction': [('EXECUTE_EXE', 18, 'SectionViewer.exe', None)],
+msi_data = {'CustomAction': [('EXECUTE_EXE', 18, info.name + '.exe', None)],
             'InstallUISequence': [('EXECUTE_EXE', None, 10000)]}
 
 bdist_msi_options = {'add_to_path': False,
@@ -91,27 +70,27 @@ bdist_msi_options = {'add_to_path': False,
                      'install_icon': icon,
                      'target_name': 'SectionViewer.msi',
                      'upgrade_code': info.upgrade_code,
-                     'extensions': extensions}
+                     'extensions': info.extensions}
 
 base = None
 if sys.platform == 'win32':
     base = 'Win32GUI'
 
 setup(
-      name = 'SectionViewer',
+      name = info.name,
+      description = info.description,
       version = info.version,
       author = info.author,
       url = info.url,
-      description = 'SectionViewer app launcher',
       options = {'build_exe': build_exe_options,
                  'bdist_msi': bdist_msi_options},
       executables = [Executable(script='executable.py',
                                 base=base,
                                 icon=icon,
-                                target_name='SectionViewer',
-                                shortcut_name='SectionViewer',
+                                target_name=info.name,
+                                shortcut_name=info.name,
                                 shortcut_dir='ProgramMenuFolder')])
 
 shutil.rmtree('build')
-subprocess.run('dist\\SectionViewer.msi', shell=True)
+subprocess.run('dist\\' + bdist_msi_options['target_name'], shell=True)
 shutil.rmtree('dist')

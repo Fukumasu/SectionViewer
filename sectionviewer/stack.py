@@ -296,7 +296,7 @@ class Stack:
         master.withdraw()
         master.iconbitmap('img/SectionViewer.ico')
         gui.SV.wins += [master]
-        STAC(gui.SV, master, gui.file_name, stac=stac)
+        STAC(gui.SV, master, gui.file_path, stac=stac)
         
         
     def stack_multi(self):
@@ -393,7 +393,7 @@ class Stack:
             master.withdraw()
             master.iconbitmap('img/SectionViewer.ico')
             gui.SV.wins += [master]
-            STAC(gui.SV, master, gui.file_name, stac=stac)
+            STAC(gui.SV, master, gui.file_path, stac=stac)
                 
         Hub.put_points()
         
@@ -441,7 +441,7 @@ class Stack:
         master.withdraw()
         master.iconbitmap('img/SectionViewer.ico')
         gui.SV.wins += [master]
-        STAC(gui.SV, master, gui.file_name, stac=stac)
+        STAC(gui.SV, master, gui.file_path, stac=stac)
                 
         Hub.put_points()
         
@@ -641,11 +641,12 @@ class Stack:
     
     
 class STAC(ttk.Frame):
-    def __init__(self, SV, master, file_name, stac=None):
+    def __init__(self, SV, master, file_path, stac=None):
         
         self.SV = SV
         
-        self.iDir = file_name
+        self.file_dir = os.path.dirname(file_path)
+        self.file_name = os.path.basename(file_path)
         
         resources = cv2.imread('img/resources.png')
         c_image = resources[:35,:36]
@@ -677,7 +678,7 @@ class STAC(ttk.Frame):
         self.palette.protocol('WM_DELETE_WINDOW', hide)
         
         try:
-            self.Hub = Hub_stack(self, file_name, stac=stac)
+            self.Hub = Hub_stack(self, file_path, stac=stac)
         except Exception as e:
             messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             self.Hub.load_success = False
@@ -685,13 +686,13 @@ class STAC(ttk.Frame):
             return None
         
         if stac != None:
-            self.file_name = None
+            self.file_path = None
             self.title = 'stack'
             self.master.title('*' + self.title)
             self.Hub.hidx_saved = -2
         else:
-            self.file_name = file_name
-            self.title = os.path.basename(file_name)
+            self.file_path = file_path
+            self.title = self.file_name
             self.master.title(self.title)
         
         self.create_widgets()
@@ -712,7 +713,7 @@ class STAC(ttk.Frame):
                                    command=lambda: self.SV.open_new(self.master), 
                                    accelerator='Ctrl+O')
         self.file_menu.add_command(label='Save', 
-                                   command=lambda: self.save(self.file_name), 
+                                   command=lambda: self.save(self.file_path), 
                                    accelerator='Ctrl+S')
         self.file_menu.add_command(label='Save As', 
                                    command=self.save, 
@@ -837,7 +838,7 @@ class STAC(ttk.Frame):
             if key == 'o':
                 self.SV.open_new(self.master)
             elif key == 's':
-                self.save(self.file_name)
+                self.save(self.file_path)
             elif key == 'S':
                 self.save()
             elif key == 'e':
@@ -892,7 +893,7 @@ class STAC(ttk.Frame):
                 self.close_win.grab_release()
                 self.close_win.destroy()
             def save():
-                if self.save(self.file_name):
+                if self.save(self.file_path):
                     self.master.destroy()
                     del self.Hub
                     close = True
@@ -1088,19 +1089,20 @@ class STAC(ttk.Frame):
         
     def save(self, path=None):
         if path == None:
-            fTyp = [('SV multi-stack', '*.stac')]
+            filetypes = [('SV multi-stack', '*.stac')]
             
             if os.path.isfile('init_dir.txt'):
                 with open('init_dir.txt', 'r') as f:
-                    stDir = f.read()
-                if not os.path.isdir(stDir):
-                    stDir = os.path.dirname(self.iDir)
+                    initialdir = f.read()
+                if not os.path.isdir(initialdir):
+                    initialdir = os.path.dirname(self.iDir)
             else:
-                stDir = os.path.dirname(self.iDir)
-            iDir = stDir
-            iFil = os.path.splitext(os.path.basename(self.iDir))[0]
-            path = filedialog.asksaveasfilename(parent=self.master, filetypes=fTyp, initialdir=iDir,
-                                                initialfile=iFil,
+                initialdir = self.file_dir
+            initialfile = os.path.splitext(self.file_name)[0]
+            path = filedialog.asksaveasfilename(parent=self.master,
+                                                filetypes=filetypes,
+                                                initialdir=initialdir,
+                                                initialfile=initialfile,
                                                 title='Save project',
                                                 defaultextension='.stac')
         
@@ -1117,9 +1119,10 @@ class STAC(ttk.Frame):
             with open('init_dir.txt', 'w') as f:
                 f.write(os.path.dirname(path))
             self.title = os.path.basename(path)
-        
-            self.file_name = path
-            self.iDir = path
+            
+            self.file_path = path
+            self.file_dir = os.path.dirname(path)
+            self.file_name = os.path.basename(path)
             
             self.Hub.hidx_saved = self.Hub.hidx
             self.master.title(self.title)
@@ -1148,32 +1151,33 @@ class STAC(ttk.Frame):
         
     def export(self):
         if len(self.Hub.stacks) > 1:
-            fTyp = [('Portable Network Graphics', '*.png'), 
-                    ('JPEG files', '*.jpg'),
-                    ('MP4 file format', '*.mp4'),
-                    ('TIFF files', '*.tif'),
-                    ('JPEG 2000 files', '*.jp2'),
-                    ('Portable image format', '*.pbm'),
-                    ('Sun rasters', '*.sr')]
+            filetypes = [('Portable Network Graphics', '*.png'), 
+                         ('JPEG files', '*.jpg'),
+                         ('MP4 file format', '*.mp4'),
+                         ('TIFF files', '*.tif'),
+                         ('JPEG 2000 files', '*.jp2'),
+                         ('Portable image format', '*.pbm'),
+                         ('Sun rasters', '*.sr')]
         else:
-            fTyp = [('Portable Network Graphics', '*.png'), 
-                    ('JPEG files', '*.jpg'),
-                    ('TIFF files', '*.tif'),
-                    ('JPEG 2000 files', '*.jp2'),
-                    ('Portable image format', '*.pbm'),
-                    ('Sun rasters', '*.sr')]
+            filetypes = [('Portable Network Graphics', '*.png'), 
+                         ('JPEG files', '*.jpg'),
+                         ('TIFF files', '*.tif'),
+                         ('JPEG 2000 files', '*.jp2'),
+                         ('Portable image format', '*.pbm'),
+                         ('Sun rasters', '*.sr')]
         
         if os.path.isfile('init_dir.txt'):
             with open('init_dir.txt', 'r') as f:
-                exDir = f.read()
-            if not os.path.isdir(exDir):
-                exDir = os.path.dirname(self.iDir)
+                initialdir = f.read()
+            if not os.path.isdir(initialdir):
+                initialdir = self.file_dir
         else:
-            exDir = os.path.dirname(self.iDir)
-        iDir = exDir
-        iFil = os.path.splitext(os.path.basename(self.iDir))[0]
-        path = filedialog.asksaveasfilename(parent=self.master, filetypes=fTyp, initialdir=iDir,
-                                            initialfile=iFil,
+            initialdir = self.file_dir
+        initialfile = os.path.splitext(self.file_name)[0]
+        path = filedialog.asksaveasfilename(parent=self.master, 
+                                            filetypes=filetypes,
+                                            initialdir=initialdir,
+                                            initialfile=initialfile,
                                             title='Export the image',
                                             defaultextension='.png')
         if len(path) > 0:

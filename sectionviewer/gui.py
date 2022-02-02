@@ -14,9 +14,11 @@ from .hub import Hub
 
 
 class GUI(ttk.Frame):
-    def __init__(self, SV, master, file_name):
+    def __init__(self, SV, master, file_path):
         self.SV = SV
-        self.file_name = file_name
+        self.file_path = file_path
+        self.file_dir = os.path.dirname(file_path)
+        self.file_name = os.path.basename(file_path)
         
         resources = cv2.imread('img/resources.png')
         c_image = resources[:35,:36]
@@ -47,7 +49,7 @@ class GUI(ttk.Frame):
         self.lock = False
         
         super().__init__(master)
-        self.title = os.path.basename(file_name)
+        self.title = self.file_name
         self.master.title(self.title)
         self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         
@@ -73,7 +75,7 @@ class GUI(ttk.Frame):
             if close:
                 self.SV.root.destroy()
         try:
-            self.Hub = Hub(self, file_name)
+            self.Hub = Hub(self, file_path)
         except Exception as e:
             messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             close()

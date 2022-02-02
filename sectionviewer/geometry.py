@@ -171,8 +171,8 @@ class Geometry:
         def replace(self):
             data = self.Hub.data.dat
             path1 = data[option.get()][0]
-            fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff'])]
-            path2 = filedialog.askopenfilename(parent=self.details_win, filetypes=fTyp, 
+            filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff'])]
+            path2 = filedialog.askopenfilename(parent=self.details_win, filetypes=filetypes, 
                                                initialdir=os.path.dirname(path1), title='Open')
             path2 = path2.replace('\\', '/')
             ans = messagebox.askokcancel('Replacing source file',

@@ -17,13 +17,13 @@ class Data:
             messagebox.showinfo('Information',
                                     '''The project doesn't contain any data files.
 Please choose data file to open.''')
-            fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
-                    ('All files', '*')]
-            iDir = os.path.dirname(Hub.gui.iDir)
+            filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                         ('All files', '*')]
+            initialdir = Hub.gui.file_dir
             file = filedialog.askopenfilename(parent=Hub.gui.master, 
-                                               filetypes=fTyp, 
-                                               initialdir=iDir,
-                                               title=Hub.gui.title)
+                                              filetypes=filetypes, 
+                                              initialdir=initialdir,
+                                              title=Hub.gui.title)
             if len(file) == 0:
                 return None
             file = file.replace('\\', '/')
@@ -88,15 +88,15 @@ Please choose data file to open.''')
                                     '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(f)))
-                fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
-                        ('All files', '*')]
-                iDir = os.path.dirname(Hub.gui.iDir)
-                iFil = os.path.splitext(os.path.basename(f))[0]
+                filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                             ('All files', '*')]
+                initialdir = Hub.gui.file_dir
+                initialfile = os.path.splitext(os.path.basename(f))[0]
                 f = filedialog.askopenfilename(parent=Hub.gui.master, 
-                                              filetypes=fTyp, 
-                                              initialdir=iDir, 
-                                              initialfile=iFil,
-                                              title='Specify {0}'.format(os.path.basename(f)))
+                                               filetypes=filetypes, 
+                                               initialdir=initialdir, 
+                                               initialfile=initialfile,
+                                               title='Specify {0}'.format(os.path.basename(f)))
                 if len(f) == 0:
                     return 0
                 f = f.replace('\\', '/')
@@ -199,14 +199,14 @@ Please specify the file.'''.format(os.path.basename(f)))
                                 '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(path)))
-            fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
-                    ('All files', '*')]
-            iDir = os.path.dirname(Hub.gui.iDir)
-            iFil = os.path.splitext(os.path.basename(path))[0]
+            filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                         ('All files', '*')]
+            initialdir = Hub.gui.file_dir
+            initialfile = os.path.splitext(os.path.basename(path))[0]
             path = filedialog.askopenfilename(parent=Hub.gui.master, 
-                                              filetypes=fTyp, 
-                                              initialdir=iDir, 
-                                              initialfile=iFil,
+                                              filetypes=filetypes, 
+                                              initialdir=initialdir, 
+                                              initialfile=initialfile,
                                               title='Specify {0}'.format(os.path.basename(path)))
             if len(path) == 0:
                 return

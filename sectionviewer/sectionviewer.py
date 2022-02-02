@@ -13,8 +13,7 @@ from .stack import STAC
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
-        mDir = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(mDir)
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         
         root = tk.Tk()
         root.withdraw()
@@ -38,40 +37,40 @@ class SectionViewer(ttk.Frame):
         if len(arg) == 0:
             self.open_new(self.root)
         else:
-            self.open_new(self.root, file_name=arg[0])
+            self.open_new(self.root, file_path=arg[0])
     
-    def open_new(self, master, file_name=None):
+    def open_new(self, master, file_path=None):
         
-        if file_name == None:
-            fTyp = [('SectionViewer projects', '*.secv'), 
-                    ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
-                    ('SV multi-stack files', '*.stac'),
-                    ('All files', '*')]
+        if file_path == None:
+            filetypes = [('SectionViewer files', '*.secv'), 
+                         ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
+                         ('SV multi-stack files', '*.stac'),
+                         ('All files', '*')]
             if not os.path.isfile('init_dir.txt'):
                 with open('init_dir.txt', 'w') as f:
                     f.write(os.path.expanduser('~/Desktop'))
             with open('init_dir.txt', 'r') as f:
-                idir = f.read()
-            if not os.path.isdir(idir):
-                idir = os.path.expanduser('~/Desktop')
-            file_name = filedialog.askopenfilename(parent=master, filetypes=fTyp, 
-                                                   initialdir=idir, title='Open')
+                initialdir = f.read()
+            if not os.path.isdir(initialdir):
+                initialdir = os.path.expanduser('~/Desktop')
+            file_path = filedialog.askopenfilename(parent=master, filetypes=filetypes, 
+                                                   initialdir=initialdir, title='Open')
         
-        if len(file_name) > 0:
-            file_name = file_name.replace('\\', '/')
+        if len(file_path) > 0:
+            file_path = file_path.replace('\\', '/')
                 
             master = tk.Toplevel(self.root)
             master.withdraw()
             master.iconbitmap('img/SectionViewer.ico')
             self.wins += [master]
-            if file_name[-5:] == '.stac':
-                gui = STAC(self, master, file_name)
+            if file_path[-5:] == '.stac':
+                gui = STAC(self, master, file_path)
             else:
-                gui = GUI(self, master, file_name)
+                gui = GUI(self, master, file_path)
             
             if hasattr(gui, 'Hub'):
                 with open('init_dir.txt', 'w') as f:
-                    f.write(os.path.dirname(file_name))
+                    f.write(os.path.dirname(file_path))
         else:
             close = True
             for w in self.wins:
@@ -80,40 +79,28 @@ class SectionViewer(ttk.Frame):
                 self.root.destroy()
 
     
-def launch(file_name=None):
-    mDir = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(mDir)
+def launch(file_path=None):
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     
     with open('exe_path.txt', 'r') as f:
-        epath = f.read()
-    if '--reinstall' in sys.argv[1:] or not os.path.isfile(epath):
+        exe_path = f.read()
+    if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
         print('preparing installer...')
         subprocess.run('python ' + 'setup_msi.py bdist_msi',
                        stdout=subprocess.PIPE, shell=True)
         with open('exe_path.txt', 'r') as f:
-            epath0 = f.read()
-        if os.path.isfile(epath0):
+            exe_path0 = f.read()
+        if os.path.isfile(exe_path0):
             print('successfully installed')
-            epath = epath0
+            exe_path = exe_path0
         else:
             with open('exe_path.txt', 'w') as f:
-                f.write(epath)
+                f.write(exe_path)
             print('canceled')
             return
     if len(sys.argv) > 1:
-        file_name = sys.argv[1]
-    if not os.path.isfile(str(file_name)):
-        fTyp = [('SectionViewer projects', '*.secv'), 
-                ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
-                ('SV multi-stack files', '*.stac'),
-                ('All files', '*')]
-        if not os.path.isfile('init_dir.txt'):
-            with open('init_dir.txt', 'w') as f:
-                f.write(os.path.expanduser('~/Desktop'))
-        with open('init_dir.txt', 'r') as f:
-            iDir = f.read()
-        if not os.path.isdir(iDir):
-            iDir = os.path.expanduser('~/Desktop')
+        file_path = sys.argv[1]
+    if not os.path.isfile(str(file_path)):
         root = tk.Tk()
         root.iconbitmap('img/SectionViewer.ico')
         icon = cv2.imread('img/resources.png')[-128:,:128]
@@ -124,13 +111,26 @@ def launch(file_name=None):
         canvas.pack()
         root.title('SectionViewer')
         root.geometry('+0+0')
-        file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
-                                               initialdir=iDir, title='Open')
+        
+        filetypes = [('SectionViewer files', '*.secv'), 
+                     ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
+                     ('SV multi-stack files', '*.stac'),
+                     ('All files', '*')]
+        if not os.path.isfile('init_dir.txt'):
+            with open('init_dir.txt', 'w') as f:
+                f.write(os.path.expanduser('~/Desktop'))
+        with open('init_dir.txt', 'r') as f:
+            initialdir = f.read()
+        if not os.path.isdir(initialdir):
+            initialdir = os.path.expanduser('~/Desktop')
+            
+        file_path = filedialog.askopenfilename(parent=root, filetypes=filetypes, 
+                                               initialdir=initialdir, title='Open')
         root.destroy()
-    if len(file_name) == 0:
+    if len(file_path) == 0:
         return
-    subprocess.Popen(epath + ' {0}'.format(file_name), shell=True)
-    return file_name
+    subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
+    return file_path
 
 
 def main(*args):

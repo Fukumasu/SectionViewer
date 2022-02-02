@@ -698,12 +698,13 @@ class Hub:
         
     def save(self, path=None):
         if path == None:
-            fTyp = [('SectionViewer project file', '*.secv')]
-            iDir = os.path.dirname(self.gui.file_name)
-            iFil = os.path.splitext(os.path.basename(self.gui.file_name))[0]
-            path = filedialog.asksaveasfilename(parent=self.gui.master, filetypes=fTyp, 
-                                                initialdir=iDir,
-                                                initialfile=iFil,
+            filetypes = [('SectionViewer project file', '*.secv')]
+            initialdir = self.gui.file_dir
+            initialfile = os.path.splitext(self.gui.file_name)[0]
+            path = filedialog.asksaveasfilename(parent=self.gui.master, 
+                                                filetypes=filetypes, 
+                                                initialdir=initialdir,
+                                                initialfile=initialfile,
                                                 title='Saving the project as SECV format',
                                                 defaultextension='.secv')
             if len(path) == 0:
@@ -783,25 +784,26 @@ class Hub:
     
     
     def export(self):
-        fTyp = [('Portable Network Graphics', '*.png'), 
-                ('JPEG files', '*.jpg'),
-                ('MP4 file format', '*.mp4'),
-                ('TIFF files', '*.tif'),
-                ('JPEG 2000 files', '*.jp2'),
-                ('Portable image format', '*.pbm'),
-                ('Sun rasters', '*.sr')]
+        filetypes = [('Portable Network Graphics', '*.png'), 
+                     ('JPEG files', '*.jpg'),
+                     ('MP4 file format', '*.mp4'),
+                     ('TIFF files', '*.tif'),
+                     ('JPEG 2000 files', '*.jp2'),
+                     ('Portable image format', '*.pbm'),
+                     ('Sun rasters', '*.sr')]
         
         if os.path.isfile('init_dir.txt'):
             with open('init_dir.txt', 'r') as f:
-                exDir = f.read()
-            if not os.path.isdir(exDir):
-                exDir = os.path.dirname(self.gui.iDir)
+                initialdir = f.read()
+            if not os.path.isdir(initialdir):
+                initialdir = self.gui.file_dir
         else:
-            exDir = os.path.dirname(self.gui.iDir)
-        iDir = exDir
-        iFil = os.path.splitext(os.path.basename(self.gui.iDir))[0]
-        path = filedialog.asksaveasfilename(parent=self.gui.master, filetypes=fTyp, initialdir=iDir,
-                                            initialfile=iFil,
+            initialdir = self.gui.file_dir
+        initialfile = os.path.splitext(self.gui.file_name)[0]
+        path = filedialog.asksaveasfilename(parent=self.gui.master,
+                                            filetypes=filetypes,
+                                            initialdir=initialdir,
+                                            initialfile=initialfile,
                                             title='Export the section image',
                                             defaultextension='.png')
         if len(path) > 0:
