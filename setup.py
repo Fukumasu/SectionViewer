@@ -2,15 +2,10 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
+import shutil
 
-version = '1.0.0'
-
-info = '''version = '{0}'
-author = 'Kazushi Fukumasu'
-url = 'https://github.com/Fukumasu/SectionViewer'
-upgrade_code = '{{6bd9a5e4-428c-4053-8956-9c452ebeefcf}}'
-'''.format(version)
-open('sectionviewer/info.py', 'w').write(info)
+exec(open('info.py', 'r').read())
+shutil.move('info.py', 'sectionviewer/')
 
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
