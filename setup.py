@@ -4,8 +4,16 @@ import platform
 from setuptools import setup, Extension, find_packages
 
 version = '1.0.0'
-with open('sectionviewer/version.txt', 'w') as f:
-    f.write(version)
+
+info = \
+'''
+version = '{0}'
+author = 'Kazushi Fukumasu'
+url = 'https://github.com/Fukumasu/SectionViewer'
+upgrade_code = '{6bd9a5e4-428c-4053-8956-9c452ebeefcf}'
+'''.format(version)
+with open('sectionviewer/info.py', 'w') as f:
+    f.write(info)
 
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
