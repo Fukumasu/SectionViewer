@@ -17,11 +17,9 @@ class GUI(ttk.Frame):
     def __init__(self, SV, master, file_name):
         self.SV = SV
         self.file_name = file_name
-        eDir = SV.eDir
+        mDir = SV.mDir
         
-        self.iDir = file_name
-        
-        resources = cv2.imread(eDir+'img/resources.png')
+        resources = cv2.imread(mDir+'img/resources.png')
         c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = resources[:35,36:72]
@@ -57,7 +55,7 @@ class GUI(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap(self.SV.eDir + "img/SectionViewer.ico")
+        self.palette.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
         self.palette.resizable(height=False, width=False)
         def hide():
             self.palette.grab_release()
@@ -427,7 +425,7 @@ class GUI(ttk.Frame):
         else:
             self.close_win = tk.Toplevel(self.master)
             self.close_win.withdraw()
-            self.close_win.iconbitmap(self.SV.eDir + "img/SectionViewer.ico")
+            self.close_win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
             self.close_win.title("Closing")
             self.close_win.resizable(width=False, height=False)
             
@@ -979,7 +977,7 @@ class GUI(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap(self.SV.eDir + "img/SectionViewer.ico")
+        self.fps_win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
         self.fps_win.title("mp4 settings")
         self.fps_win.geometry("250x90")
         self.fps_win.resizable(width=False, height=False)
@@ -1018,7 +1016,7 @@ class GUI(ttk.Frame):
                 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                 f = float(self.fps)
                 shape = (int(len(self.sec_image[0])), int(len(self.sec_image)))
-                path0 = self.SV.eDir + "/" + os.path.basename(path)
+                path0 = self.SV.mDir + "/" + os.path.basename(path)
                 
                 if os.path.isfile(path0):
                     os.remove(path0)
@@ -1102,7 +1100,7 @@ class GUI(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap(self.SV.eDir + "img/SectionViewer.ico")
+        win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

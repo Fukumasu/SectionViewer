@@ -659,7 +659,7 @@ class Points:
     def move_to(self):
         win = tk.Toplevel(self.Hub.gui.palette)
         win.withdraw()
-        win.iconbitmap(self.Hub.gui.SV.eDir + "img/SectionViewer.ico")
+        win.iconbitmap(self.Hub.gui.SV.mDir + "img/SectionViewer.ico")
         win.title("Move to")
         
         frame0 = ttk.Frame(win)

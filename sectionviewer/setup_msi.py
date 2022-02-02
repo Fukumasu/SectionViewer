@@ -6,16 +6,39 @@ from cx_Freeze import setup, Executable
 
 import info
 
-path = os.path.dirname(os.path.abspath(__file__))
-path = path.replace("\\", "/")
-os.chdir(path)
+mDir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(mDir)
 
-with open("epath.txt", "w") as f:
+with open("exe_path.txt", "w") as f:
     f.write("")
+    
+code = """
+import os
+import sys
+import subprocess
 
-with open("executable.txt", "r") as f:
-    code = f.read()
-code = code.format(path)
+def main():
+
+    mDir = r"{0}"
+    os.chdir(mDir)
+    with open("exe_path.txt", "r") as f:
+        epath = f.read()
+    epath0 = os.path.abspath(sys.argv[0])
+    if epath != epath0:
+        with open("exe_path.txt", "w") as f:
+            f.write(epath0)
+        return
+    
+    command = "../../../python sectionviewer.py"
+    if len(sys.argv) > 1:
+        command += " " + sys.argv[1]
+    subprocess.run(command, shell=True)
+    
+if __name__ == '__main__':
+    main()
+"""
+    
+code = code.format(mDir)
 with open("executable.py", "w") as f:
     f.write(code)
 

@@ -13,15 +13,15 @@ from .stack import STAC
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
-        eDir = os.path.dirname(os.path.abspath(__file__))
-        eDir = eDir.replace("\\", "/") + "/"
+        mDir = os.path.dirname(os.path.abspath(__file__))
+        mDir = mDir.replace("\\", "/") + "/"
         
-        self.eDir = eDir
+        self.mDir = mDir
         
         root = tk.Tk()
         root.withdraw()
-        root.iconbitmap(eDir + "img/SectionViewer.ico")
-        icon = cv2.imread(eDir +'img/resources.png')[-128:,:128]
+        root.iconbitmap(mDir + "img/SectionViewer.ico")
+        icon = cv2.imread(mDir +'img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill="#606060", width=0)
@@ -49,22 +49,22 @@ class SectionViewer(ttk.Frame):
                     ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
                     ("SV multi-stack files", "*.stac"),
                     ("All files", "*")]
-            if not os.path.isfile(self.eDir + "init_dir.txt"):
-                with open(self.eDir + "init_dir.txt", "w") as f:
+            if not os.path.isfile(self.mDir + "init_dir.txt"):
+                with open(self.mDir + "init_dir.txt", "w") as f:
                     f.write(os.path.expanduser("~/Desktop"))
-            with open(self.eDir + "init_dir.txt", "r") as f:
-                iDir = f.read()
-            if not os.path.isdir(iDir):
-                iDir = os.path.expanduser("~/Desktop")
+            with open(self.mDir + "init_dir.txt", "r") as f:
+                idir = f.read()
+            if not os.path.isdir(idir):
+                idir = os.path.expanduser("~/Desktop")
             file_name = filedialog.askopenfilename(parent=master, filetypes=fTyp, 
-                                                   initialdir=iDir, title="Open")
+                                                   initialdir=idir, title="Open")
         
         if len(file_name) > 0:
             file_name = file_name.replace("\\", "/")
                 
             master = tk.Toplevel(self.root)
             master.withdraw()
-            master.iconbitmap(self.eDir + "img/SectionViewer.ico")
+            master.iconbitmap(self.mDir + "img/SectionViewer.ico")
             self.wins += [master]
             if file_name[-5:] == ".stac":
                 gui = STAC(self, master, file_name)
@@ -72,7 +72,7 @@ class SectionViewer(ttk.Frame):
                 gui = GUI(self, master, file_name)
             
             if hasattr(gui, "Hub"):
-                with open(self.eDir + "init_dir.txt", "w") as f:
+                with open(self.mDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(file_name))
         else:
             close = True
@@ -80,21 +80,18 @@ class SectionViewer(ttk.Frame):
                 close = close and not bool(w.winfo_exists())
             if close:
                 self.root.destroy()
-        
-def _test():
-    app = SectionViewer([])
-    app.mainloop()
 
-def main(*arg):
-    eDir = os.path.dirname(os.path.abspath(__file__))
-    eDir = eDir.replace("\\", "/") + "/"
-    with open(eDir + "epath.txt", "r") as f:
+    
+def launch(file_name=None):
+    mDir = os.path.dirname(os.path.abspath(__file__))
+    mDir = mDir.replace("\\", "/") + "/"
+    with open(mDir + "exe_path.txt", "r") as f:
         epath = f.read()
     if '--reinstall' in sys.argv[1:] or not os.path.isfile(epath):
         print("preparing installer...")
-        subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
+        subprocess.run("python " + mDir + "setup_msi.py bdist_msi",
                        stdout=subprocess.PIPE, shell=True)
-        with open(eDir + "epath.txt", "r") as f:
+        with open(mDir + "exe_path.txt", "r") as f:
             epath = f.read()
         if os.path.isfile(epath):
             print("successfully installed")
@@ -103,44 +100,23 @@ def main(*arg):
         else:
             print("canceled")
             return
-    if len(arg) == 0:
-        arg = sys.argv[1:]
-    if len(arg) > 0:
-        subprocess.run(epath + " {0}".format(arg[0]), shell=True)
-    else:
-        subprocess.run(epath, shell=True)
-    
-def launch(file_name=None):
-    eDir = os.path.dirname(os.path.abspath(__file__))
-    eDir = eDir.replace("\\", "/") + "/"
-    with open(eDir + "epath.txt", "r") as f:
-        epath = f.read()
-    if not os.path.isfile(epath):
-        print("preparing installer...")
-        subprocess.run("python " + eDir + "setup_msi.py bdist_msi",
-                       stdout=subprocess.PIPE, shell=True)
-        with open(eDir + "epath.txt", "r") as f:
-            epath = f.read()
-        if os.path.isfile(epath):
-            print("successfully installed")
-        else:
-            print("canceled")
-            return
+    if len(sys.argv) > 1:
+        file_name = sys.argv[1]
     if file_name == None:
         fTyp = [("SectionViewer projects", "*.secv"), 
                 ("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]), 
                 ("SV multi-stack files", "*.stac"),
                 ("All files", "*")]
-        if not os.path.isfile(eDir + "init_dir.txt"):
-            with open(eDir + "init_dir.txt", "w") as f:
+        if not os.path.isfile(mDir + "init_dir.txt"):
+            with open(mDir + "init_dir.txt", "w") as f:
                 f.write(os.path.expanduser("~/Desktop"))
-        with open(eDir + "init_dir.txt", "r") as f:
-            iDir = f.read()
-        if not os.path.isdir(iDir):
-            iDir = os.path.expanduser("~/Desktop")
+        with open(mDir + "init_dir.txt", "r") as f:
+            idir = f.read()
+        if not os.path.isdir(idir):
+            idir = os.path.expanduser("~/Desktop")
         root = tk.Tk()
-        root.iconbitmap(eDir + "img/SectionViewer.ico")
-        icon = cv2.imread(eDir +'img/resources.png')[-128:,:128]
+        root.iconbitmap(mDir + "img/SectionViewer.ico")
+        icon = cv2.imread(mDir +'img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill="#606060", width=0)
@@ -149,10 +125,19 @@ def launch(file_name=None):
         root.title('SectionViewer')
         root.geometry("+0+0")
         file_name = filedialog.askopenfilename(parent=root, filetypes=fTyp, 
-                                               initialdir=iDir, title="Open")
+                                               initialdir=idir, title="Open")
         root.destroy()
     if len(file_name) == 0:
         return
     subprocess.Popen(epath + " {0}".format(file_name), shell=True)
     return file_name
+
+
+def main():
+    app = SectionViewer(sys.argv[1:])
+    app.mainloop()
+    
+
+if __name__ == '__main__':
+    main()
 

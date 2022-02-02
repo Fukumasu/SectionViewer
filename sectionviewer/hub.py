@@ -699,8 +699,8 @@ class Hub:
     def save(self, path=None):
         if path == None:
             fTyp = [("SectionViewer project file", "*.secv")]
-            iDir = os.path.dirname(self.gui.iDir)
-            iFil = os.path.splitext(os.path.basename(self.gui.iDir))[0]
+            iDir = os.path.dirname(self.gui.file_name)
+            iFil = os.path.splitext(os.path.basename(self.gui.file_name))[0]
             path = filedialog.asksaveasfilename(parent=self.gui.master, filetypes=fTyp, 
                                                 initialdir=iDir,
                                                 initialfile=iFil,
@@ -759,7 +759,7 @@ class Hub:
             
         self.gui.iDir = path
         self.gui.title = os.path.basename(path)
-        with open(self.gui.SV.eDir + "init_dir.txt", "w") as f:
+        with open(self.gui.SV.mDir + "init_dir.txt", "w") as f:
             f.write(os.path.dirname(path))
         self.gui.master.title(self.gui.title)
         self.secv_name = path
@@ -791,8 +791,8 @@ class Hub:
                 ("Portable image format", "*.pbm"),
                 ("Sun rasters", "*.sr")]
         
-        if os.path.isfile(self.gui.SV.eDir + "init_dir.txt"):
-            with open(self.gui.SV.eDir + "init_dir.txt", "r") as f:
+        if os.path.isfile(self.gui.SV.mDir + "init_dir.txt"):
+            with open(self.gui.SV.mDir + "init_dir.txt", "r") as f:
                 exDir = f.read()
             if not os.path.isdir(exDir):
                 exDir = os.path.dirname(self.gui.iDir)
@@ -810,7 +810,7 @@ class Hub:
             
             if path[-4:] == ".mp4":
                 gui.ask_fps(path)
-                with open(gui.SV.eDir + "init_dir.txt", "w") as f:
+                with open(gui.SV.mDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(path))
                 return
             
@@ -841,7 +841,7 @@ class Hub:
                         messagebox.showerror("Error", "Failed to export TIFF file :\n"\
                                              + traceback.format_exception_only(type(e), e)[0])
                         return
-                    with open(gui.SV.eDir + "init_dir.txt", "w") as f:
+                    with open(gui.SV.mDir + "init_dir.txt", "w") as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -854,7 +854,7 @@ class Hub:
                 return
             
             if self.imwrite(path, im):
-                with open(self.gui.SV.eDir + "init_dir.txt", "w") as f:
+                with open(self.gui.SV.mDir + "init_dir.txt", "w") as f:
                     f.write(os.path.dirname(path))
         
     
