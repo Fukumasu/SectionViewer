@@ -5,8 +5,7 @@ from setuptools import setup, Extension, find_packages
 
 version = '1.0.0'
 
-info = 'version = ' + version + \
-'''
+info = "version = '{0}'".format(version) + '''
 author = 'Kazushi Fukumasu'
 url = 'https://github.com/Fukumasu/SectionViewer'
 upgrade_code = '{6bd9a5e4-428c-4053-8956-9c452ebeefcf}'
