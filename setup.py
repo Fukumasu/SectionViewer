@@ -2,7 +2,7 @@ from glob import glob
 from os.path import basename, splitext
 import platform
 from setuptools import setup, Extension, find_packages
-from sectionviewer import info
+import sectionviewer.info as info
 
 def build_ext(*args, **kwargs):
     from Cython.Distutils import build_ext as build_ext_cy
