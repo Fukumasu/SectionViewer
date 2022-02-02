@@ -26,7 +26,8 @@ ext_modules = [Extension('sectionviewer.utils',
                          sources=['sectionviewer/utils.c'],
                          extra_compile_args=[omp],
                          extra_link_args=[omp])]
-cmdclass = {'build_ext': build_ext}
+# cmdclass = {'build_ext': build_ext}
+cmdclass = {}
 
 def _requires_from_file(filename):
     return open(filename).read().splitlines()
