@@ -17,9 +17,8 @@ class GUI(ttk.Frame):
     def __init__(self, SV, master, file_name):
         self.SV = SV
         self.file_name = file_name
-        mDir = SV.mDir
         
-        resources = cv2.imread(mDir+'img/resources.png')
+        resources = cv2.imread('img/resources.png')
         c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = resources[:35,36:72]
@@ -50,17 +49,17 @@ class GUI(ttk.Frame):
         super().__init__(master)
         self.title = os.path.basename(file_name)
         self.master.title(self.title)
-        self.master.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
+        self.palette.iconbitmap('img/SectionViewer.ico')
         self.palette.resizable(height=False, width=False)
         def hide():
             self.palette.grab_release()
             self.palette.withdraw()
-        self.palette.protocol("WM_DELETE_WINDOW", hide)
+        self.palette.protocol('WM_DELETE_WINDOW', hide)
         
         self.SV.root.withdraw()
         self.create_widgets()
@@ -76,30 +75,30 @@ class GUI(ttk.Frame):
         try:
             self.Hub = Hub(self, file_name)
         except Exception as e:
-            messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             close()
             return
         if not self.Hub.load_success:
             close()
             return
         def switch(event):
-            if str(self.palette.focus_get())[-5:] != "entry":
+            if str(self.palette.focus_get())[-5:] != 'entry':
                 key = event.keysym
-                if key == "c":
+                if key == 'c':
                     self.Hub.channels.settings()
-                elif key == "p":
+                elif key == 'p':
                     self.Hub.points.settings()
-                elif key == "s":
+                elif key == 's':
                     self.Hub.snapshots.settings()
-        self.palette.bind("<c>", switch)
-        self.palette.bind("<p>", switch)
-        self.palette.bind("<s>", switch)
-        self.palette.bind("<Control-s>", lambda event: self.Hub.save(self.Hub.secv_name))
-        self.palette.bind("<Control-w>", lambda event: self.Hub.save())
-        self.palette.bind("<Control-z>", lambda event: self.Hub.undo())
-        self.palette.bind("<Control-Shift-Z>", lambda event: self.Hub.redo())
-        self.palette.bind("<Control-y>", lambda event: self.Hub.redo())
-        self.palette.bind("<Return>", lambda event: [self.palette.grab_release(), self.palette.withdraw()])
+        self.palette.bind('<c>', switch)
+        self.palette.bind('<p>', switch)
+        self.palette.bind('<s>', switch)
+        self.palette.bind('<Control-s>', lambda event: self.Hub.save(self.Hub.secv_name))
+        self.palette.bind('<Control-w>', lambda event: self.Hub.save())
+        self.palette.bind('<Control-z>', lambda event: self.Hub.undo())
+        self.palette.bind('<Control-Shift-Z>', lambda event: self.Hub.redo())
+        self.palette.bind('<Control-y>', lambda event: self.Hub.redo())
+        self.palette.bind('<Return>', lambda event: [self.palette.grab_release(), self.palette.withdraw()])
         
         self.create_commands()
         self.master.deiconify()
@@ -130,10 +129,10 @@ class GUI(ttk.Frame):
         bary.config(command=self.guide_canvas.yview)
         self.guide_canvas.config(yscrollcommand=bary.set)
         self.guide_canvas.config(scrollregion=(0,0,400,569))
-        self.guide_id = self.guide_canvas.create_image(0, 0, anchor="nw")
-        self.guide_canvas.create_image(0, 400, anchor="nw", image=self.k_image)
+        self.guide_id = self.guide_canvas.create_image(0, 0, anchor='nw')
+        self.guide_canvas.create_image(0, 400, anchor='nw', image=self.k_image)
         self.guide_canvas.pack()
-        self.guide_note.add(self.guide_frame, text="Guide")
+        self.guide_note.add(self.guide_frame, text='Guide')
         
         self.side_frame = ttk.Frame(self.guide_note)
         self.side_canvas = tk.Canvas(self.side_frame, width=400, height=569)
@@ -142,17 +141,17 @@ class GUI(ttk.Frame):
         bary.config(command=self.side_canvas.yview)
         self.side_canvas.config(yscrollcommand=bary.set)
         self.side_canvas.config(scrollregion=(0,0,400,569))
-        fill = "#ffffff" if self.white.get() else "#000000"
+        fill = '#ffffff' if self.white.get() else '#000000'
         self.side_back = self.side_canvas.create_rectangle(0, 0, 400, 569, fill=fill, width=0)
-        self.side_id = self.side_canvas.create_image(0, 0, anchor="nw")
+        self.side_id = self.side_canvas.create_image(0, 0, anchor='nw')
         self.side_canvas.pack()
-        self.guide_note.add(self.side_frame, text="Side view")
+        self.guide_note.add(self.side_frame, text='Side view')
         
-        name = self.guide_note.tab(self.guide_note.select(), "text")
-        if name == "Guide":
-            self.guide_mode = "guide"
+        name = self.guide_note.tab(self.guide_note.select(), 'text')
+        if name == 'Guide':
+            self.guide_mode = 'guide'
         else:
-            self.guide_mode = "sideview"
+            self.guide_mode = 'sideview'
         
         # Main
         self.main_frame = ttk.Frame(self.master)
@@ -170,10 +169,10 @@ class GUI(ttk.Frame):
         self.s_button = ttk.Button(self.buttons, image=self.s_image)
         self.s_button.grid(column=2, row=0)
         
-        self.display = ttk.LabelFrame(self.top, text="Display")
+        self.display = ttk.LabelFrame(self.top, text='Display')
         self.display.pack(side=tk.RIGHT, ipady=3)
         
-        ttk.Label(self.display, text="Zoom [%]").grid(column=0, row=0, padx=5, sticky=tk.W)
+        ttk.Label(self.display, text='Zoom [%]').grid(column=0, row=0, padx=5, sticky=tk.W)
         self.e_button = ttk.Button(self.display, width=4, image=self.e_image)
         self.e_button.grid(column=1, row=0, sticky=tk.W)
         self.zm_values = [  10,  13,  16,  20,  25,  32,  40,  50,  63,  79,
@@ -181,22 +180,22 @@ class GUI(ttk.Frame):
                           1000,1259,1585,1995]
         self.combo_zm = ttk.Combobox(self.display, values=self.zm_values, width=12, textvariable=self.zoom)
         self.combo_zm.grid(column=0, row=1, columnspan=2, padx=5, sticky=tk.W)
-        ttk.Label(self.display, text="Thickness [px]").grid(column=2, row=0, padx=5, sticky=tk.W)
+        ttk.Label(self.display, text='Thickness [px]').grid(column=2, row=0, padx=5, sticky=tk.W)
         values = [1,2,3,4,5,7,10,15,20,25,30,40,50,70,100,150,200,250,300,400,500,700,1000]
         self.combo_th = ttk.Combobox(self.display, values=values, width=12, textvariable=self.thickness)
         self.combo_th.grid(column=2, row=1, padx=5, sticky=tk.W)
-        self.chk_a = ttk.Checkbutton(self.display, variable=self.a_on, text="Axes (A)")
+        self.chk_a = ttk.Checkbutton(self.display, variable=self.a_on, text='Axes (A)')
         self.chk_a.grid(column=3, row=0, padx=5, sticky=tk.W)
-        self.chk_b = ttk.Checkbutton(self.display, variable=self.b_on, text="Scale bar (B)")
+        self.chk_b = ttk.Checkbutton(self.display, variable=self.b_on, text='Scale bar (B)')
         self.chk_b.grid(column=3, row=1, padx=5, sticky=tk.W)
-        self.chk_p = ttk.Checkbutton(self.display, variable=self.p_on, text="Points")
+        self.chk_p = ttk.Checkbutton(self.display, variable=self.p_on, text='Points')
         self.chk_p.grid(column=4, row=0, padx=5, sticky=tk.W)
-        self.chk_g = ttk.Checkbutton(self.display, variable=self.g_on, text="Guide (G)")
+        self.chk_g = ttk.Checkbutton(self.display, variable=self.g_on, text='Guide (G)')
         self.chk_g.grid(column=4, row=1, padx=5, sticky=tk.W)
-        self.rad_b = ttk.Radiobutton(self.display, text="Black", value=False, 
+        self.rad_b = ttk.Radiobutton(self.display, text='Black', value=False, 
                                      variable=self.white)
         self.rad_b.grid(column=5, row=0, padx=5, sticky=tk.W)
-        self.rad_w = ttk.Radiobutton(self.display, text="White", value=True, 
+        self.rad_w = ttk.Radiobutton(self.display, text='White', value=True, 
                                      variable=self.white)
         self.rad_w.grid(column=5, row=1, padx=5, sticky=tk.W)
         
@@ -204,12 +203,12 @@ class GUI(ttk.Frame):
         self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
         
         self.bar_text = tk.StringVar()
-        self.bar_text.set("Scale bar: None μm")
+        self.bar_text.set('Scale bar: None μm')
         self.bar_button = ttk.Button(self.bottom, textvariable=self.bar_text)
         self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         
         self.coor_text = tk.StringVar()
-        self.coor_text.set("[x,y,z] =\n    vals =")
+        self.coor_text.set('[x,y,z] =\n    vals =')
         self.coor_info = ttk.Label(self.bottom, textvariable=self.coor_text, width=30)
         self.coor_info.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
         
@@ -217,7 +216,7 @@ class GUI(ttk.Frame):
         self.scale_frame.pack(side=tk.TOP, fill=tk.X)
         
         self.scale = tk.Scale(self.scale_frame, length=2000, variable=self.depth,
-                              orient="horizontal", showvalue=False)
+                              orient='horizontal', showvalue=False)
         self.scale.pack(side=tk.LEFT)
         
         self.sec_frame = ttk.Frame(self.main_frame)
@@ -237,10 +236,10 @@ class GUI(ttk.Frame):
         self.sec_canvas.pack(side=tk.LEFT, anchor=tk.NW)
         self.sec_cf.pack(side=tk.LEFT)
         
-        self.master.state("zoomed")
-        fill = "#ffffff" if self.white.get() else "#000000"
+        self.master.state('zoomed')
+        fill = '#ffffff' if self.white.get() else '#000000'
         self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
-        self.sec_id = self.sec_canvas.create_image(0, 0, anchor="nw")
+        self.sec_id = self.sec_canvas.create_image(0, 0, anchor='nw')
         if self.g_on.get():
             self.master.minsize(850, 400)
         else:
@@ -253,84 +252,84 @@ class GUI(ttk.Frame):
         self.menu_bar = tk.Menu(self.master)
         
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.file_menu.add_command(label="Open",
+        self.file_menu.add_command(label='Open',
                                    command=lambda: self.SV.open_new(self.master),
-                                   accelerator="Ctrl+O")
-        self.file_menu.add_command(label="Reload",
+                                   accelerator='Ctrl+O')
+        self.file_menu.add_command(label='Reload',
                                    command=lambda: Hub.reload(),
-                                   accelerator="Ctrl+R")
-        self.file_menu.add_command(label="Save", 
+                                   accelerator='Ctrl+R')
+        self.file_menu.add_command(label='Save', 
                                    command=lambda: Hub.save(Hub.secv_name), 
-                                   accelerator="Ctrl+S")
-        self.file_menu.add_command(label="Save As",
+                                   accelerator='Ctrl+S')
+        self.file_menu.add_command(label='Save As',
                                    command=lambda: Hub.save(), 
-                                   accelerator="Ctrl+Shift+S")
-        self.file_menu.add_command(label="Export", 
+                                   accelerator='Ctrl+Shift+S')
+        self.file_menu.add_command(label='Export', 
                                    command=Hub.export, 
-                                   accelerator="Ctrl+E")
+                                   accelerator='Ctrl+E')
         
         self.edit_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.edit_menu.add_command(label="Undo", 
+        self.edit_menu.add_command(label='Undo', 
                                    command=Hub.undo, 
-                                   accelerator="Ctrl+Z")
-        self.edit_menu.add_command(label="Redo", 
+                                   accelerator='Ctrl+Z')
+        self.edit_menu.add_command(label='Redo', 
                                    command=Hub.redo, 
-                                   accelerator="Ctrl+Y, Ctrl+Shift+Z")
+                                   accelerator='Ctrl+Y, Ctrl+Shift+Z')
         
         self.settings_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.settings_menu.add_command(label="Channels", 
+        self.settings_menu.add_command(label='Channels', 
                                        command=Hub.channels.settings,
-                                       accelerator="C")
-        self.settings_menu.add_command(label="Points", 
+                                       accelerator='C')
+        self.settings_menu.add_command(label='Points', 
                                        command=Hub.points.settings,
-                                       accelerator="P")
-        self.settings_menu.add_command(label="Scale bar", 
+                                       accelerator='P')
+        self.settings_menu.add_command(label='Scale bar', 
                                        command=Hub.geometry.set_bar_length)
-        self.settings_menu.add_command(label="Details", 
+        self.settings_menu.add_command(label='Details', 
                                        command=Hub.geometry.details)
         
         self.tools_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.tools_menu.add_command(label="Snapshots", command=Hub.snapshots.settings,
-                                    accelerator="S")
-        self.tools_menu.add_command(label="Stack", command=Hub.stack.settings)
+        self.tools_menu.add_command(label='Snapshots', command=Hub.snapshots.settings,
+                                    accelerator='S')
+        self.tools_menu.add_command(label='Stack', command=Hub.stack.settings)
         
-        self.menu_bar.add_cascade(label="File", menu=self.file_menu)
-        self.menu_bar.add_cascade(label="Edit", menu=self.edit_menu)
-        self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
-        self.menu_bar.add_cascade(label="Tools", menu=self.tools_menu)
+        self.menu_bar.add_cascade(label='File', menu=self.file_menu)
+        self.menu_bar.add_cascade(label='Edit', menu=self.edit_menu)
+        self.menu_bar.add_cascade(label='Settings', menu=self.settings_menu)
+        self.menu_bar.add_cascade(label='Tools', menu=self.tools_menu)
         
         self.master.config(menu=self.menu_bar)
         
         if len(Hub.history) == 1:
-            self.edit_menu.entryconfig("Undo", state="disable")
+            self.edit_menu.entryconfig('Undo', state='disable')
         if Hub.hidx == -1:
-            self.edit_menu.entryconfig("Redo", state="disable")
+            self.edit_menu.entryconfig('Redo', state='disable')
             
         self.guide_canvas.bind('<Button-1>', lambda event: [self.master.focus_set(),
                                                             Hub.points.settings(select=self.p_num)])
         self.guide_canvas.bind('<Motion>', self.track_guide)
-        self.guide_canvas.bind("<MouseWheel>", lambda event: 
+        self.guide_canvas.bind('<MouseWheel>', lambda event: 
                                self.guide_canvas.\
-                                   yview_scroll(int(-event.delta/120), "units"))
+                                   yview_scroll(int(-event.delta/120), 'units'))
         self.guide_im = ImageTk.PhotoImage(Image.fromarray(self.guide[:,:,::-1]))
         self.guide_canvas.itemconfig(self.guide_id, image=self.guide_im)
         self.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(self.side[:,:,2::-1], 
                                                                     self.side[:,:,3:], axis=2)))
         self.side_canvas.itemconfig(self.side_id, image=self.side_im)
-        self.guide_note.bind("<<NotebookTabChanged>>", self.guide_note_changed)
+        self.guide_note.bind('<<NotebookTabChanged>>', self.guide_note_changed)
         
-        self.buttons.bind("<Button-1>", lambda event: self.master.focus_set())
+        self.buttons.bind('<Button-1>', lambda event: self.master.focus_set())
         self.c_button.configure(command=Hub.channels.settings)
         self.p_button.configure(command=Hub.points.settings)
         self.s_button.configure(command=Hub.snapshots.settings)
         
         self.e_button.configure(command=self.fit_frame)
-        self.combo_zm.bind("<Return>", lambda event: self.zm_enter())
-        self.combo_zm.bind("<FocusOut>", lambda event: self.zm_enter())
-        self.combo_zm.bind("<<ComboboxSelected>>", lambda event: self.zm_enter())
-        self.combo_th.bind("<Return>", lambda event: self.th_enter())
-        self.combo_th.bind("<FocusOut>", lambda event: self.th_enter())
-        self.combo_th.bind("<<ComboboxSelected>>", lambda event: self.th_enter())
+        self.combo_zm.bind('<Return>', lambda event: self.zm_enter())
+        self.combo_zm.bind('<FocusOut>', lambda event: self.zm_enter())
+        self.combo_zm.bind('<<ComboboxSelected>>', lambda event: self.zm_enter())
+        self.combo_th.bind('<Return>', lambda event: self.th_enter())
+        self.combo_th.bind('<FocusOut>', lambda event: self.th_enter())
+        self.combo_th.bind('<<ComboboxSelected>>', lambda event: self.th_enter())
         self.chk_a.configure(command=self.a_switch)
         self.chk_b.configure(command=self.b_switch)
         self.chk_p.configure(command=lambda: [Hub.put_points(), Hub.calc_guide()])
@@ -338,36 +337,36 @@ class GUI(ttk.Frame):
         self.rad_b.configure(command=self.wb_switch)
         self.rad_w.configure(command=self.wb_switch)
         
-        self.bar_text.set("Scale bar: {0} μm".format(Hub.geometry["bar_len"]))
+        self.bar_text.set('Scale bar: {0} μm'.format(Hub.geometry['bar_len']))
         self.bar_button.configure(command=Hub.geometry.set_bar_length)
-        if Hub.geometry["bar_len"] == None:
+        if Hub.geometry['bar_len'] == None:
             self.bar_button.configure(state=tk.DISABLED)
         self.scale.configure(command=Hub.position.scale)
         self.scale.configure(to=self.scale_to)
-        self.scale.bind("<Button-1>", Hub.position.scale_clicked)
-        self.scale.bind("<ButtonRelease-1>", Hub.position.scale_released)
-        self.scale_frame.bind("<Configure>", self.scale_configure)
+        self.scale.bind('<Button-1>', Hub.position.scale_clicked)
+        self.scale.bind('<ButtonRelease-1>', Hub.position.scale_released)
+        self.scale_frame.bind('<Configure>', self.scale_configure)
         
         self.sec_canvas.bind('<Motion>', self.track_sec)
         self.sec_canvas.bind('<Button-1>', self.click_sec)
         self.sec_canvas.bind('<ButtonRelease-1>', self.release_sec)
-        self.sec_canvas.bind("<MouseWheel>", lambda event: 
+        self.sec_canvas.bind('<MouseWheel>', lambda event: 
                                  self.sec_canvas.\
-                                     yview_scroll(int(-event.delta/120), "units"))
-        self.sec_canvas.bind("<Shift-MouseWheel>", lambda event: 
+                                     yview_scroll(int(-event.delta/120), 'units'))
+        self.sec_canvas.bind('<Shift-MouseWheel>', lambda event: 
                                  self.sec_canvas.\
-                                     xview_scroll(int(-event.delta/120), "units"))
+                                     xview_scroll(int(-event.delta/120), 'units'))
         self.sec_canvas.config(yscrollcommand=self.bary_set)
         self.sec_canvas.config(xscrollcommand=self.barx_set)
-        self.sec_canvas.bind("<Control-MouseWheel>", self.zm_scroll)
-        self.sec_cf.bind("<Configure>", self.sec_configure)
+        self.sec_canvas.bind('<Control-MouseWheel>', self.zm_scroll)
+        self.sec_cf.bind('<Configure>', self.sec_configure)
         
-        self.master.bind("<Key>", self.key)
-        self.master.bind("<KeyRelease>", lambda event: self.key_bind())
+        self.master.bind('<Key>', self.key)
+        self.master.bind('<KeyRelease>', lambda event: self.key_bind())
         
         
     def key(self, event):
-        self.master.unbind("<Key>")
+        self.master.unbind('<Key>')
         self.master.after(1, self._key, event)
     
     def _key(self, event):
@@ -377,28 +376,28 @@ class GUI(ttk.Frame):
         if self.master.focus_get()==self.combo_th:
             return None
         if event.state//self.flags[1]%2 == 1:
-            if key == "o":
+            if key == 'o':
                 self.SV.open_new(self.master)
-            elif key == "r":
+            elif key == 'r':
                 self.Hub.reload()
-            elif key == "s":
+            elif key == 's':
                 self.Hub.save(self.Hub.secv_name)
-            elif key == "S":
+            elif key == 'S':
                 self.Hub.save()
-            elif key == "e":
+            elif key == 'e':
                 self.Hub.export()
-            elif key == "z":
+            elif key == 'z':
                 self.Hub.undo()
-            elif key in ("Z", "y"):
+            elif key in ('Z', 'y'):
                 self.Hub.redo()
             else:
                 self.Hub.position.key_pressed(key, 2)
         else:
-            if key in ["a", "b", "g"]:
-                getattr(self, "chk_{0}".format(key)).invoke()
-            elif key in ["c", "p", "s"]:
-                getattr(self, "{0}_button".format(key)).invoke()
-            elif key == "Delete":
+            if key in ['a', 'b', 'g']:
+                getattr(self, 'chk_{0}'.format(key)).invoke()
+            elif key in ['c', 'p', 's']:
+                getattr(self, '{0}_button'.format(key)).invoke()
+            elif key == 'Delete':
                 self.Hub.points.del_pt(x=[self.p_num])
             elif event.state//self.flags[0]%2 == 1:
                 self.Hub.position.key_pressed(key.lower(), 1)
@@ -407,7 +406,7 @@ class GUI(ttk.Frame):
         self.master.after(1, self.key_bind)
     
     def key_bind(self):
-        self.master.bind("<Key>", self.key)
+        self.master.bind('<Key>', self.key)
         
     
     def on_close(self, reboot=False):
@@ -425,14 +424,14 @@ class GUI(ttk.Frame):
         else:
             self.close_win = tk.Toplevel(self.master)
             self.close_win.withdraw()
-            self.close_win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
-            self.close_win.title("Closing")
+            self.close_win.iconbitmap('img/SectionViewer.ico')
+            self.close_win.title('Closing')
             self.close_win.resizable(width=False, height=False)
             
             frame0 = ttk.Frame(self.close_win)
             frame0.pack(ipadx=10, ipady=10)
             
-            label = ttk.Label(frame0, text="Will you save changes before you quit?")
+            label = ttk.Label(frame0, text='Will you save changes before you quit?')
             label.pack(padx=10, pady=20)
             
             frame = ttk.Frame(frame0)
@@ -463,11 +462,11 @@ class GUI(ttk.Frame):
                 if reboot:
                     self.SV.open_new(self.SV.root, secv_name)
             
-            button0 = ttk.Button(frame, text="Cancel", command=cancel)
+            button0 = ttk.Button(frame, text='Cancel', command=cancel)
             button0.grid(column=0, row=1)
-            button1 = ttk.Button(frame, text="Discard", command=discard)
+            button1 = ttk.Button(frame, text='Discard', command=discard)
             button1.grid(column=1, row=1)
-            button2 = ttk.Button(frame, text="Save", command=save)
+            button2 = ttk.Button(frame, text='Save', command=save)
             button2.grid(column=2, row=1)
             
             self.close_win.deiconify()
@@ -485,9 +484,9 @@ class GUI(ttk.Frame):
                 self.idx %= 3
                 buttons[self.idx].focus_set()
                 
-            self.close_win.bind("<Left>", lambda event: left())
-            self.close_win.bind("<Right>", lambda event: right())
-            self.close_win.bind("<Return>", lambda event: self.close_win.focus_get().invoke())
+            self.close_win.bind('<Left>', lambda event: left())
+            self.close_win.bind('<Right>', lambda event: right())
+            self.close_win.bind('<Return>', lambda event: self.close_win.focus_get().invoke())
     
     def zm_enter(self):
         if not self.lock:
@@ -531,7 +530,7 @@ class GUI(ttk.Frame):
         vy0, vy1 = self.bary.get()
         
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["im_size"]
+        iw, ih = self.Hub.geometry['im_size']
         iw0, ih0 = int(iw*self.Hub.zoom), int(ih*self.Hub.zoom)
         iw, ih = int(iw*zoom), int(ih*zoom)
         x, y = w//2 - iw//2, h//2 - ih//2
@@ -596,7 +595,7 @@ class GUI(ttk.Frame):
     
     def g_switch(self):
         if self.g_on.get():
-            if self.guide_mode == "guide":
+            if self.guide_mode == 'guide':
                 self.Hub.calc_guide()
             else:
                 self.Hub.calc_sideview()
@@ -620,8 +619,8 @@ class GUI(ttk.Frame):
     
     def sec_configure(self, event):
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["im_size"]
-        if not hasattr(self.Hub, "zoom"):
+        iw, ih = self.Hub.geometry['im_size']
+        if not hasattr(self.Hub, 'zoom'):
             zoom = min((w-10)/iw, (h-10)/ih)
             self.zoom.set(str(int(zoom*100)))
             self.Hub.zoom = float(self.zoom.get())/100
@@ -648,7 +647,7 @@ class GUI(ttk.Frame):
     
     def fit_frame(self):
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
-        iw, ih = self.Hub.geometry["im_size"]
+        iw, ih = self.Hub.geometry['im_size']
         zoom = min((w-10)/iw, (h-10)/ih)
         iw1, ih1 = int(iw*zoom), int(ih*zoom)
         ul = (int(iw1//2-w//2), int(ih1//2-h//2))
@@ -658,7 +657,7 @@ class GUI(ttk.Frame):
             self.Hub.zoom = float(self.zoom.get())/100
             self.upperleft = ul
         else:
-            self.zoom.set("100")
+            self.zoom.set('100')
             self.Hub.zoom = 1.0
             self.upperleft = (int(iw//2-w//2), int(ih//2-h//2))
         x, y, iw, ih, w, h = self.Hub.put_axes_bar()
@@ -668,12 +667,12 @@ class GUI(ttk.Frame):
     
     def bary_set(self, v1, v2):
         self.bary.set(v1, v2)
-        if not hasattr(self.Hub, "zoom"):
+        if not hasattr(self.Hub, 'zoom'):
             return
         self.master.after(1, self.move_upperleft)
     def barx_set(self, v1, v2):
         self.barx.set(v1, v2)
-        if not hasattr(self.Hub, "zoom"):
+        if not hasattr(self.Hub, 'zoom'):
             return
         self.master.after(1, self.move_upperleft)
         
@@ -681,7 +680,7 @@ class GUI(ttk.Frame):
         vy, vx = self.bary.get(), self.barx.get()
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
         zoom = self.Hub.zoom
-        iw, ih = self.Hub.geometry["im_size"]
+        iw, ih = self.Hub.geometry['im_size']
         iw, ih = int(iw*zoom), int(ih*zoom)
         u1 = int(vx[0]*(2*w+iw-100) - w + 50)
         u2 = int(vy[0]*(2*h+ih-100) - h + 50)
@@ -698,7 +697,7 @@ class GUI(ttk.Frame):
         x, y = self.sec_canvas.canvasx(event.x), self.sec_canvas.canvasy(event.y)
         x, y = x - self.imx, y - self.imy
         zoom = self.Hub.zoom
-        a, b = self.Hub.geometry["im_size"]
+        a, b = self.Hub.geometry['im_size']
         a, b = int(a*zoom), int(b*zoom)
         if x > a or y > b or x < 0 or y < 0:
             return None
@@ -714,10 +713,10 @@ class GUI(ttk.Frame):
         
         
     def release_sec(self, event):
-        self.sec_canvas.bind("<Motion>", self.track_sec)
+        self.sec_canvas.bind('<Motion>', self.track_sec)
         if (self.shift != 0).any():
             pos = self.Hub.position.asarray()
-            pos[0] -= (self.shift[0]*pos[2] + self.shift[1]*pos[1])/self.Hub.geometry["exp_rate"]
+            pos[0] -= (self.shift[0]*pos[2] + self.shift[1]*pos[1])/self.Hub.geometry['exp_rate']
             self.Hub.position.new(pos, 0)
             self.shift = np.array([0.,0.])
         elif  self.angle != 0:
@@ -728,12 +727,12 @@ class GUI(ttk.Frame):
             self.Hub.position.new(pos, 0)
             self.angle = 0
         elif self.expand != 1:
-            self.Hub.geometry.new(["exp_rate"], [self.expand*self.Hub.geometry["exp_rate"]])
+            self.Hub.geometry.new(['exp_rate'], [self.expand*self.Hub.geometry['exp_rate']])
             self.expand = 1.
         elif (self.trim != 0).any():
-            im_size = np.array(list(self.Hub.geometry["im_size"]))
+            im_size = np.array(list(self.Hub.geometry['im_size']))
             im_size += self.trim
-            self.Hub.geometry.new(["im_size"], [tuple(im_size)])
+            self.Hub.geometry.new(['im_size'], [tuple(im_size)])
             self.trim[:] = 0
         elif time.time() - self.click_time < 0.5:
             if self.mode == 1:
@@ -746,26 +745,26 @@ class GUI(ttk.Frame):
         
     
     def track_sec(self, event):
-        self.sec_canvas.unbind("<Motion>")
+        self.sec_canvas.unbind('<Motion>')
         self.master.after(1, self.track_sec_, (event))
     
         
     def track_sec_(self, event):
         
         def motion_bind():
-            self.sec_canvas.bind("<Motion>", self.track_sec)
+            self.sec_canvas.bind('<Motion>', self.track_sec)
         
         x, y = self.sec_canvas.canvasx(event.x), self.sec_canvas.canvasy(event.y)
         x, y = x - self.imx, y - self.imy
         zoom = self.Hub.zoom
         x, y = x/zoom, y/zoom
-        la, lb = self.Hub.geometry["im_size"]
+        la, lb = self.Hub.geometry['im_size']
         iw, ih = len(self.section[0]), len(self.section)
         op, ny, nx = self.Hub.position.asarray()
         if (event.state//self.flags[3])%2 == 0:
             dc, dz, dy, dx = self.Hub.box.shape
             v = np.array([x, y], np.float) - np.array([la//2, lb//2])
-            p = op + ny*v[1]/self.Hub.geometry["exp_rate"] + nx*v[0]/self.Hub.geometry["exp_rate"]
+            p = op + ny*v[1]/self.Hub.geometry['exp_rate'] + nx*v[0]/self.Hub.geometry['exp_rate']
             p[0] /= self.Hub.ratio
             p += np.array([dz//2, dy//2, dx//2])
             sort = np.argsort(self.Hub.channels.getnames())
@@ -776,7 +775,7 @@ class GUI(ttk.Frame):
                 vals = np.zeros(len(self.Hub.frame))
             vals = str(np.round(vals).astype(np.int)[sort][self.Hub.ch_show[sort]])
             p = str(np.round(p).astype(np.int)[::-1])
-            self.coor_text.set("[x,y,z] = {0}\n    vals = {1}".format(p, vals))
+            self.coor_text.set('[x,y,z] = {0}\n    vals = {1}'.format(p, vals))
             if len(self.Hub.sec_points) != 0:
         
                 dists = np.linalg.norm(self.Hub.sec_points[:,:2] - np.array([y,x]), axis=1)
@@ -823,14 +822,14 @@ class GUI(ttk.Frame):
                 self.shift[np.argmin(np.abs(self.shift))] = 0
             pos = self.Hub.position.asarray()
             pos_ = pos.copy()
-            pos[0] -= (self.shift[0]*nx + self.shift[1]*ny)/self.Hub.geometry["exp_rate"]
+            pos[0] -= (self.shift[0]*nx + self.shift[1]*ny)/self.Hub.geometry['exp_rate']
             self.Hub.position.pos = pos.tolist()
             sec_raw = self.Hub.sec_raw
             M = np.float32([[1,0,self.shift[0]],[0,1,self.shift[1]]])
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
             if self.g_on.get():
-                if self.guide_mode == "guide":
+                if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
                 else:
                     self.Hub.calc_sideview()
@@ -853,7 +852,7 @@ class GUI(ttk.Frame):
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
             if self.g_on.get():
-                if self.guide_mode == "guide":
+                if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
                 else:
                     self.Hub.calc_sideview()
@@ -865,25 +864,25 @@ class GUI(ttk.Frame):
             v = np.array([x, y], np.float) - np.array([la//2, lb//2])
             self.expand = np.linalg.norm(v)/np.linalg.norm(v0)
             
-            exp_rate = self.Hub.geometry["exp_rate"]
-            self.Hub.geometry.geo["exp_rate"] *= self.expand
+            exp_rate = self.Hub.geometry['exp_rate']
+            self.Hub.geometry.geo['exp_rate'] *= self.expand
             sec_raw = self.Hub.sec_raw
             M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), 0, self.expand)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
             if self.g_on.get():
-                if self.guide_mode == "guide":
+                if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
                 else:
                     self.Hub.calc_sideview()
-            self.Hub.geometry.geo["exp_rate"] = exp_rate
+            self.Hub.geometry.geo['exp_rate'] = exp_rate
             self.Hub.sec_raw = sec_raw
         
         elif self.mode == 3:
             r = self.click - np.array([la//2, lb//2])
             fr = np.abs(r) > np.array([la//8, lb//8])
             if fr.any():
-                self.trim = np.array(list(self.Hub.geometry["im_size"]))
+                self.trim = np.array(list(self.Hub.geometry['im_size']))
                 if fr.all():
                     self.trim = self.trim*np.array([x-iw//2,y-ih//2])/r
                 elif fr[0]:
@@ -894,8 +893,8 @@ class GUI(ttk.Frame):
                 self.trim = self.trim.astype(np.int)
                 self.trim[self.trim < 50] = 50
                 
-                im_size = self.Hub.geometry["im_size"]
-                self.Hub.geometry.geo["im_size"] = tuple(self.trim)
+                im_size = self.Hub.geometry['im_size']
+                self.Hub.geometry.geo['im_size'] = tuple(self.trim)
                 
                 zoom = self.Hub.zoom
                 t0, t1 = (self.trim*zoom).astype(np.int)
@@ -918,11 +917,11 @@ class GUI(ttk.Frame):
                 x, y = w//2 - t0//2, h//2 - t1//2
                 self.sec_canvas.coords(self.sec_back, x, y, x+t0, y+t1)
                 self.sec_canvas.itemconfig(self.sec_id, image=self.sec_im)
-                self.sec_canvas.itemconfig(self.sec_back, fill="#ffffff" if self.white.get() else "#000000")
+                self.sec_canvas.itemconfig(self.sec_back, fill='#ffffff' if self.white.get() else '#000000')
                 if self.g_on.get():
-                    if self.guide_mode == "guide":
+                    if self.guide_mode == 'guide':
                         self.Hub.calc_guide(rect=False)
-                self.Hub.geometry.geo["im_size"] = im_size
+                self.Hub.geometry.geo['im_size'] = im_size
                 self.upperleft = (u0, u1)
                     
                 self.trim -= np.array(list(im_size))
@@ -931,13 +930,13 @@ class GUI(ttk.Frame):
             
             
     def guide_note_changed(self, event):
-        name = self.guide_note.tab(self.guide_note.select(), "text")
-        if name == "Guide":
+        name = self.guide_note.tab(self.guide_note.select(), 'text')
+        if name == 'Guide':
             self.Hub.calc_guide()
-            self.guide_mode = "guide"
+            self.guide_mode = 'guide'
         else:
             self.Hub.calc_sideview()
-            self.guide_mode = "sideview"
+            self.guide_mode = 'sideview'
             
             
     def track_guide(self, event):
@@ -977,9 +976,9 @@ class GUI(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
-        self.fps_win.title("mp4 settings")
-        self.fps_win.geometry("250x90")
+        self.fps_win.iconbitmap('img/SectionViewer.ico')
+        self.fps_win.title('mp4 settings')
+        self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
         
         frame = ttk.Frame(self.fps_win)
@@ -988,10 +987,10 @@ class GUI(ttk.Frame):
         frame1 = ttk.Frame(frame)
         frame1.pack(pady=5)
         
-        fps = tk.StringVar(value="20.0")        
+        fps = tk.StringVar(value='20.0')        
         entry = ttk.Entry(frame1, textvariable=fps, width=6, justify=tk.RIGHT)
         entry.pack(side=tk.LEFT)
-        label = ttk.Label(frame1, text=" fps")
+        label = ttk.Label(frame1, text=' fps')
         label.pack(side=tk.LEFT)
         
         frame2 = ttk.Frame(frame)
@@ -1016,7 +1015,7 @@ class GUI(ttk.Frame):
                 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
                 f = float(self.fps)
                 shape = (int(len(self.sec_image[0])), int(len(self.sec_image)))
-                path0 = self.SV.mDir + "/" + os.path.basename(path)
+                path0 = os.path.basename(path)
                 
                 if os.path.isfile(path0):
                     os.remove(path0)
@@ -1025,7 +1024,7 @@ class GUI(ttk.Frame):
                 pb = ttk.Progressbar(frame, orient=tk.HORIZONTAL, value=0, length=100,
                                      maximum=self.scale_to, mode='determinate')
                 pb.pack(fill=tk.X, pady=5)
-                button = ttk.Button(frame, text="Cancel", command=cancel)
+                button = ttk.Button(frame, text='Cancel', command=cancel)
                 button.pack(pady=5)
                 button.focus_set()
                 
@@ -1064,12 +1063,12 @@ class GUI(ttk.Frame):
                 self.fps_win.grab_release()
                 self.fps_win.destroy()
                 
-        button1 = ttk.Button(frame2, text="Cancel", command=cancel)
+        button1 = ttk.Button(frame2, text='Cancel', command=cancel)
         button1.pack(side=tk.LEFT)
-        button2 = ttk.Button(frame2, text="OK", command=ok)
+        button2 = ttk.Button(frame2, text='OK', command=ok)
         button2.pack(side=tk.LEFT)
         
-        self.fps_win.bind("<Escape>", lambda event: button1.invoke())
+        self.fps_win.bind('<Escape>', lambda event: button1.invoke())
         def enter():
             try: self.fps_win.focus_get().invoke()
             except: button2.invoke()
@@ -1084,12 +1083,12 @@ class GUI(ttk.Frame):
         def right():
             try: self.fps_win.focus_get().get()
             except: button2.focus_set()
-        self.fps_win.bind("<Return>", lambda event: enter())
-        self.fps_win.bind("<Destroy>", lambda event: cancel())
-        self.fps_win.bind("<Up>", lambda event: entry.focus_set())
-        self.fps_win.bind("<Down>", lambda event: down())
-        self.fps_win.bind("<Left>", lambda event: left())
-        self.fps_win.bind("<Right>", lambda event: right())
+        self.fps_win.bind('<Return>', lambda event: enter())
+        self.fps_win.bind('<Destroy>', lambda event: cancel())
+        self.fps_win.bind('<Up>', lambda event: entry.focus_set())
+        self.fps_win.bind('<Down>', lambda event: down())
+        self.fps_win.bind('<Left>', lambda event: left())
+        self.fps_win.bind('<Right>', lambda event: right())
         
         self.fps_win.deiconify()
         self.entry = entry
@@ -1100,7 +1099,7 @@ class GUI(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap(self.SV.mDir + "img/SectionViewer.ico")
+        win.iconbitmap('img/SectionViewer.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)
@@ -1121,9 +1120,9 @@ class GUI(ttk.Frame):
             win.grab_release()
             win.destroy()
             option.set(opt)
-        ttk.Button(frame, text="Cancel", command=cancel).pack(side=tk.LEFT)
-        ttk.Button(frame, text="OK", command=ok).pack(side=tk.LEFT)
-        frame.bind("<Destroy>", lambda event: cancel())
+        ttk.Button(frame, text='Cancel', command=cancel).pack(side=tk.LEFT)
+        ttk.Button(frame, text='OK', command=ok).pack(side=tk.LEFT)
+        frame.bind('<Destroy>', lambda event: cancel())
         
         win.resizable(height=False, width=False)
         win.deiconify()

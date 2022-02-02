@@ -14,11 +14,11 @@ class Data:
         dat = Hub.data
         
         if len(dat) == 0:
-            messagebox.showinfo("Information",
+            messagebox.showinfo('Information',
                                     '''The project doesn't contain any data files.
 Please choose data file to open.''')
-            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
-                    ("All files", "*")]
+            fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                    ('All files', '*')]
             iDir = os.path.dirname(Hub.gui.iDir)
             file = filedialog.askopenfilename(parent=Hub.gui.master, 
                                                filetypes=fTyp, 
@@ -26,24 +26,24 @@ Please choose data file to open.''')
                                                title=Hub.gui.title)
             if len(file) == 0:
                 return None
-            file = file.replace("\\", "/")
+            file = file.replace('\\', '/')
             dat = [[file]]
         else:
             for i in range(len(dat)):
-                dat[i][0] = os.path.abspath(str(dat[i][0])).replace("\\", "/")
+                dat[i][0] = os.path.abspath(str(dat[i][0])).replace('\\', '/')
         
         self.dat = dat
         
     
     def __getattr__(self, name):
-        if name == "val":
-            return object.__getattribute__(self, "dat")
+        if name == 'val':
+            return object.__getattribute__(self, 'dat')
         else:
             return object.__getattribute__(self, name)
     def __setattr__(self, name, val):
-        if name == "dat":
+        if name == 'dat':
             self.load(val)
-        elif name == "val":
+        elif name == 'val':
             self.dat = val
         else:
             object.__setattr__(self, name, val)
@@ -84,29 +84,29 @@ Please choose data file to open.''')
         
         for i, f in enumerate(files):
             if not os.path.isfile(f):
-                messagebox.showinfo("Information",
+                messagebox.showinfo('Information',
                                     '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(f)))
-                fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
-                        ("All files", "*")]
+                fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                        ('All files', '*')]
                 iDir = os.path.dirname(Hub.gui.iDir)
                 iFil = os.path.splitext(os.path.basename(f))[0]
                 f = filedialog.askopenfilename(parent=Hub.gui.master, 
                                               filetypes=fTyp, 
                                               initialdir=iDir, 
                                               initialfile=iFil,
-                                              title="Specify {0}".format(os.path.basename(f)))
+                                              title='Specify {0}'.format(os.path.basename(f)))
                 if len(f) == 0:
                     return 0
-                f = f.replace("\\", "/")
+                f = f.replace('\\', '/')
                 files[i] = f
             
         
         boxes = []    
         for i, f in enumerate(files):
                 
-            if f[-4:] == ".oib":
+            if f[-4:] == '.oib':
                 boxes += [oif.imread(f)]
                 
                 try:
@@ -119,28 +119,28 @@ Please specify the file.'''.format(os.path.basename(f)))
         
                     pxs = axes.copy()
                     try:
-                        pxs["C"] = 0
+                        pxs['C'] = 0
                     except:
                         pass
-                    for ax in ["Z", "Y", "X"]:
+                    for ax in ['Z', 'Y', 'X']:
                         ax_data = data['Axis {0} Parameters Common'.format(axes[ax])]
-                        px = abs((ax_data["EndPosition"] - ax_data["StartPosition"])/float(shape[ax]))
-                        if ax_data["UnitName"] == "nm":
+                        px = abs((ax_data['EndPosition'] - ax_data['StartPosition'])/float(shape[ax]))
+                        if ax_data['UnitName'] == 'nm':
                             px /= 1000
                         pxs[ax] = px
-                    Hub.geometry["xy_oib"] = (pxs["X"] + pxs["Y"])/2
-                    Hub.geometry["z_oib"] = pxs["Z"]
+                    Hub.geometry['xy_oib'] = (pxs['X'] + pxs['Y'])/2
+                    Hub.geometry['z_oib'] = pxs['Z']
                 except:
                     pass
     
-            elif f[-4:] == ".tif" or f[-5:] == ".tiff":
+            elif f[-4:] == '.tif' or f[-5:] == '.tiff':
                 boxes += [tif.imread(f)]
             else:
                 try:
-                    with open(f, "rb") as g:
+                    with open(f, 'rb') as g:
                         boxes += [pickle.load(g)]
                 except:
-                    messagebox.showerror("Error", 
+                    messagebox.showerror('Error', 
                                          "File type '{0}' is not supported.".format(os.path.splitext(f)[1]))
                     return 0
             
@@ -163,8 +163,8 @@ Please specify the file.'''.format(os.path.basename(f)))
                 b = b.astype(np.uint16)
             try: box = np.append(box, b, axis=0)
             except:
-                messagebox.showerror("Failed to load data",
-                                     "Width, height and depth must be exactly the same.")
+                messagebox.showerror('Failed to load data',
+                                     'Width, height and depth must be exactly the same.')
                 return 0
             del b, boxes[0]
             n += 1
@@ -174,8 +174,8 @@ Please specify the file.'''.format(os.path.basename(f)))
                 Hub.box = np.append(Hub.box, box, axis=0)
                 Hub.ch_show = np.append(Hub.ch_show, np.ones(len(box), np.bool))
             except:
-                messagebox.showerror("Failed to load data",
-                                     "Width, height and depth must be exactly the same.")
+                messagebox.showerror('Failed to load data',
+                                     'Width, height and depth must be exactly the same.')
                 return 0
         else:
             Hub.box = box
@@ -183,10 +183,10 @@ Please specify the file.'''.format(os.path.basename(f)))
         
         dat = [[files[i], ch_load[i]] for i in range(len(files))]
         
-        if add: object.__setattr__(self, "dat", tuple(list(self.dat) + dat))
-        else: object.__setattr__(self, "dat", tuple(dat))
+        if add: object.__setattr__(self, 'dat', tuple(list(self.dat) + dat))
+        else: object.__setattr__(self, 'dat', tuple(dat))
         
-        Hub.geometry["shape"] = box.shape
+        Hub.geometry['shape'] = box.shape
         
         return len(box)
     
@@ -195,42 +195,42 @@ Please specify the file.'''.format(os.path.basename(f)))
         Hub = self.Hub
         
         if not os.path.isfile(path):
-            messagebox.showinfo("Information",
+            messagebox.showinfo('Information',
                                 '''Couldn't find the following data file:
 {0}
 Please specify the file.'''.format(os.path.basename(path)))
-            fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
-                    ("All files", "*")]
+            fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                    ('All files', '*')]
             iDir = os.path.dirname(Hub.gui.iDir)
             iFil = os.path.splitext(os.path.basename(path))[0]
             path = filedialog.askopenfilename(parent=Hub.gui.master, 
                                               filetypes=fTyp, 
                                               initialdir=iDir, 
                                               initialfile=iFil,
-                                              title="Specify {0}".format(os.path.basename(path)))
+                                              title='Specify {0}'.format(os.path.basename(path)))
             if len(path) == 0:
                 return
-            path = path.replace("\\", "/")
+            path = path.replace('\\', '/')
             
         
-        if path[-4:] == ".oib":
+        if path[-4:] == '.oib':
             box = oif.imread(path)
 
-        elif path[-4:] == ".tif" or path[-5:] == ".tiff":
+        elif path[-4:] == '.tif' or path[-5:] == '.tiff':
             box = tif.imread(path)
         else:
             try:
-                with open(path, "rb") as f:
+                with open(path, 'rb') as f:
                     box = pickle.load(f)
             except:
-                messagebox.showerror("Error", 
+                messagebox.showerror('Error', 
                                      "File type '{0}' is not supported.".format(os.path.splitext(path)[1]))
                 return
             
         box = box[None] if box.ndim == 3 else box
         if box[0].shape != self.Hub.box[0].shape:
-            messagebox.showerror("Failed to load data",
-                                 "Width, height and depth must be exactly the same.")
+            messagebox.showerror('Failed to load data',
+                                 'Width, height and depth must be exactly the same.')
             return
         
         return box

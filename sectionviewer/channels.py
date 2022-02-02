@@ -10,15 +10,15 @@ class Channels:
         self.Hub = Hub
         chs = Hub.channels
         
-        if hasattr(Hub, "geometry"):
-            dc = Hub.geometry["shape"][0]
-        elif hasattr(Hub, "stacks"):
+        if hasattr(Hub, 'geometry'):
+            dc = Hub.geometry['shape'][0]
+        elif hasattr(Hub, 'stacks'):
             data = Hub.stacks
             dc = len(data[0])
             
         if len(chs) != dc:
             c = self.auto_color([], dc) if dc > 1 else [[255]*3]
-            chs = [["ch{0}".format(i), c[i], 0, 65535] for i in range(dc)]
+            chs = [['ch{0}'.format(i), c[i], 0, 65535] for i in range(dc)]
         else:
             for c in chs:
                 c[0] = str(c[0])
@@ -28,34 +28,34 @@ class Channels:
         self.chs = chs
         self.chs_trash = {}
         
-        self.variables = {"nm": tk.StringVar(),
-                       "b" : tk.IntVar(),
-                       "g" : tk.IntVar(),
-                       "r" : tk.IntVar(),
-                       "bs": tk.StringVar(),
-                       "gs": tk.StringVar(),
-                       "rs": tk.StringVar(),
-                       "vn": tk.IntVar(),
-                       "vx": tk.IntVar(),
-                       "vns": tk.StringVar(),
-                       "vxs": tk.StringVar(),
-                       "h" : tk.IntVar(),
-                       "s" : tk.IntVar(),
-                       "l" : tk.IntVar(),
-                       "hs": tk.StringVar(),
-                       "ss": tk.StringVar(),
-                       "ls": tk.StringVar(),
-                       "sh": tk.IntVar()}
+        self.variables = {'nm': tk.StringVar(),
+                       'b' : tk.IntVar(),
+                       'g' : tk.IntVar(),
+                       'r' : tk.IntVar(),
+                       'bs': tk.StringVar(),
+                       'gs': tk.StringVar(),
+                       'rs': tk.StringVar(),
+                       'vn': tk.IntVar(),
+                       'vx': tk.IntVar(),
+                       'vns': tk.StringVar(),
+                       'vxs': tk.StringVar(),
+                       'h' : tk.IntVar(),
+                       's' : tk.IntVar(),
+                       'l' : tk.IntVar(),
+                       'hs': tk.StringVar(),
+                       'ss': tk.StringVar(),
+                       'ls': tk.StringVar(),
+                       'sh': tk.IntVar()}
         
-        self.variables["nm"].trace("w", self.ch_name)
-        self.variables["r"].trace("w", lambda *args: self.variables["rs"].set(str(self.variables["r"].get())))
-        self.variables["g"].trace("w", lambda *args: self.variables["gs"].set(str(self.variables["g"].get())))
-        self.variables["b"].trace("w", lambda *args: self.variables["bs"].set(str(self.variables["b"].get())))
-        self.variables["h"].trace("w", lambda *args: self.variables["hs"].set(str(self.variables["h"].get()/10)))
-        self.variables["s"].trace("w", lambda *args: self.variables["ss"].set(str(self.variables["s"].get()/10)))
-        self.variables["l"].trace("w", lambda *args: self.variables["ls"].set(str(self.variables["l"].get()/10)))
-        self.variables["vn"].trace("w", lambda *args: self.variables["vns"].set(str(self.variables["vn"].get())))
-        self.variables["vx"].trace("w", lambda *args: self.variables["vxs"].set(str(self.variables["vx"].get())))
+        self.variables['nm'].trace('w', self.ch_name)
+        self.variables['r'].trace('w', lambda *args: self.variables['rs'].set(str(self.variables['r'].get())))
+        self.variables['g'].trace('w', lambda *args: self.variables['gs'].set(str(self.variables['g'].get())))
+        self.variables['b'].trace('w', lambda *args: self.variables['bs'].set(str(self.variables['b'].get())))
+        self.variables['h'].trace('w', lambda *args: self.variables['hs'].set(str(self.variables['h'].get()/10)))
+        self.variables['s'].trace('w', lambda *args: self.variables['ss'].set(str(self.variables['s'].get()/10)))
+        self.variables['l'].trace('w', lambda *args: self.variables['ls'].set(str(self.variables['l'].get()/10)))
+        self.variables['vn'].trace('w', lambda *args: self.variables['vns'].set(str(self.variables['vn'].get())))
+        self.variables['vx'].trace('w', lambda *args: self.variables['vxs'].set(str(self.variables['vx'].get())))
         
         self.scalemax = [[224,255],[896,1023],[3584,4095],[14336,16383],[57344,65535]]
         self.to_lock = False
@@ -69,18 +69,18 @@ class Channels:
         frame1 = ttk.Frame(frame0)
         frame1.pack(side=tk.LEFT)
         
-        if hasattr(self.Hub, "data"):
+        if hasattr(self.Hub, 'data'):
             frameb = ttk.Frame(frame1)
             frameb.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
-            button1 = ttk.Button(frameb, text="Add", command=self.add_ch)
+            button1 = ttk.Button(frameb, text='Add', command=self.add_ch)
             button1.pack(side=tk.LEFT)
-            button2 = ttk.Button(frameb, text="Delete", command=self.del_ch)
+            button2 = ttk.Button(frameb, text='Delete', command=self.del_ch)
             button2.pack(side=tk.LEFT)
             self.button_dl = button2
     
         self.treeview = ttk.Treeview(frame1, height=15)
-        self.treeview.column("#0", width=200, stretch=False)
-        self.treeview.heading("#0", text="Channels", anchor=tk.W)
+        self.treeview.column('#0', width=200, stretch=False)
+        self.treeview.heading('#0', text='Channels', anchor=tk.W)
         
         bary = tk.Scrollbar(frame1, orient=tk.VERTICAL)
         bary.pack(side=tk.LEFT, fill=tk.Y)
@@ -88,9 +88,9 @@ class Channels:
         self.treeview.config(yscrollcommand=bary.set)
         self.treeview.pack(padx=10, pady=5)
         
-        self.treeview.bind("<Button-1>", lambda e: self.treeview.selection_set()\
+        self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
                           if e.state//4%2!=1 else None)
-        self.treeview.bind("<<TreeviewSelect>>", self.ch_select)
+        self.treeview.bind('<<TreeviewSelect>>', self.ch_select)
         
         names = self.getnames()
         colors = np.array(self.getcolors())
@@ -101,7 +101,7 @@ class Channels:
         for i in sort:
             im[1:-1,1:-1] = colors[i]
             self.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
-            self.treeview.insert("", "end", str(i), text=" "+names[i], image=self.icons[i])
+            self.treeview.insert('', 'end', str(i), text=' '+names[i], image=self.icons[i])
         
         frame2 = ttk.Frame(frame0)
         frame2.pack(side=tk.LEFT, pady=10)
@@ -109,11 +109,11 @@ class Channels:
         
         frame3 = ttk.Frame(frame2)
         frame3.pack(padx=10, pady=5, ipadx=5, ipady=5)
-        self.entry_nm = ttk.Entry(frame3, textvariable=self.variables["nm"])
+        self.entry_nm = ttk.Entry(frame3, textvariable=self.variables['nm'])
         self.entry_nm.pack(side=tk.LEFT)
-        self.checkbutton = ttk.Checkbutton(frame3, variable=self.variables["sh"], 
+        self.checkbutton = ttk.Checkbutton(frame3, variable=self.variables['sh'], 
                                         onvalue=1, offvalue=0,
-                                        text="Show", command=self.showhide)
+                                        text='Show', command=self.showhide)
         self.checkbutton.pack(side=tk.RIGHT)
         
         note = ttk.Notebook(frame2)
@@ -125,37 +125,37 @@ class Channels:
         def color_entry(c):
             try:
                 if self.entry_channel == self.treeview.selection():
-                    if c in "rgb":
-                        new = float(self.variables[c + "s"].get())
+                    if c in 'rgb':
+                        new = float(self.variables[c + 's'].get())
                         new = int(max(0, min(new, 255)))
                         self.variables[c].set(new)
-                        self.variables[c + "s"].set(str(new))
+                        self.variables[c + 's'].set(str(new))
                         self.rgb()
-                    elif c in "hsl":
-                        new = float(self.variables[c + "s"].get())*10
-                        mx = 3599 if c=="h" else 1000
+                    elif c in 'hsl':
+                        new = float(self.variables[c + 's'].get())*10
+                        mx = 3599 if c=='h' else 1000
                         new = int(max(0, min(new, mx)))
                         self.variables[c].set(new)
-                        self.variables[c + "s"].set(str(new/10))
+                        self.variables[c + 's'].set(str(new/10))
                         self.hsl()
-                    elif c == "vn":
-                        new = float(self.variables["vns"].get())
+                    elif c == 'vn':
+                        new = float(self.variables['vns'].get())
                         new = int(max(0, min(new, 65534)))
-                        if self.variables["vx"].get() <= new:
-                            self.variables["vx"].set(new + 1)
-                            self.variables["vxs"].set(str(new + 1))
-                        self.variables["vn"].set(new)
+                        if self.variables['vx'].get() <= new:
+                            self.variables['vx'].set(new + 1)
+                            self.variables['vxs'].set(str(new + 1))
+                        self.variables['vn'].set(new)
                         self.ch_vrange()
-                        self.variables["vns"].set(str(new))
-                    elif c == "vx":
-                        new = float(self.variables["vxs"].get())
+                        self.variables['vns'].set(str(new))
+                    elif c == 'vx':
+                        new = float(self.variables['vxs'].get())
                         new = int(max(1, min(new, 65535)))
-                        if self.variables["vn"].get() >= new:
-                            self.variables["vn"].set(new - 1)
-                            self.variables["vns"].set(str(new - 1))
-                        self.variables["vx"].set(new)
+                        if self.variables['vn'].get() >= new:
+                            self.variables['vn'].set(new - 1)
+                            self.variables['vns'].set(str(new - 1))
+                        self.variables['vx'].set(new)
                         self.ch_vrange()
-                        self.variables["vxs"].set(str(new))
+                        self.variables['vxs'].set(str(new))
                         for a, to in self.scalemax:
                             if new <= a:
                                 break
@@ -164,72 +164,72 @@ class Channels:
                 else:
                     self.entry_channel = self.treeview.selection()
             except:
-                if c in "rgbvnvx":
-                    self.variables[c + "s"].set(str(self.variables[c].get()))
-                elif c in "hsl":
-                    self.variables[c + "s"].set(str(self.variables[c].get()))
+                if c in 'rgbvnvx':
+                    self.variables[c + 's'].set(str(self.variables[c].get()))
+                elif c in 'hsl':
+                    self.variables[c + 's'].set(str(self.variables[c].get()))
         
         rgb_frame = ttk.Frame(note)
         self.rgb_frame = rgb_frame
         
-        ttk.Label(rgb_frame, text="  R:  ").grid(column=0, row=1)
-        ttk.Label(rgb_frame, text="  G:  ").grid(column=0, row=2)
-        ttk.Label(rgb_frame, text="  B:  ").grid(column=0, row=3)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables["r"], from_=0, to=255,
-                 orient="horizontal", command=self.rgb).grid(column=1, row=1, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables["g"], from_=0, to=255,
-                 orient="horizontal", command=self.rgb).grid(column=1, row=2, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables["b"], from_=0, to=255,
-                 orient="horizontal", command=self.rgb).grid(column=1, row=3, pady=7)
-        self.entry_r = ttk.Entry(rgb_frame, textvariable=self.variables["rs"], width=5)
+        ttk.Label(rgb_frame, text='  R:  ').grid(column=0, row=1)
+        ttk.Label(rgb_frame, text='  G:  ').grid(column=0, row=2)
+        ttk.Label(rgb_frame, text='  B:  ').grid(column=0, row=3)
+        ttk.Scale(rgb_frame, length=190, variable=self.variables['r'], from_=0, to=255,
+                 orient='horizontal', command=self.rgb).grid(column=1, row=1, pady=7)
+        ttk.Scale(rgb_frame, length=190, variable=self.variables['g'], from_=0, to=255,
+                 orient='horizontal', command=self.rgb).grid(column=1, row=2, pady=7)
+        ttk.Scale(rgb_frame, length=190, variable=self.variables['b'], from_=0, to=255,
+                 orient='horizontal', command=self.rgb).grid(column=1, row=3, pady=7)
+        self.entry_r = ttk.Entry(rgb_frame, textvariable=self.variables['rs'], width=5)
         self.entry_r.grid(column=2, row=1, padx=3)
-        self.entry_g = ttk.Entry(rgb_frame, textvariable=self.variables["gs"], width=5)
+        self.entry_g = ttk.Entry(rgb_frame, textvariable=self.variables['gs'], width=5)
         self.entry_g.grid(column=2, row=2, padx=3)
-        self.entry_b = ttk.Entry(rgb_frame, textvariable=self.variables["bs"], width=5)
+        self.entry_b = ttk.Entry(rgb_frame, textvariable=self.variables['bs'], width=5)
         self.entry_b.grid(column=2, row=3, padx=3)
-        self.entry_r.bind("<Return>", lambda event: color_entry("r"))
-        self.entry_r.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_r.bind("<FocusOut>", lambda event: color_entry("r"))
-        self.entry_g.bind("<Return>", lambda event: color_entry("g"))
-        self.entry_g.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_g.bind("<FocusOut>", lambda event: color_entry("g"))
-        self.entry_b.bind("<Return>", lambda event: color_entry("b"))
-        self.entry_b.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_b.bind("<FocusOut>", lambda event: color_entry("b"))
-        ttk.Button(rgb_frame, text="Auto", command=self.set_auto).grid(column=1, row=4, 
+        self.entry_r.bind('<Return>', lambda event: color_entry('r'))
+        self.entry_r.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_r.bind('<FocusOut>', lambda event: color_entry('r'))
+        self.entry_g.bind('<Return>', lambda event: color_entry('g'))
+        self.entry_g.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_g.bind('<FocusOut>', lambda event: color_entry('g'))
+        self.entry_b.bind('<Return>', lambda event: color_entry('b'))
+        self.entry_b.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_b.bind('<FocusOut>', lambda event: color_entry('b'))
+        ttk.Button(rgb_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
-        note.add(rgb_frame, text="RGB")
+        note.add(rgb_frame, text='RGB')
         
         hsl_frame = ttk.Frame(note)
         self.hsl_frame = hsl_frame
         
-        ttk.Label(hsl_frame, text=" H:  ").grid(column=0, row=1)
-        ttk.Label(hsl_frame, text=" S:  ").grid(column=0, row=2)
-        ttk.Label(hsl_frame, text=" L:  ").grid(column=0, row=3)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables["h"], from_=0, to=3599,
-                 orient="horizontal", command=self.hsl).grid(column=1, row=1, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables["s"], from_=0, to=1000,
-                 orient="horizontal", command=self.hsl).grid(column=1, row=2, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables["l"], from_=0, to=1000,
-                 orient="horizontal", command=self.hsl).grid(column=1, row=3, pady=7)
-        self.entry_h = ttk.Entry(hsl_frame, textvariable=self.variables["hs"], width=5)
+        ttk.Label(hsl_frame, text=' H:  ').grid(column=0, row=1)
+        ttk.Label(hsl_frame, text=' S:  ').grid(column=0, row=2)
+        ttk.Label(hsl_frame, text=' L:  ').grid(column=0, row=3)
+        ttk.Scale(hsl_frame, length=190, variable=self.variables['h'], from_=0, to=3599,
+                 orient='horizontal', command=self.hsl).grid(column=1, row=1, pady=7)
+        ttk.Scale(hsl_frame, length=190, variable=self.variables['s'], from_=0, to=1000,
+                 orient='horizontal', command=self.hsl).grid(column=1, row=2, pady=7)
+        ttk.Scale(hsl_frame, length=190, variable=self.variables['l'], from_=0, to=1000,
+                 orient='horizontal', command=self.hsl).grid(column=1, row=3, pady=7)
+        self.entry_h = ttk.Entry(hsl_frame, textvariable=self.variables['hs'], width=5)
         self.entry_h.grid(column=2, row=1, padx=3)
-        self.entry_s = ttk.Entry(hsl_frame, textvariable=self.variables["ss"], width=5)
+        self.entry_s = ttk.Entry(hsl_frame, textvariable=self.variables['ss'], width=5)
         self.entry_s.grid(column=2, row=2, padx=3)
-        self.entry_l = ttk.Entry(hsl_frame, textvariable=self.variables["ls"], width=5)
+        self.entry_l = ttk.Entry(hsl_frame, textvariable=self.variables['ls'], width=5)
         self.entry_l.grid(column=2, row=3, padx=3)
-        self.entry_h.bind("<Return>", lambda event: color_entry("h"))
-        self.entry_h.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_h.bind("<FocusOut>", lambda event: color_entry("h"))
-        self.entry_s.bind("<Return>", lambda event: color_entry("s"))
-        self.entry_s.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_s.bind("<FocusOut>", lambda event: color_entry("s"))
-        self.entry_l.bind("<Return>", lambda event: color_entry("l"))
-        self.entry_l.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_l.bind("<FocusOut>", lambda event: color_entry("l"))
-        ttk.Button(hsl_frame, text="Auto", command=self.set_auto).grid(column=1, row=4, 
+        self.entry_h.bind('<Return>', lambda event: color_entry('h'))
+        self.entry_h.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_h.bind('<FocusOut>', lambda event: color_entry('h'))
+        self.entry_s.bind('<Return>', lambda event: color_entry('s'))
+        self.entry_s.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_s.bind('<FocusOut>', lambda event: color_entry('s'))
+        self.entry_l.bind('<Return>', lambda event: color_entry('l'))
+        self.entry_l.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_l.bind('<FocusOut>', lambda event: color_entry('l'))
+        ttk.Button(hsl_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
-        note.add(hsl_frame, text="HSL")
+        note.add(hsl_frame, text='HSL')
         
         vnx_frame = ttk.Frame(frame2)
         vnx_frame.pack(padx=10, pady=5, ipadx=5, ipady=5)
@@ -238,51 +238,51 @@ class Channels:
         for a, to in self.scalemax:
             if vmax <= a:
                 break
-        ttk.Label(vnx_frame, text=" vmin: ").grid(column=0, row=0)
-        ttk.Label(vnx_frame, text=" vmax: ").grid(column=0, row=1)
-        self.vmin_scale = ttk.Scale(vnx_frame, length=190, variable=self.variables["vn"], from_=0, to=to,
-                                    orient="horizontal", command=self.vmin)
+        ttk.Label(vnx_frame, text=' vmin: ').grid(column=0, row=0)
+        ttk.Label(vnx_frame, text=' vmax: ').grid(column=0, row=1)
+        self.vmin_scale = ttk.Scale(vnx_frame, length=190, variable=self.variables['vn'], from_=0, to=to,
+                                    orient='horizontal', command=self.vmin)
         self.vmin_scale.grid(column=1, row=0, pady=7)
-        self.vmax_scale=ttk.Scale(vnx_frame, length=190, variable=self.variables["vx"], from_=0, to=to,
-                                  orient="horizontal", command=self.vmax)
+        self.vmax_scale=ttk.Scale(vnx_frame, length=190, variable=self.variables['vx'], from_=0, to=to,
+                                  orient='horizontal', command=self.vmax)
         self.vmax_scale.grid(column=1, row=1, pady=7)
         def press():
             self.to_lock=True
         def release():
             self.to_lock = False
-            vmax = self.variables["vx"].get()
+            vmax = self.variables['vx'].get()
             for a, to in self.scalemax:
                 if vmax <= a:
                     break
             self.vmin_scale.configure(to=to)
             self.vmax_scale.configure(to=to)
-        self.vmax_scale.bind("<Button-1>", lambda event: press())
-        self.vmax_scale.bind("<ButtonRelease-1>", lambda event: release())
-        self.entry_vn = ttk.Entry(vnx_frame, textvariable=self.variables["vns"], width=5)
+        self.vmax_scale.bind('<Button-1>', lambda event: press())
+        self.vmax_scale.bind('<ButtonRelease-1>', lambda event: release())
+        self.entry_vn = ttk.Entry(vnx_frame, textvariable=self.variables['vns'], width=5)
         self.entry_vn.grid(column=2, row=0, padx=3)
-        self.entry_vx = ttk.Entry(vnx_frame, textvariable=self.variables["vxs"], width=5)
+        self.entry_vx = ttk.Entry(vnx_frame, textvariable=self.variables['vxs'], width=5)
         self.entry_vx.grid(column=2, row=1, padx=3)
-        self.entry_vn.bind("<Return>", lambda event: color_entry("vn"))
-        self.entry_vn.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_vn.bind("<FocusOut>", lambda event: color_entry("vn"))
-        self.entry_vx.bind("<Return>", lambda event: color_entry("vx"))
-        self.entry_vx.bind("<FocusIn>", lambda event: select_entry())
-        self.entry_vx.bind("<FocusOut>", lambda event: color_entry("vx"))
+        self.entry_vn.bind('<Return>', lambda event: color_entry('vn'))
+        self.entry_vn.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_vn.bind('<FocusOut>', lambda event: color_entry('vn'))
+        self.entry_vx.bind('<Return>', lambda event: color_entry('vx'))
+        self.entry_vx.bind('<FocusIn>', lambda event: select_entry())
+        self.entry_vx.bind('<FocusOut>', lambda event: color_entry('vx'))
         self.vnx_frame = vnx_frame
         self.note = note
         
     
     def __getattr__(self, name):
-        if name == "val":
-            return object.__getattribute__(self, "chs")
+        if name == 'val':
+            return object.__getattribute__(self, 'chs')
         else:
             return object.__getattribute__(self, name)
     def __setattr__(self, name, val):
-        if name == "val":
+        if name == 'val':
             self.chs = val
         else:
             object.__setattr__(self, name, val)
-        if name == "chs":
+        if name == 'chs':
             self.Hub.colors = np.array(self.getcolors(), np.uint8)
             vrange = np.array(self.getvranges())
             lut = np.arange(65536)[None]
@@ -307,12 +307,12 @@ class Channels:
     
     def settings(self):
         gui = self.Hub.gui
-        gui.palette.title("Channels")
+        gui.palette.title('Channels')
         for w in gui.palette.pack_slaves():
             w.pack_forget()
         self.set_frame.pack(pady=10, padx=5)
-        gui.palette.unbind("<Control-a>")
-        gui.palette.bind("<Control-a>", lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        gui.palette.unbind('<Control-a>')
+        gui.palette.bind('<Control-a>', lambda event: self.treeview.selection_set(self.treeview.get_children()))
         self.refresh_tree()
     
         gui.palette.deiconify()
@@ -332,7 +332,7 @@ class Channels:
         for i in sort:
             im[1:-1,1:-1] = colors[i]
             self.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
-            self.treeview.insert("", "end", str(i), text=" "+names[i], image=self.icons[i])
+            self.treeview.insert('', 'end', str(i), text=' '+names[i], image=self.icons[i])
         self.treeview.selection_set()
         
     
@@ -345,64 +345,64 @@ class Channels:
         else:
             self.frame2.pack()
         
-        if hasattr(self, "button_dl"):
+        if hasattr(self, 'button_dl'):
             if len(selection) < len(self.treeview.get_children()):
-                self.button_dl["state"] = tk.ACTIVE
+                self.button_dl['state'] = tk.ACTIVE
             else:
-                self.button_dl["state"] = tk.DISABLED
+                self.button_dl['state'] = tk.DISABLED
         
         x = [int(i) for i in selection]
         i = x[0]
         bgr = self.chs[i][1]
         hsl = self.bgr2hsl(bgr)
         
-        self.variables["nm"].set(self.chs[i][0])
-        self.variables["r"].set(bgr[2])
-        self.variables["g"].set(bgr[1])
-        self.variables["b"].set(bgr[0])
-        self.variables["vn"].set(self.chs[i][2])
-        self.variables["vx"].set(self.chs[i][3])
+        self.variables['nm'].set(self.chs[i][0])
+        self.variables['r'].set(bgr[2])
+        self.variables['g'].set(bgr[1])
+        self.variables['b'].set(bgr[0])
+        self.variables['vn'].set(self.chs[i][2])
+        self.variables['vx'].set(self.chs[i][3])
         for a, to in self.scalemax:
             if self.chs[i][3] <= a:
                 break
         self.vmin_scale.configure(to=to)
         self.vmax_scale.configure(to=to)
-        self.variables["h"].set(int(hsl[0]*10))
-        self.variables["s"].set(int(hsl[1]*10))
-        self.variables["l"].set(int(hsl[2]*10))
+        self.variables['h'].set(int(hsl[0]*10))
+        self.variables['s'].set(int(hsl[1]*10))
+        self.variables['l'].set(int(hsl[2]*10))
         
-        self.checkbutton["state"] = tk.ACTIVE
+        self.checkbutton['state'] = tk.ACTIVE
         
         if self.Hub.ch_show[x].all():
-            self.variables["sh"].set(1)
+            self.variables['sh'].set(1)
             for w in self.rgb_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
         else:
             if self.Hub.ch_show[x].any():
-                self.variables["sh"].set(-1)
+                self.variables['sh'].set(-1)
             else:
-                self.variables["sh"].set(0)
+                self.variables['sh'].set(0)
             for w in self.rgb_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
         
         if len(selection) == 1:
-            self.entry_nm["state"] = tk.ACTIVE
+            self.entry_nm['state'] = tk.ACTIVE
         else:
-            self.entry_nm["state"] = tk.DISABLED
+            self.entry_nm['state'] = tk.DISABLED
     
     
     def set_auto(self):
@@ -436,9 +436,9 @@ class Channels:
             Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.set_color(x, new)
               
@@ -446,41 +446,41 @@ class Channels:
     def showhide(self, *args):
         selection = self.treeview.selection()
         x = [int(i) for i in selection]
-        self.Hub.ch_show[x] = self.variables["sh"].get()
-        if self.variables["sh"].get():
-            self.entry_nm["state"] = tk.ACTIVE
+        self.Hub.ch_show[x] = self.variables['sh'].get()
+        if self.variables['sh'].get():
+            self.entry_nm['state'] = tk.ACTIVE
             for w in self.rgb_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.ACTIVE
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.ACTIVE
             if (self.Hub.frame[x[0]] == 0).all():
                 self.Hub.calc_frame(x=x)
-                if hasattr(self.Hub.gui, "g_on"):
+                if hasattr(self.Hub.gui, 'g_on'):
                     if self.Hub.gui.g_on.get():
                         self.Hub.calc_sideview(x=x)
             else:
                 self.Hub.calc_image()
-                if hasattr(self.Hub.gui, "g_on"):
+                if hasattr(self.Hub.gui, 'g_on'):
                     if self.Hub.gui.g_on.get():
                         self.Hub.calc_sideimage()
         else:
-            self.entry_nm["state"] = tk.DISABLED
+            self.entry_nm['state'] = tk.DISABLED
             for w in self.rgb_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                if not "scale" in str(w)[-6:]:
-                    w["state"] = tk.DISABLED
+                if not 'scale' in str(w)[-6:]:
+                    w['state'] = tk.DISABLED
             self.Hub.calc_image()
-            if hasattr(self.Hub.gui, "g_on"):
+            if hasattr(self.Hub.gui, 'g_on'):
                 if self.Hub.gui.g_on.get():
                     self.Hub.calc_sideimage()
     
@@ -492,7 +492,7 @@ class Channels:
         
         i = int(x[0])
         old = self.chs[i][0]
-        new = self.variables["nm"].get()
+        new = self.variables['nm'].get()
         
         if old == new:
             return None
@@ -513,62 +513,62 @@ class Channels:
             Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.set_name(x, new)
         
         
     def set_name(self, x, new):
-        self.treeview.item(x[0], text=" "+new)
+        self.treeview.item(x[0], text=' '+new)
         if x != self.treeview.selection():
             self.treeview.selection_set(x)
         else:
-            self.variables["nm"].set(new)
+            self.variables['nm'].set(new)
             
         i = int(x[0])
         self.chs[i][0] = new
         
         
     def rgb(self, *args):
-        if not self.variables["sh"].get():
+        if not self.variables['sh'].get():
             i = int(self.treeview.selection()[0])
-            self.variables["b"].set(self.chs[i][1][0])
-            self.variables["g"].set(self.chs[i][1][1])
-            self.variables["r"].set(self.chs[i][1][2])
+            self.variables['b'].set(self.chs[i][1][0])
+            self.variables['g'].set(self.chs[i][1][1])
+            self.variables['r'].set(self.chs[i][1][2])
             return
-        a  = [self.variables["b"].get()]
-        a += [self.variables["g"].get()]
-        a += [self.variables["r"].get()]
+        a  = [self.variables['b'].get()]
+        a += [self.variables['g'].get()]
+        a += [self.variables['r'].get()]
         a = self.bgr2hsl(a)
-        self.variables["h"].set(int(a[0]*10))
-        self.variables["s"].set(int(a[1]*10))
-        self.variables["l"].set(int(a[2]*10))
+        self.variables['h'].set(int(a[0]*10))
+        self.variables['s'].set(int(a[1]*10))
+        self.variables['l'].set(int(a[2]*10))
         self.ch_color()
     def hsl(self, *args):
-        if not self.variables["sh"].get():
+        if not self.variables['sh'].get():
             i = int(self.treeview.selection()[0])
             a = list(self.chs[i][1])
             a = self.bgr2hsl(a)
-            self.variables["h"].set(int(a[0]*10))
-            self.variables["s"].set(int(a[1]*10))
-            self.variables["l"].set(int(a[2]*10))
+            self.variables['h'].set(int(a[0]*10))
+            self.variables['s'].set(int(a[1]*10))
+            self.variables['l'].set(int(a[2]*10))
             return
-        a  = [self.variables["h"].get()/10]
-        a += [self.variables["s"].get()/10]
-        a += [self.variables["l"].get()/10]
+        a  = [self.variables['h'].get()/10]
+        a += [self.variables['s'].get()/10]
+        a += [self.variables['l'].get()/10]
         a = self.hsl2bgr(a)
-        self.variables["b"].set(a[0])
-        self.variables["g"].set(a[1])
-        self.variables["r"].set(a[2])
+        self.variables['b'].set(a[0])
+        self.variables['g'].set(a[1])
+        self.variables['r'].set(a[2])
         self.ch_color()
         
     def ch_color(self, *args):
         x = self.treeview.selection()
         nums = [int(i) for i in x]
         old = [self.chs[i][1] for i in nums]
-        new = [[self.variables["b"].get(), self.variables["g"].get(), self.variables["r"].get()]]*len(nums)
+        new = [[self.variables['b'].get(), self.variables['g'].get(), self.variables['r'].get()]]*len(nums)
         
         if old == new:
             return None
@@ -589,9 +589,9 @@ class Channels:
             Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.set_color(x, new)
         
@@ -613,43 +613,43 @@ class Channels:
             bgr = self.chs[i][1]
             hsl = self.bgr2hsl(bgr)
             
-            self.variables["r"].set(bgr[2])
-            self.variables["g"].set(bgr[1])
-            self.variables["b"].set(bgr[0])
-            self.variables["h"].set(int(hsl[0]*10))
-            self.variables["s"].set(int(hsl[1]*10))
-            self.variables["l"].set(int(hsl[2]*10))
-            self.variables["sh"].set(bool(self.Hub.ch_show[i]))
+            self.variables['r'].set(bgr[2])
+            self.variables['g'].set(bgr[1])
+            self.variables['b'].set(bgr[0])
+            self.variables['h'].set(int(hsl[0]*10))
+            self.variables['s'].set(int(hsl[1]*10))
+            self.variables['l'].set(int(hsl[2]*10))
+            self.variables['sh'].set(bool(self.Hub.ch_show[i]))
             
         self.chs = self.chs
         self.Hub.calc_image()
-        if hasattr(self.Hub.gui, "g_on"):
+        if hasattr(self.Hub.gui, 'g_on'):
             if self.Hub.gui.g_on.get():
                 self.Hub.calc_sideview()
                 
     
     def vmin(self, *args):
-        if not self.variables["sh"].get():
+        if not self.variables['sh'].get():
             i = int(self.treeview.selection()[0])
-            self.variables["vn"].set(self.chs[i][2])
+            self.variables['vn'].set(self.chs[i][2])
             return
-        if self.variables["vn"].get() >= self.variables["vx"].get():
-            self.variables["vn"].set(self.variables["vx"].get()-1)
+        if self.variables['vn'].get() >= self.variables['vx'].get():
+            self.variables['vn'].set(self.variables['vx'].get()-1)
         self.ch_vrange()
     def vmax(self, *args):
-        if not self.variables["sh"].get():
+        if not self.variables['sh'].get():
             i = int(self.treeview.selection()[0])
-            self.variables["vx"].set(self.chs[i][3])
+            self.variables['vx'].set(self.chs[i][3])
             return
-        if self.variables["vn"].get() >= self.variables["vx"].get():
-            self.variables["vx"].set(self.variables["vn"].get()+1)
+        if self.variables['vn'].get() >= self.variables['vx'].get():
+            self.variables['vx'].set(self.variables['vn'].get()+1)
         self.ch_vrange()
     
     def ch_vrange(self, *args):
         x = self.treeview.selection()
         nums = [int(i) for i in x]
         old = [self.chs[i][2:] for i in nums]
-        new = [[self.variables["vn"].get(), self.variables["vx"].get()]]*len(nums)
+        new = [[self.variables['vn'].get(), self.variables['vx'].get()]]*len(nums)
         
         if old == new:
             return None
@@ -670,9 +670,9 @@ class Channels:
             Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.set_vrange(x, new)
                 
@@ -695,13 +695,13 @@ class Channels:
                         break
                 self.vmin_scale.configure(to=to)
                 self.vmax_scale.configure(to=to)
-            self.variables["vn"].set(self.chs[i][2])
-            self.variables["vx"].set(self.chs[i][3])
-            self.variables["sh"].set(bool(self.Hub.ch_show[i]))
+            self.variables['vn'].set(self.chs[i][2])
+            self.variables['vx'].set(self.chs[i][3])
+            self.variables['sh'].set(bool(self.Hub.ch_show[i]))
             
         self.chs = self.chs
         self.Hub.calc_image()
-        if hasattr(self.Hub.gui, "g_on"):
+        if hasattr(self.Hub.gui, 'g_on'):
             if self.Hub.gui.g_on.get():
                 self.Hub.calc_sideview()
         
@@ -709,17 +709,17 @@ class Channels:
     def add_ch(self):
         Hub = self.Hub
         
-        fTyp = [("OIB/TIFF files", ["*.oib", "*.tif", "*.tiff"]),
-                ("All files", "*")]
+        fTyp = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                ('All files', '*')]
         iDir = Hub.gui.iDir
         data_files = filedialog.askopenfilenames(parent=Hub.gui.palette, filetypes=fTyp, 
-                                                 initialdir=iDir, title="Add channels")
+                                                 initialdir=iDir, title='Add channels')
         if len(data_files) == 0:
             return
         
         data_files = list(data_files)
         for i, f in enumerate(data_files):
-            f = f.replace("\\", "/")
+            f = f.replace('\\', '/')
             data_files[i] = f
         
         dat = [[d] for d in data_files]
@@ -732,7 +732,7 @@ class Channels:
         nm = []
         n = 0
         while len(nm) < dc:
-            name = "ch{0}".format(n)
+            name = 'ch{0}'.format(n)
             if not name in self.getnames():
                 nm += [name]
             n += 1
@@ -757,9 +757,9 @@ class Channels:
         Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.add_channels(x, needload=False)
         mx = np.amax(self.Hub.frame[-dc:], axis=(1,2))
@@ -832,7 +832,7 @@ class Channels:
             n += l
         
         self.Hub.calc_geometry()
-        if hasattr(self.Hub.gui, "g_on"):
+        if hasattr(self.Hub.gui, 'g_on'):
             if self.Hub.gui.g_on.get():
                 self.Hub.calc_sideview()
         
@@ -873,9 +873,9 @@ class Channels:
         Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.del_channels(x)
         
@@ -908,7 +908,7 @@ class Channels:
             n += l
             
         self.Hub.calc_geometry()
-        if hasattr(self.Hub.gui, "g_on"):
+        if hasattr(self.Hub.gui, 'g_on'):
             if self.Hub.gui.g_on.get():
                 self.Hub.calc_sideview()
             
@@ -936,13 +936,13 @@ class Channels:
     def reload(self, chs):
         Hub = self.Hub
         
-        if hasattr(Hub, "box"):
+        if hasattr(Hub, 'box'):
             box = Hub.box
             dc = len(box)
             if len(chs) != dc:
                 c = self.auto_color([], dc)
                 m, M = np.amin(box, axis=(1,2,3)), np.amax(box, axis=(1,2,3))
-                chs = [["ch{0}".format(i), c[i], m[i], M[i]] for i in range(dc)]
+                chs = [['ch{0}'.format(i), c[i], m[i], M[i]] for i in range(dc)]
             else:
                 for c in chs:
                     c[0] = str(c[0])

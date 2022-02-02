@@ -21,7 +21,7 @@ class Snapshots:
         self.use_pts = True
         
         self.name_var = tk.StringVar()
-        self.name_var.trace("w", self.ss_name)
+        self.name_var.trace('w', self.ss_name)
         self.pos_on = tk.BooleanVar()
         self.chs_on = tk.BooleanVar()
         self.pts_on = tk.BooleanVar()
@@ -36,26 +36,26 @@ class Snapshots:
         
         frame2 = ttk.Frame(frame1)
         frame2.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
-        button1 = ttk.Button(frame2, text="Snap", command=self.add_ss)
+        button1 = ttk.Button(frame2, text='Snap', command=self.add_ss)
         button1.pack(side=tk.LEFT, padx=2)
-        button2 = ttk.Button(frame2, text="Delete", command=self.del_ss)
+        button2 = ttk.Button(frame2, text='Delete', command=self.del_ss)
         button2.pack(side=tk.LEFT, padx=2)
         self.button_dl = button2
         
         self.treeview = ttk.Treeview(frame1, height=15)
-        self.treeview.column("#0", width=200, stretch=False)
-        self.treeview.heading("#0", text="Saved configurations", anchor=tk.W)
+        self.treeview.column('#0', width=200, stretch=False)
+        self.treeview.heading('#0', text='Saved configurations', anchor=tk.W)
     
         bary = tk.Scrollbar(frame1, orient=tk.VERTICAL)
         bary.pack(side=tk.LEFT, fill=tk.Y)
         bary.config(command=self.treeview.yview)
         self.treeview.config(yscrollcommand=bary.set)
         self.treeview.pack(padx=10, pady=5)
-        self.treeview.bind("<Button-1>", lambda e: self.treeview.selection_set()\
+        self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
                           if e.state//4%2!=1 else None)
-        self.treeview.bind("<<TreeviewSelect>>", self.ss_select)
+        self.treeview.bind('<<TreeviewSelect>>', self.ss_select)
         for i in np.argsort(self.names()):
-            self.treeview.insert("", "end", str(i), text=" "+self.snapshots[i]["name"])
+            self.treeview.insert('', 'end', str(i), text=' '+self.snapshots[i]['name'])
         
         frame3 = ttk.Frame(frame0)
         frame3.pack(side=tk.LEFT, padx=10, pady=5, ipadx=5, ipady=5)
@@ -71,12 +71,12 @@ class Snapshots:
         prev_frame = ttk.Frame(note)
         self.canvas1 = tk.Canvas(prev_frame, width=self.im_size, height=self.im_size)
         self.canvas1.pack()
-        note.add(prev_frame, text="Preview")
+        note.add(prev_frame, text='Preview')
         
         guide_frame = ttk.Frame(note)
         self.canvas2 = tk.Canvas(guide_frame, width=self.im_size, height=self.im_size)
         self.canvas2.pack()
-        note.add(guide_frame, text="Guide")
+        note.add(guide_frame, text='Guide')
         
         self.im1_back = self.canvas1.create_rectangle(0,0,self.im_size,self.im_size, width=0)
         self.im1_id = self.canvas1.create_image(self.im_size//2, self.im_size//2)
@@ -95,55 +95,55 @@ class Snapshots:
             self.use_pts = self.pts_on.get()
             if (self.pos_on.get() or self.chs_on.get() or self.pts_on.get())\
                 and len(self.treeview.selection()) == 1:
-                self.button_ov["state"] = tk.ACTIVE
-                self.button_rs["state"] = tk.ACTIVE
+                self.button_ov['state'] = tk.ACTIVE
+                self.button_rs['state'] = tk.ACTIVE
             else:
-                self.button_ov["state"] = tk.DISABLED
-                self.button_rs["state"] = tk.DISABLED
+                self.button_ov['state'] = tk.DISABLED
+                self.button_rs['state'] = tk.DISABLED
         
-        self.pos_chk = ttk.Checkbutton(frame4, variable=self.pos_on, text="Position",
+        self.pos_chk = ttk.Checkbutton(frame4, variable=self.pos_on, text='Position',
                                        command=chk)
         self.pos_chk.pack(side=tk.LEFT, padx=5)
-        self.chs_chk = ttk.Checkbutton(frame4, variable=self.chs_on, text="Channels",
+        self.chs_chk = ttk.Checkbutton(frame4, variable=self.chs_on, text='Channels',
                                        command=chk)
         self.chs_chk.pack(side=tk.LEFT, padx=5)
-        self.pts_chk = ttk.Checkbutton(frame4, variable=self.pts_on, text="Points",
+        self.pts_chk = ttk.Checkbutton(frame4, variable=self.pts_on, text='Points',
                                        command=chk)
         self.pts_chk.pack(side=tk.LEFT, padx=5)
         frame5 = ttk.Frame(frame4)
         frame5.pack(side=tk.LEFT, padx=10)
-        button3 = ttk.Button(frame5, text="Override", command=self.override_ss)
+        button3 = ttk.Button(frame5, text='Override', command=self.override_ss)
         button3.pack(pady=2)
         self.button_ov = button3
-        button4 = ttk.Button(frame5, text="Restore", command=self.restore_ss)
+        button4 = ttk.Button(frame5, text='Restore', command=self.restore_ss)
         button4.pack(pady=2)
         self.button_rs = button4
         
     
     def __getattr__(self, name):
-        if name == "val":
-            return object.__getattribute__(self, "snapshots")
+        if name == 'val':
+            return object.__getattribute__(self, 'snapshots')
         else:
             return object.__getattribute__(self, name)
     def __setattr__(self, name, val):
-        if name == "val":
+        if name == 'val':
             self.snapshots = val
         else:
             object.__setattr__(self, name, val)
       
         
     def names(self):
-        return [ss["name"] for ss in self.snapshots]
+        return [ss['name'] for ss in self.snapshots]
     
     
     def settings(self):
         gui = self.Hub.gui
-        gui.palette.title("Snapshots")
+        gui.palette.title('Snapshots')
         for w in gui.palette.pack_slaves():
             w.pack_forget()
         self.set_frame.pack(pady=10, padx=5)
-        gui.palette.unbind("<Control-a>")
-        gui.palette.bind("<Control-a>", lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        gui.palette.unbind('<Control-a>')
+        gui.palette.bind('<Control-a>', lambda event: self.treeview.selection_set(self.treeview.get_children()))
         self.refresh_tree()
         
         gui.palette.deiconify()
@@ -160,7 +160,7 @@ class Snapshots:
     def refresh_tree(self):
         self.treeview.delete(*self.treeview.get_children())
         for i in np.argsort(self.names()):
-            self.treeview.insert("", "end", str(i), text=" "+self.snapshots[i]["name"])
+            self.treeview.insert('', 'end', str(i), text=' '+self.snapshots[i]['name'])
         self.treeview.selection_set()
     
     
@@ -168,13 +168,13 @@ class Snapshots:
         selection = self.treeview.selection()
         
         if len(selection) == 0:
-            self.pos_chk["state"] = tk.ACTIVE
-            self.chs_chk["state"] = tk.ACTIVE
-            self.pts_chk["state"] = tk.ACTIVE
-            self.button_dl["state"] = tk.DISABLED
-            self.entry_nm["state"] = tk.DISABLED
-            self.button_ov["state"] = tk.DISABLED
-            self.button_rs["state"] = tk.DISABLED
+            self.pos_chk['state'] = tk.ACTIVE
+            self.chs_chk['state'] = tk.ACTIVE
+            self.pts_chk['state'] = tk.ACTIVE
+            self.button_dl['state'] = tk.DISABLED
+            self.entry_nm['state'] = tk.DISABLED
+            self.button_ov['state'] = tk.DISABLED
+            self.button_rs['state'] = tk.DISABLED
             im1 = np.empty([10,10,3], np.uint8)
             im1 = ImageTk.PhotoImage(Image.fromarray(im1))
             self.canvas1.coords(self.im1_back, 0,0,0,0)
@@ -182,38 +182,38 @@ class Snapshots:
             self.canvas2.itemconfig(self.im2_id, image=im1)
             return None
         elif len(selection) == 1:
-            self.pos_chk["state"] = tk.ACTIVE
-            self.chs_chk["state"] = tk.ACTIVE
-            self.pts_chk["state"] = tk.ACTIVE
-            self.button_dl["state"] = tk.ACTIVE
-            self.entry_nm["state"] = tk.ACTIVE
+            self.pos_chk['state'] = tk.ACTIVE
+            self.chs_chk['state'] = tk.ACTIVE
+            self.pts_chk['state'] = tk.ACTIVE
+            self.button_dl['state'] = tk.ACTIVE
+            self.entry_nm['state'] = tk.ACTIVE
             self.pos_on.set(self.use_pos)
             self.chs_on.set(self.use_chs)
             self.pts_on.set(self.use_pts)
             if (self.use_pos or self.use_chs or self.use_pts):
-                self.button_ov["state"] = tk.ACTIVE
-                self.button_rs["state"] = tk.ACTIVE
+                self.button_ov['state'] = tk.ACTIVE
+                self.button_rs['state'] = tk.ACTIVE
             else:
-                self.button_ov["state"] = tk.DISABLED
-                self.button_rs["state"] = tk.DISABLED
+                self.button_ov['state'] = tk.DISABLED
+                self.button_rs['state'] = tk.DISABLED
         else:
-            if str(self.pos_chk["state"]) == "active":
+            if str(self.pos_chk['state']) == 'active':
                 self.use_pos = self.pos_on.get()
                 self.use_chs = self.chs_on.get()
                 self.use_pts = self.pts_on.get()
                 self.pos_on.set(False)
                 self.chs_on.set(False)
                 self.pts_on.set(True)
-                self.pos_chk["state"] = tk.DISABLED
-                self.chs_chk["state"] = tk.DISABLED
-                self.pts_chk["state"] = tk.DISABLED
-            self.button_dl["state"] = tk.ACTIVE
-            self.entry_nm["state"] = tk.DISABLED
-            self.button_ov["state"] = tk.ACTIVE
-            self.button_rs["state"] = tk.ACTIVE
+                self.pos_chk['state'] = tk.DISABLED
+                self.chs_chk['state'] = tk.DISABLED
+                self.pts_chk['state'] = tk.DISABLED
+            self.button_dl['state'] = tk.ACTIVE
+            self.entry_nm['state'] = tk.DISABLED
+            self.button_ov['state'] = tk.ACTIVE
+            self.button_rs['state'] = tk.ACTIVE
         
         secv = self.snapshots[int(self.treeview.selection()[0])]
-        self.name_var.set(secv["name"])
+        self.name_var.set(secv['name'])
         im1 = self.preview_im(secv)
         im1 = np.append(im1[:,:,2::-1], im1[:,:,3:], axis=2)
         self.im1 = ImageTk.PhotoImage(Image.fromarray(im1))
@@ -233,7 +233,7 @@ class Snapshots:
             return None
         i = int(x[0])
         
-        old = self.snapshots[i]["name"]
+        old = self.snapshots[i]['name']
         new = name
         
         if old == new:
@@ -255,19 +255,19 @@ class Snapshots:
             Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.set_name(x, new)
     
     def set_name(self, x, new):
-        self.treeview.item(x[0], text=" "+new)
+        self.treeview.item(x[0], text=' '+new)
         if x != self.treeview.selection():
             self.treeview.selection_set(x)
         else:
             self.name_var.set(new)
-        self.snapshots[int(x[0])]["name"] = new
+        self.snapshots[int(x[0])]['name'] = new
     
     
     def add_ss(self):
@@ -283,28 +283,28 @@ class Snapshots:
             if np.array(c).any():
                 data += [[f, c]]
         data = tuple(data)
-        secv["data"] = data
+        secv['data'] = data
         
-        secv["geometry"] = Hub.geometry.geo.copy()
+        secv['geometry'] = Hub.geometry.geo.copy()
         
         pos = Hub.position.asarray()
         pos[:,0] /= Hub.ratio
         pos[0] += np.array(Hub.box.shape[1:])//2
-        secv["position"] = pos.tolist()
+        secv['position'] = pos.tolist()
         
         channels = [[c[0], [c[1][0], c[1][1], c[1][2]], c[2], c[3]] for c in Hub.channels.chs]
-        secv["channels"] = channels
+        secv['channels'] = channels
         
         points = [[p[0], [p[1][0], p[1][1], p[1][2]], [p[2][0], p[2][1], p[2][2]]] for p in Hub.points.pts]
-        secv["points"] = points
+        secv['points'] = points
         
         names = self.names()
-        nm = "_new_state_0"
+        nm = '_new_state_0'
         i = 1
         while nm in names:
-            nm = "_new_state_{0}".format(i)
+            nm = '_new_state_{0}'.format(i)
             i += 1
-        secv["name"] = nm
+        secv['name'] = nm
         
         idx, hist = Hub.hidx, Hub.history
         
@@ -320,9 +320,9 @@ class Snapshots:
         Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.add_snapshots(x, [secv])
         
@@ -353,9 +353,9 @@ class Snapshots:
         Hub.hidx = -1
             
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.del_snapshots(x)
         
@@ -389,17 +389,17 @@ class Snapshots:
             old += [self.snapshots[i]]
             new += [{}]
             
-            new[-1]["name"] = old[-1]["name"]
+            new[-1]['name'] = old[-1]['name']
             
             if self.pos_on.get():
-                new[-1]["geometry"] = Hub.geometry.geo.copy()
+                new[-1]['geometry'] = Hub.geometry.geo.copy()
                 pos = Hub.position.asarray()
                 pos[:,0] /= Hub.ratio
                 pos[0] += np.array(Hub.box.shape[1:])//2
-                new[-1]["position"] = pos.tolist()
+                new[-1]['position'] = pos.tolist()
             else:
-                new[-1]["geometry"] = old[-1]["geometry"].copy()
-                new[-1]["position"] = np.array(old[-1]["position"]).tolist()
+                new[-1]['geometry'] = old[-1]['geometry'].copy()
+                new[-1]['position'] = np.array(old[-1]['position']).tolist()
             
             if self.chs_on.get():
                 data = Hub.data.dat
@@ -410,24 +410,24 @@ class Snapshots:
                     if np.array(c).any():
                         data += [[f, c]]
                 data = tuple(data)
-                new[-1]["data"] = data
+                new[-1]['data'] = data
                 channels = [[c[0], [c[1][0], c[1][1], c[1][2]],
                              c[2], c[3]] for c in Hub.channels.chs]
-                new[-1]["channels"] = channels
+                new[-1]['channels'] = channels
             else:
-                new[-1]["data"] = old[-1]["data"]
+                new[-1]['data'] = old[-1]['data']
                 channels = [[c[0], [c[1][0], c[1][1], c[1][2]],
-                             c[2], c[3]] for c in old[-1]["channels"]]
-                new[-1]["channels"] = channels
+                             c[2], c[3]] for c in old[-1]['channels']]
+                new[-1]['channels'] = channels
                 
             if self.pts_on.get():
                 points = [[p[0], [p[1][0], p[1][1], p[1][2]], 
                            [p[2][0], p[2][1], p[2][2]]] for p in Hub.points.pts]
-                new[-1]["points"] = points
+                new[-1]['points'] = points
             else:
                 points = [[p[0], [p[1][0], p[1][1], p[1][2]], 
-                           [p[2][0], p[2][1], p[2][2]]] for p in old[-1]["points"]]
-                new[-1]["points"] = points
+                           [p[2][0], p[2][1], p[2][2]]] for p in old[-1]['points']]
+                new[-1]['points'] = points
             
         hist, idx = Hub.history, Hub.hidx
             
@@ -441,9 +441,9 @@ class Snapshots:
         Hub.hidx = -1
         
         gui = Hub.gui
-        gui.edit_menu.entryconfig("Undo", state="normal")
-        gui.edit_menu.entryconfig("Redo", state="disable")
-        gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.change_snapshot(x, new)
         
@@ -461,21 +461,21 @@ class Snapshots:
         if len(select) == 1:
             secv = self.snapshots[int(select[0])]
             try:
-                dat = secv["data"]
-                geo = secv["geometry"].copy()
-                pos = np.array(secv["position"]).tolist()
+                dat = secv['data']
+                geo = secv['geometry'].copy()
+                pos = np.array(secv['position']).tolist()
                 chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
-                        c[2], c[3]] for c in secv["channels"]]
+                        c[2], c[3]] for c in secv['channels']]
                 pts = [[p[0], [p[1][0], p[1][1], p[1][2]], 
-                       [p[2][0], p[2][1], p[2][2]]] for p in secv["points"]]
+                       [p[2][0], p[2][1], p[2][2]]] for p in secv['points']]
             except Exception as e:
-                messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
                 return None
         else:
             pts = []
             for s in select:
                 pts += [[p[0], [p[1][0], p[1][1], p[1][2]], 
-                       [p[2][0], p[2][1], p[2][2]]] for p in self.snapshots[int(s)]["points"]]
+                       [p[2][0], p[2][1], p[2][2]]] for p in self.snapshots[int(s)]['points']]
                 
         typ, old, new = [], [], []
         
@@ -491,7 +491,7 @@ class Snapshots:
             b += [Hub.points]
         
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["im_size"]
+        iw0, ih0 = self.Hub.geometry['im_size']
         try:
             for v, m in zip(a, b):
                 old += [m.val]
@@ -500,7 +500,7 @@ class Snapshots:
                     typ += [m]
                 else: del old[-1]
         except Exception as e:
-            messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             return None
         
         if len(new) > 0:
@@ -516,16 +516,16 @@ class Snapshots:
             Hub.hidx = -1
                 
             gui = Hub.gui
-            gui.edit_menu.entryconfig("Undo", state="normal")
-            gui.edit_menu.entryconfig("Redo", state="disable")
-            gui.master.title("*" + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+            gui.edit_menu.entryconfig('Undo', state='normal')
+            gui.edit_menu.entryconfig('Redo', state='disable')
+            gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
             
-            iw1, ih1 = self.Hub.geometry["im_size"]
+            iw1, ih1 = self.Hub.geometry['im_size']
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
             if Hub.gui.g_on.get():
-                if Hub.gui.guide_mode == "guide":
+                if Hub.gui.guide_mode == 'guide':
                     Hub.calc_guide()
                 else:
                     Hub.calc_sideview()
@@ -539,19 +539,19 @@ class Snapshots:
                 for i in sort:
                     im[1:-1,1:-1] = colors[i]
                     cl.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
-                    cl.treeview.insert("", "end", str(i), text=" "+names[i], image=cl.icons[i])
+                    cl.treeview.insert('', 'end', str(i), text=' '+names[i], image=cl.icons[i])
                 cl.treeview.selection_set()
     
     def jump(self, typ, new):
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["im_size"]
+        iw0, ih0 = self.Hub.geometry['im_size']
         for t, n in zip(typ, new):
             t.val = n
-        iw1, ih1 = self.Hub.geometry["im_size"]
+        iw1, ih1 = self.Hub.geometry['im_size']
         self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
         self.Hub.calc_geometry()
         if self.Hub.gui.g_on.get():
-            if self.Hub.gui.guide_mode == "guide":
+            if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
             else:
                 self.Hub.calc_sideview()
@@ -563,23 +563,23 @@ class Snapshots:
     def preview_im(self, secv):
         Hub = self.Hub
         
-        geo = secv["geometry"]
-        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
+        geo = secv['geometry']
+        xy_rs, z_rs = geo['res_xy'], geo['res_z']
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
             ratio = z_rs / xy_rs
         
-        frame = np.empty([len(Hub.box), *geo["im_size"][::-1]], np.uint16)
+        frame = np.empty([len(Hub.box), *geo['im_size'][::-1]], np.uint16)
         
-        exp_rate = geo["exp_rate"]
-        bar_len = geo["bar_len"]
+        exp_rate = geo['exp_rate']
+        bar_len = geo['bar_len']
         
         lpx = int(bar_len/xy_rs*exp_rate) if xy_rs != None else 0
         
         box = Hub.box
         dc, dz, dy, dx = box.shape
-        pos = secv["position"]
+        pos = secv['position']
         pos = np.float64(pos)
         pos[0] -= np.array([dz, dy, dx])//2
         pos[:,0] *= ratio
@@ -616,7 +616,7 @@ class Snapshots:
         
         gui = Hub.gui
         
-        chs = secv["channels"]
+        chs = secv['channels']
         colors = np.array([c[1] for c in chs], dtype=np.uint8)
         vrange = np.array([c[2:4] for c in chs])
         lut = np.arange(65536)[None]
@@ -641,7 +641,7 @@ class Snapshots:
         im = cv2.resize(im, (la, lb))
         exp_rate *= self.im_size/L
         
-        pts = secv["points"]
+        pts = secv['points']
         
         if len(pts) != 0:
             
@@ -652,7 +652,7 @@ class Snapshots:
             
             points -= np.array([dz//2,dy//2,dx//2])
             points[:,0] *= ratio
-            pos = secv["position"]
+            pos = secv['position']
             pos = np.float64(pos)
             pos[0] -= np.array([dz, dy, dx])//2
             pos[:,0] *= ratio
@@ -704,15 +704,15 @@ class Snapshots:
                 cv2.putText(im, name, (b+6,a+7), 2, 0.5, color, 1, cv2.LINE_AA)
                 square1[:] = (square2*(1-point[0]) + square1*point[0]).astype(np.uint8)
         
-        self.canvas1.itemconfig(self.im1_back, fill="#ffffff" if gui.white.get() else "#000000")
+        self.canvas1.itemconfig(self.im1_back, fill='#ffffff' if gui.white.get() else '#000000')
         
         return im
     
     def preview_guide(self, secv):
         Hub = self.Hub
         
-        geo = secv["geometry"]
-        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
+        geo = secv['geometry']
+        xy_rs, z_rs = geo['res_xy'], geo['res_z']
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
@@ -720,7 +720,7 @@ class Snapshots:
             
         dc, dz, dy, dx = Hub.box.shape
         
-        pos = secv["position"]
+        pos = secv['position']
         pos = np.float64(pos)
         pos[0] -= np.array([dz, dy, dx])//2
         pos[:,0] *= ratio
@@ -730,8 +730,8 @@ class Snapshots:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = geo["exp_rate"]
-        im_size = np.array(geo["im_size"])
+        exp_rate = geo['exp_rate']
+        im_size = np.array(geo['im_size'])
         
         edges = Hub.g_edges
         vivid = Hub.g_vivid
@@ -739,7 +739,7 @@ class Snapshots:
         
         n = np.array([nz, ny, nx])
         
-        pts = secv["points"]
+        pts = secv['points']
         points = np.array([p[2] for p in pts])
         if len(points) == 0:
             points = np.empty([0,3])

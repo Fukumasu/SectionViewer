@@ -32,50 +32,50 @@ class Hub:
         self.snapshots = []
         
         self.thickness = 1
-        gui.thickness.set("1")
+        gui.thickness.set('1')
         gui.a_on.set(True)
         gui.b_on.set(True)
         gui.p_on.set(True)
         gui.g_on.set(True)
         gui.white.set(False)
         
-        if path[-5:] == ".secv":
-            with open(path, "rb") as st:
+        if path[-5:] == '.secv':
+            with open(path, 'rb') as st:
                 secv = pickle.load(st)
-            self.data = secv["data"]
-            if "geometry" in secv:
-                self.geometry = secv["geometry"]
-            if "position" in secv:
-                self.position = secv["position"]
-            if "channels" in secv:
-                self.channels = secv["channels"]
-            if "points" in secv:
-                self.points = secv["points"]
-            if "display" in secv:
-                display = secv["display"]
-                if "thickness" in display:
-                    self.thickness = int(display["thickness"])
+            self.data = secv['data']
+            if 'geometry' in secv:
+                self.geometry = secv['geometry']
+            if 'position' in secv:
+                self.position = secv['position']
+            if 'channels' in secv:
+                self.channels = secv['channels']
+            if 'points' in secv:
+                self.points = secv['points']
+            if 'display' in secv:
+                display = secv['display']
+                if 'thickness' in display:
+                    self.thickness = int(display['thickness'])
                     gui.thickness.set(str(self.thickness))
-                if "axis" in display:
-                    gui.a_on.set(display["axis"])
-                if "scale bar" in display:
-                    gui.b_on.set(display["scale bar"])
-                if "points" in display:
-                    gui.p_on.set(display["points"])
-                if "guide" in display:
-                    gui.g_on.set(display["guide"])
-                if "white back" in display:
-                    gui.white.set(display["white back"])
-                if "zoom" in display:
-                    gui.zoom.set(str(int(display["zoom"]*100)))
+                if 'axis' in display:
+                    gui.a_on.set(display['axis'])
+                if 'scale bar' in display:
+                    gui.b_on.set(display['scale bar'])
+                if 'points' in display:
+                    gui.p_on.set(display['points'])
+                if 'guide' in display:
+                    gui.g_on.set(display['guide'])
+                if 'white back' in display:
+                    gui.white.set(display['white back'])
+                if 'zoom' in display:
+                    gui.zoom.set(str(int(display['zoom']*100)))
                     self.zoom = int(gui.zoom.get())/100
-                if "upperleft" in display:
-                    gui.upperleft = display["upperleft"]
+                if 'upperleft' in display:
+                    gui.upperleft = display['upperleft']
                     
-            if "snapshots" in secv:
-                self.snapshots = secv["snapshots"]
-            if "memories" in secv:
-                self.snapshots = secv["memories"]
+            if 'snapshots' in secv:
+                self.snapshots = secv['snapshots']
+            if 'memories' in secv:
+                self.snapshots = secv['memories']
             self.secv_name = path
         else:
             self.data = [[path]]
@@ -123,12 +123,12 @@ class Hub:
         self.calc_guide()
         self.gui.master.update()
         
-        if path[-5:] == ".secv":
+        if path[-5:] == '.secv':
             self.box = []
             self.data = Data(self)
         else:
             w, h = gui.sec_cf.winfo_width()-4, gui.sec_cf.winfo_height()-4
-            iw, ih = self.geometry["im_size"]
+            iw, ih = self.geometry['im_size']
             zoom = min((w-10)/iw, (h-10)/ih)
             iw1, ih1 = int(iw*zoom), int(ih*zoom)
             ul = (int(iw1//2-w//2), int(ih1//2-h//2))
@@ -138,7 +138,7 @@ class Hub:
             gui.upperleft = ul
 
         if len(self.box) == 0:
-            messagebox.showerror("Error", 
+            messagebox.showerror('Error', 
                                  "No data couldn't be extracted")
             self.load_success = False
             return
@@ -147,8 +147,8 @@ class Hub:
             self.position = [[0.,0.,0.], [0.,1.,0.], [0.,0.,1.]]
             self.position = Position(self)
             if not self.calc_geometry():
-                messagebox.showerror("Error", 
-                                     "Data shape is invalid\n CZYX = {0}".format(self.box.shape))
+                messagebox.showerror('Error', 
+                                     'Data shape is invalid\n CZYX = {0}'.format(self.box.shape))
                 self.load_success = False
                 return
         if self.secv_name==None:
@@ -169,22 +169,22 @@ class Hub:
     
     def calc_geometry(self):
         geo = self.geometry
-        xy_rs, z_rs = geo["res_xy"], geo["res_z"]
+        xy_rs, z_rs = geo['res_xy'], geo['res_z']
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
             ratio = z_rs / xy_rs
         self.ratio = ratio
         
-        self.frame = np.empty([len(self.box), *geo["im_size"][::-1]], np.uint16)
-        self.sec_raw = np.empty([*geo["im_size"][::-1], 4], np.uint8)
+        self.frame = np.empty([len(self.box), *geo['im_size'][::-1]], np.uint16)
+        self.sec_raw = np.empty([*geo['im_size'][::-1], 4], np.uint8)
         self.s_frame = np.empty([len(self.box), 569, 400], np.uint16)
         self.s_frame[:,284] = 0
         self.s_frame1 = np.empty([len(self.box), 284, 400], np.uint16)
         self.s_frame2 = np.empty([len(self.box), 284, 400], np.uint16)
         
-        exp_rate = geo["exp_rate"]
-        bar_len = geo["bar_len"]
+        exp_rate = geo['exp_rate']
+        bar_len = geo['bar_len']
         
         lpx = int(bar_len/xy_rs*exp_rate) if xy_rs != None else 0
         self.lpx = lpx
@@ -203,8 +203,8 @@ class Hub:
         pos[:,0] /= self.ratio
         nz[0] /= self.ratio
         pos[0] += np.array([dz, dy, dx])//2
-        pos[1:] /= self.geometry["exp_rate"]
-        nz /= self.geometry["exp_rate"]
+        pos[1:] /= self.geometry['exp_rate']
+        nz /= self.geometry['exp_rate']
         
         if type(x) == type(None):
             ch_show = np.arange(len(self.lut))[self.ch_show]
@@ -244,7 +244,7 @@ class Hub:
         from_ = int(np.amin(peaks[:,0]))
         to = int(np.amax(peaks[:,0]))
         self.gui.scale_to = to - from_
-        if hasattr(self.gui, "scale"):
+        if hasattr(self.gui, 'scale'):
             self.gui.scale.config(to=to-from_)
         self.gui.depth.set(-from_)
         self.scale_orient = op + from_*nz
@@ -289,8 +289,8 @@ class Hub:
             colors = colors[show]
             names = names[show]
             points = points[show]
-            points[:,1:3] *= self.geometry["exp_rate"]
-            la, lb = self.geometry["im_size"]
+            points[:,1:3] *= self.geometry['exp_rate']
+            la, lb = self.geometry['im_size']
             points[:,1:3] += np.array([lb//2, la//2])
             show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=np.bool)
             colors = colors[show]
@@ -327,7 +327,7 @@ class Hub:
                 square1[:] = (square2*(1-point[0]) + square1*point[0]).astype(np.uint8)
             self.gui.section = im
         
-        if hasattr(self.gui, "sec_canvas"):
+        if hasattr(self.gui, 'sec_canvas'):
             x, y, iw, ih, w, h = self.put_axes_bar()
             self.scroll_config(x, y, iw, ih, w, h)
         
@@ -373,7 +373,7 @@ class Hub:
         x, y = x - x0, y - y0
         gui.sec_canvas.coords(gui.sec_back, x, y, x+iw, y+ih)
         gui.sec_canvas.itemconfig(gui.sec_id, image=gui.sec_im)
-        gui.sec_canvas.itemconfig(gui.sec_back, fill="#ffffff" if gui.white.get() else "#000000")
+        gui.sec_canvas.itemconfig(gui.sec_back, fill='#ffffff' if gui.white.get() else '#000000')
         
         return x, y, iw, ih, w, h
     
@@ -397,15 +397,15 @@ class Hub:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = self.geometry["exp_rate"]
+        exp_rate = self.geometry['exp_rate']
         
-        im_size = np.array(self.geometry["im_size"])
+        im_size = np.array(self.geometry['im_size'])
         
         edges = self.g_edges
         vivid = self.g_vivid
         thick = self.g_thick
         
-        dc, dz, dy, dx = self.geometry["shape"]
+        dc, dz, dy, dx = self.geometry['shape']
         n = np.array([nz, ny, nx])
         
         points = np.array(self.points.getcoordinates())
@@ -495,8 +495,8 @@ class Hub:
         im[ul0[1]:br0[1], ul0[0]:br0[0]] = im1[ul0[1]:br0[1], ul0[0]:br0[0]]
         
         if rect:
-            if hasattr(self, "zoom") and hasattr(self.gui, "sec_cf"):
-                iw, ih = self.geometry["im_size"]
+            if hasattr(self, 'zoom') and hasattr(self.gui, 'sec_cf'):
+                iw, ih = self.geometry['im_size']
                 iw, ih = iw*self.zoom, ih*self.zoom
                 w, h = self.gui.sec_cf.winfo_width()-4, self.gui.sec_cf.winfo_height()-4
                 x0, y0 = self.gui.upperleft
@@ -508,7 +508,7 @@ class Hub:
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
                 im[ul2[1]:br2[1], ul2[0]:br2[0]] = im0[ul2[1]:br2[1], ul2[0]:br2[0]]
         else:
-            if hasattr(self, "ul1"):
+            if hasattr(self, 'ul1'):
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
                 im[ul2[1]:br2[1], ul2[0]:br2[0]] = im0[ul2[1]:br2[1], ul2[0]:br2[0]]
@@ -577,7 +577,7 @@ class Hub:
         gui = self.gui
         gui.guide = im
         
-        if hasattr(gui, "guide_canvas"):
+        if hasattr(gui, 'guide_canvas'):
             gui.guide_im = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
             gui.guide_canvas.itemconfig(gui.guide_id, image=gui.guide_im)
             
@@ -587,7 +587,7 @@ class Hub:
         op, ny, nx = pos
         nz = -np.cross(ny, nx)
         
-        exp_rate = self.geometry["exp_rate"]
+        exp_rate = self.geometry['exp_rate']
         
         dc, dz, dy, dx = self.box.shape
         dz *= self.ratio
@@ -641,7 +641,7 @@ class Hub:
             nz = -np.cross(ny, nx)
             
             la, lb = 400, 284
-            exp_rate = self.geometry["exp_rate"]/2
+            exp_rate = self.geometry['exp_rate']/2
             th_show = 10
             
             points -= np.array([dz//2,dy//2,dx//2])
@@ -689,22 +689,22 @@ class Hub:
         
         gui.side = im
         
-        if hasattr(gui, "guide_canvas"):
+        if hasattr(gui, 'guide_canvas'):
             gui.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(im[:,:,2::-1], im[:,:,3:], axis=2)))
             gui.side_canvas.itemconfig(gui.side_id, image=gui.side_im)
-            gui.side_canvas.itemconfig(gui.side_back, fill="#ffffff" if gui.white.get() else "#000000")
+            gui.side_canvas.itemconfig(gui.side_back, fill='#ffffff' if gui.white.get() else '#000000')
             
         
         
     def save(self, path=None):
         if path == None:
-            fTyp = [("SectionViewer project file", "*.secv")]
+            fTyp = [('SectionViewer project file', '*.secv')]
             iDir = os.path.dirname(self.gui.file_name)
             iFil = os.path.splitext(os.path.basename(self.gui.file_name))[0]
             path = filedialog.asksaveasfilename(parent=self.gui.master, filetypes=fTyp, 
                                                 initialdir=iDir,
                                                 initialfile=iFil,
-                                                title="Saving the project as SECV format",
+                                                title='Saving the project as SECV format',
                                                 defaultextension='.secv')
             if len(path) == 0:
                 return False
@@ -721,45 +721,45 @@ class Hub:
             if np.array(c).any():
                 data += [[f, c]]
         data = tuple(data)
-        secv["data"] = data
+        secv['data'] = data
         
-        secv["geometry"] = self.geometry.geo
-        secv["geometry"]["shape"] = self.box.shape
+        secv['geometry'] = self.geometry.geo
+        secv['geometry']['shape'] = self.box.shape
         
         pos = self.position.asarray()
         pos[:,0] /= self.ratio
         pos[0] += np.array(self.box.shape[1:])//2
-        secv["position"] = pos.tolist()
+        secv['position'] = pos.tolist()
         
-        secv["channels"] = [[c[0], [c[1][0], c[1][1], c[1][2]],
+        secv['channels'] = [[c[0], [c[1][0], c[1][1], c[1][2]],
                              c[2], c[3]] for c in self.channels.chs]
         sort = np.argsort(self.points.getnames())
-        secv["points"] = [self.points.pts[s] for s in sort]
+        secv['points'] = [self.points.pts[s] for s in sort]
         
         sort = np.argsort(self.snapshots.names())
-        secv["snapshots"] = [self.snapshots.snapshots[s] for s in sort]
+        secv['snapshots'] = [self.snapshots.snapshots[s] for s in sort]
         
         display = {}
-        display["thickness"] = self.thickness
-        display["axis"] = self.gui.a_on.get()
-        display["scale bar"] = self.gui.b_on.get()
-        display["points"] = self.gui.p_on.get()
-        display["guide"] = self.gui.g_on.get()
-        display["white back"] = self.gui.white.get()
-        display["zoom"] = self.zoom
-        display["upperleft"] = self.gui.upperleft
-        secv["display"] = display
+        display['thickness'] = self.thickness
+        display['axis'] = self.gui.a_on.get()
+        display['scale bar'] = self.gui.b_on.get()
+        display['points'] = self.gui.p_on.get()
+        display['guide'] = self.gui.g_on.get()
+        display['white back'] = self.gui.white.get()
+        display['zoom'] = self.zoom
+        display['upperleft'] = self.gui.upperleft
+        secv['display'] = display
         
         try:
-            with open(path, "wb") as f:
+            with open(path, 'wb') as f:
                 pickle.dump(secv, f, protocol=4)
         except Exception as e:
-            messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             return False
             
         self.gui.iDir = path
         self.gui.title = os.path.basename(path)
-        with open(self.gui.SV.mDir + "init_dir.txt", "w") as f:
+        with open('init_dir.txt', 'w') as f:
             f.write(os.path.dirname(path))
         self.gui.master.title(self.gui.title)
         self.secv_name = path
@@ -778,21 +778,21 @@ class Hub:
             else:
                 return False
         except Exception as e:
-            messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             return False
     
     
     def export(self):
-        fTyp = [("Portable Network Graphics", "*.png"), 
-                ("JPEG files", "*.jpg"),
-                ("MP4 file format", "*.mp4"),
-                ("TIFF files", "*.tif"),
-                ("JPEG 2000 files", "*.jp2"),
-                ("Portable image format", "*.pbm"),
-                ("Sun rasters", "*.sr")]
+        fTyp = [('Portable Network Graphics', '*.png'), 
+                ('JPEG files', '*.jpg'),
+                ('MP4 file format', '*.mp4'),
+                ('TIFF files', '*.tif'),
+                ('JPEG 2000 files', '*.jp2'),
+                ('Portable image format', '*.pbm'),
+                ('Sun rasters', '*.sr')]
         
-        if os.path.isfile(self.gui.SV.mDir + "init_dir.txt"):
-            with open(self.gui.SV.mDir + "init_dir.txt", "r") as f:
+        if os.path.isfile('init_dir.txt'):
+            with open('init_dir.txt', 'r') as f:
                 exDir = f.read()
             if not os.path.isdir(exDir):
                 exDir = os.path.dirname(self.gui.iDir)
@@ -802,15 +802,15 @@ class Hub:
         iFil = os.path.splitext(os.path.basename(self.gui.iDir))[0]
         path = filedialog.asksaveasfilename(parent=self.gui.master, filetypes=fTyp, initialdir=iDir,
                                             initialfile=iFil,
-                                            title="Export the section image",
+                                            title='Export the section image',
                                             defaultextension='.png')
         if len(path) > 0:
-            path = path.replace("\\", "/")
+            path = path.replace('\\', '/')
             gui = self.gui
             
-            if path[-4:] == ".mp4":
+            if path[-4:] == '.mp4':
                 gui.ask_fps(path)
-                with open(gui.SV.mDir + "init_dir.txt", "w") as f:
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             
@@ -824,24 +824,24 @@ class Hub:
                 im[-25:-20, -20-self.lpx:-20,:3] = 0 if gui.white.get() else 255
                 im[-25:-20, -20-self.lpx:-20,3] = 255 - im[-25:-20, -20-self.lpx:-20,3]
             opt = 1
-            if path[-4:] == ".png":
-                opt = gui.ask_option(gui.master, "Saving options", 
-                                     ["Transparent PNG (RGBA)",
-                                      "24-bit PNG (RGB)"],
-                                     geometry="250x120")
-            if path[-4:] == ".tif":
-                opt = gui.ask_option(gui.master, "Saving options",
-                                     ["Section image (RGB)",
-                                      "Section data (16 bit)"])
+            if path[-4:] == '.png':
+                opt = gui.ask_option(gui.master, 'Saving options', 
+                                     ['Transparent PNG (RGBA)',
+                                      '24-bit PNG (RGB)'],
+                                     geometry='250x120')
+            if path[-4:] == '.tif':
+                opt = gui.ask_option(gui.master, 'Saving options',
+                                     ['Section image (RGB)',
+                                      'Section data (16 bit)'])
                 if opt == 1:
                     sort = np.argsort(self.channels.getnames())
                     try:
                         tif.imwrite(path, self.frame[sort])
                     except Exception as e:
-                        messagebox.showerror("Error", "Failed to export TIFF file :\n"\
+                        messagebox.showerror('Error', 'Failed to export TIFF file :\n'\
                                              + traceback.format_exception_only(type(e), e)[0])
                         return
-                    with open(gui.SV.mDir + "init_dir.txt", "w") as f:
+                    with open('init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -854,7 +854,7 @@ class Hub:
                 return
             
             if self.imwrite(path, im):
-                with open(self.gui.SV.mDir + "init_dir.txt", "w") as f:
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
         
     
@@ -862,7 +862,7 @@ class Hub:
         self.history[-n:] = [[self.hist_grouping, self.history[-n:]]]
         self.hidx = min(-1, self.hidx + n - 1)
         self.hidx_saved = min(-1, self.hidx_saved + n - 1)
-        self.gui.master.title("*" + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
+        self.gui.master.title('*' + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
         
     
     def undo(self):
@@ -873,10 +873,10 @@ class Hub:
                 return
             self.hidx -= 1
             
-            self.gui.edit_menu.entryconfig("Redo", state="normal")
+            self.gui.edit_menu.entryconfig('Redo', state='normal')
             if self.hidx == -len(self.history):
-                self.gui.edit_menu.entryconfig("Undo", state="disable")
-            self.gui.master.title("*" + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
+                self.gui.edit_menu.entryconfig('Undo', state='disable')
+            self.gui.master.title('*' + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
     
     def redo(self):
         if self.hidx != -1:
@@ -887,10 +887,10 @@ class Hub:
                 self.hidx -= 1
                 return
             
-            self.gui.edit_menu.entryconfig("Undo", state="normal")
+            self.gui.edit_menu.entryconfig('Undo', state='normal')
             if self.hidx == -1:
-                self.gui.edit_menu.entryconfig("Redo", state="disable")
-            self.gui.master.title("*" + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
+                self.gui.edit_menu.entryconfig('Redo', state='disable')
+            self.gui.master.title('*' + self.gui.title if self.hidx != self.hidx_saved else self.gui.title)
             
 class empty:
     def __init__(self):
@@ -918,29 +918,29 @@ class Reload:
         Hub = self.Hub
         path = Hub.secv_name
         if path == None:
-            messagebox.showerror("Error", "Only SECV files can be reloaded.")
+            messagebox.showerror('Error', 'Only SECV files can be reloaded.')
             return
         try:
-            with open(path, "rb") as f:
+            with open(path, 'rb') as f:
                 secv = pickle.load(f)
-            dat = secv["data"]
-            geo = secv["geometry"]
-            pos = secv["position"]
-            chs = secv["channels"]
-            pts = secv["points"]
+            dat = secv['data']
+            geo = secv['geometry']
+            pos = secv['position']
+            chs = secv['channels']
+            pts = secv['points']
         except Exception as e:
-            messagebox.showerror("Error", traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
             return None
         
-        if "snapshots" in secv:
-            snp = secv["snapshots"]
-        elif "memories" in secv:
-            snp = secv["memories"]
+        if 'snapshots' in secv:
+            snp = secv['snapshots']
+        elif 'memories' in secv:
+            snp = secv['memories']
         else:
             snp = []
         
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["im_size"]
+        iw0, ih0 = self.Hub.geometry['im_size']
         
         typ, old, new = [], [], []
         try:
@@ -953,7 +953,7 @@ class Reload:
                     typ += [m]
                 else: del old[-1]
         except Exception as e:
-            messagebox.showerror("Error", "Failed to reload {0} :\n".format(path)\
+            messagebox.showerror('Error', 'Failed to reload {0} :\n'.format(path)\
                                   + traceback.format_exception_only(type(e), e)[0])
             return None
             
@@ -967,16 +967,16 @@ class Reload:
             Hub.hidx_saved = -1
                 
             gui = Hub.gui
-            gui.edit_menu.entryconfig("Undo", state="normal")
-            gui.edit_menu.entryconfig("Redo", state="disable")
+            gui.edit_menu.entryconfig('Undo', state='normal')
+            gui.edit_menu.entryconfig('Redo', state='disable')
             gui.master.title(gui.title)
             
-            iw1, ih1 = self.Hub.geometry["im_size"]
+            iw1, ih1 = self.Hub.geometry['im_size']
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
             if Hub.gui.g_on.get():
-                if Hub.gui.guide_mode == "guide":
+                if Hub.gui.guide_mode == 'guide':
                     Hub.calc_guide()
                 else:
                     Hub.calc_sideview()
@@ -990,16 +990,16 @@ class Reload:
         
     def reload(self, typ, new):
         ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry["im_size"]
+        iw0, ih0 = self.Hub.geometry['im_size']
         for t, n in zip(typ, new):
             t.val = n
-        iw1, ih1 = self.Hub.geometry["im_size"]
+        iw1, ih1 = self.Hub.geometry['im_size']
         self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
         if not self.Hub.calc_geometry():
             self.Hub.position.pos = [[0.,0.,0.], [0.,1.,0.], [0.,0.,1.]]
             self.Hub.calc_geometry()
         if self.Hub.gui.g_on.get():
-            if self.Hub.gui.guide_mode == "guide":
+            if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
             else:
                 self.Hub.calc_sideview()
