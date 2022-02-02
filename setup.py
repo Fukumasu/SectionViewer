@@ -10,7 +10,7 @@ info = \
 version = '{0}'
 author = 'Kazushi Fukumasu'
 url = 'https://github.com/Fukumasu/SectionViewer'
-upgrade_code = '{6bd9a5e4-428c-4053-8956-9c452ebeefcf}'
+upgrade_code = '\{6bd9a5e4-428c-4053-8956-9c452ebeefcf\}'
 '''.format(version)
 with open('sectionviewer/info.py', 'w') as f:
     f.write(info)
