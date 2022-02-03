@@ -138,11 +138,7 @@ def launch(file_path=None):
     if pf == 'Windows':
         subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
     else:
-        command = os.path.dirname(os.path.abspath(__file__))
-        for _ in range(3):
-            command = os.path.split(command)[0]
-        command = os.path.join(os.path.join(command, 'Scripts'), 'sectionviewer')
-        subprocess.Popen(command + ' {0}'.format(file_path), shell=True)
+        subprocess.Popen('sectionviewer ' + file_path, shell=True)
     return file_path
 
 
