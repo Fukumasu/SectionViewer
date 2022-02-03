@@ -8,6 +8,8 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
+from .path import icon_path
+
 
 class Geometry:
     def __init__(self, Hub):
@@ -66,7 +68,7 @@ class Geometry:
     def details(self):
         self.details_win = tk.Toplevel(self.Hub.gui.master)
         self.details_win.withdraw()
-        self.details_win.iconbitmap('img/icon.ico')
+        self.details_win.iconbitmap(icon_path)
         self.details_win.title('Details')
         
         note = ttk.Notebook(self.details_win)
@@ -438,7 +440,7 @@ class Geometry:
     def set_bar_length(self):
         self.bar_win = tk.Toplevel(self.Hub.gui.master)
         self.bar_win.withdraw()
-        self.bar_win.iconbitmap('img/icon.ico')
+        self.bar_win.iconbitmap(icon_path)
         self.bar_win.title('Scale bar')
         self.bar_win.geometry('250x80')
         self.bar_win.resizable(width=False, height=False)

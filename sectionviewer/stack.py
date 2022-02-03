@@ -17,6 +17,7 @@ from tkinter import messagebox
 from .channels import Channels
 from .geometry import Geometry
 from . import utils as ut
+from .path import svp, icon_path
 
 
 class Stack:
@@ -28,7 +29,7 @@ class Stack:
     def settings(self):
         self.stack_win = tk.Toplevel(self.Hub.gui.master)
         self.stack_win.withdraw()
-        self.stack_win.iconbitmap('img/icon.ico')
+        self.stack_win.iconbitmap(icon_path)
         self.stack_win.title('Stack')
         self.stack_win.resizable(width=False, height=False)
         
@@ -294,7 +295,7 @@ class Stack:
         
         master = tk.Toplevel(gui.SV.root)
         master.withdraw()
-        master.iconbitmap('img/icon.ico')
+        master.iconbitmap(icon_path)
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
         
@@ -391,7 +392,7 @@ class Stack:
             
             master = tk.Toplevel(gui.SV.root)
             master.withdraw()
-            master.iconbitmap('img/icon.ico')
+            master.iconbitmap(icon_path)
             gui.SV.wins += [master]
             STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -439,7 +440,7 @@ class Stack:
         
         master = tk.Toplevel(gui.SV.root)
         master.withdraw()
-        master.iconbitmap('img/icon.ico')
+        master.iconbitmap(icon_path)
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -648,7 +649,7 @@ class STAC(ttk.Frame):
         self.file_dir = os.path.dirname(file_path)
         self.file_name = os.path.basename(file_path)
         
-        resources = cv2.imread('img/resources.png')
+        resources = cv2.imread(svp('img/resources.png'))
         c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         e_image = resources[:14,174:188]
@@ -670,7 +671,7 @@ class STAC(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap('img/icon.ico')
+        self.palette.iconbitmap(icon_path)
         self.palette.resizable(height=False, width=False)
         def hide():
             self.palette.grab_release()
@@ -877,7 +878,7 @@ class STAC(ttk.Frame):
         else:
             self.close_win = tk.Toplevel(self.master)
             self.close_win.withdraw()
-            self.close_win.iconbitmap('img/icon.ico')
+            self.close_win.iconbitmap(icon_path)
             self.close_win.title('Closing')
             self.close_win.resizable(width=False, height=False)
             
@@ -1092,8 +1093,8 @@ class STAC(ttk.Frame):
         if path == None:
             filetypes = [('SV multi-stack', '*.stac')]
             
-            if os.path.isfile('init_dir.txt'):
-                with open('init_dir.txt', 'r') as f:
+            if os.path.isfile(svp('init_dir.txt')):
+                with open(svp('init_dir.txt'), 'r') as f:
                     initialdir = f.read()
                 if not os.path.isdir(initialdir):
                     initialdir = os.path.dirname(self.iDir)
@@ -1117,7 +1118,7 @@ class STAC(ttk.Frame):
             byt = gzip.compress(byt, compresslevel=1)
             with open(path, 'wb') as f:
                 f.write(byt)
-            with open('init_dir.txt', 'w') as f:
+            with open(svp('init_dir.txt'), 'w') as f:
                 f.write(os.path.dirname(path))
             self.title = os.path.basename(path)
             
@@ -1168,8 +1169,8 @@ class STAC(ttk.Frame):
                          ('Portable image format', '*.pbm'),
                          ('Sun rasters', '*.sr')]
         
-        if os.path.isfile('init_dir.txt'):
-            with open('init_dir.txt', 'r') as f:
+        if os.path.isfile(svp('init_dir.txt')):
+            with open(svp('init_dir.txt'), 'r') as f:
                 initialdir = f.read()
             if not os.path.isdir(initialdir):
                 initialdir = self.file_dir
@@ -1186,7 +1187,7 @@ class STAC(ttk.Frame):
             path = path.replace('\\', '/')
             if path[-4:] == '.mp4':
                 self.ask_fps(path)
-                with open('init_dir.txt', 'w') as f:
+                with open(svp('init_dir.txt'), 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             Hub = self.Hub
@@ -1213,7 +1214,7 @@ class STAC(ttk.Frame):
                                              + traceback.format_exception_only(type(e), e)[0],
                                              parent=self.master)
                         return
-                    with open('init_dir.txt', 'w') as f:
+                    with open(svp('init_dir.txt'), 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -1226,14 +1227,14 @@ class STAC(ttk.Frame):
                 return
             
             if self.imwrite(path, im):
-                with open('init_dir.txt', 'w') as f:
+                with open(svp('init_dir.txt'), 'w') as f:
                     f.write(os.path.dirname(path))
             
             
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap('img/icon.ico')
+        self.fps_win.iconbitmap(icon_path)
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1349,7 +1350,7 @@ class STAC(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap('img/icon.ico')
+        win.iconbitmap(icon_path)
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

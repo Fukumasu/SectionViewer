@@ -10,6 +10,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from .hub import Hub
+from .path import svp, icon_path
 
 
 class GUI(ttk.Frame):
@@ -19,7 +20,7 @@ class GUI(ttk.Frame):
         self.file_dir = os.path.dirname(file_path)
         self.file_name = os.path.basename(file_path)
         
-        resources = cv2.imread('img/resources.png')
+        resources = cv2.imread(svp('img/resources.png'))
         c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = resources[:35,36:72]
@@ -54,7 +55,7 @@ class GUI(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap('img/icon.ico')
+        self.palette.iconbitmap(icon_path)
         self.palette.resizable(height=False, width=False)
         
         self.SV.root.withdraw()
@@ -945,7 +946,7 @@ class GUI(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap('img/icon.ico')
+        self.fps_win.iconbitmap(icon_path)
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1068,7 +1069,7 @@ class GUI(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap('img/icon.ico')
+        win.iconbitmap(icon_path)
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

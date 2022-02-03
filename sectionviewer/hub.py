@@ -18,6 +18,7 @@ from .stack import Stack
 from .snapshots import Snapshots
 
 from . import utils as ut
+from .path import svp
 
 
 class Hub:
@@ -796,13 +797,7 @@ class Hub:
                      ('Portable image format', '*.pbm'),
                      ('Sun rasters', '*.sr')]
         
-        if os.path.isfile('init_dir.txt'):
-            with open('init_dir.txt', 'r') as f:
-                initialdir = f.read()
-            if not os.path.isdir(initialdir):
-                initialdir = self.gui.file_dir
-        else:
-            initialdir = self.gui.file_dir
+        initialdir = self.gui.file_dir
         initialfile = os.path.splitext(self.gui.file_name)[0]
         path = filedialog.asksaveasfilename(parent=self.gui.master,
                                             filetypes=filetypes,
@@ -816,7 +811,7 @@ class Hub:
             
             if path[-4:] == '.mp4':
                 gui.ask_fps(path)
-                with open('init_dir.txt', 'w') as f:
+                with open(svp('init_dir.txt'), 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             
@@ -848,7 +843,7 @@ class Hub:
                                              + traceback.format_exception_only(type(e), e)[0],
                                              parent=self.gui.master)
                         return
-                    with open('init_dir.txt', 'w') as f:
+                    with open(svp('init_dir.txt'), 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -861,7 +856,7 @@ class Hub:
                 return
             
             if self.imwrite(path, im):
-                with open('init_dir.txt', 'w') as f:
+                with open(svp('init_dir.txt'), 'w') as f:
                     f.write(os.path.dirname(path))
         
     

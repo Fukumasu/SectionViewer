@@ -6,8 +6,8 @@ from cx_Freeze import setup, Executable
 
 import info
 
-mDir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
-os.chdir(mDir)
+svdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
+os.chdir(svdir)
 
 with open('exe_path.txt', 'w') as f:
     f.write('')
@@ -19,19 +19,19 @@ import subprocess
 
 def main():
 
-    mDir = '{0}'
-    with open(os.path.join(mDir, 'exe_path.txt'), 'r') as f:
+    svdir = '{0}'
+    with open(os.path.join(svdir, 'exe_path.txt'), 'r') as f:
         epath = f.read()
     epath0 = os.path.abspath(sys.argv[0]).replace('\\\\', '/')
     if epath != epath0:
-        with open(os.path.join(mDir, 'exe_path.txt'), 'w') as f:
+        with open(os.path.join(svdir, 'exe_path.txt'), 'w') as f:
             f.write(epath0)
         return
     
-    command = os.path.split(mDir)[0]
+    command = os.path.split(svdir)[0]
     for _ in range(2):
         command = os.path.split(command)[0]
-    command += '/python ' + mDir + '/subdir/launcher.py'
+    command += '/python ' + svdir + '/subdir/launcher.py'
     if len(sys.argv) > 1:
         command += ' ' + sys.argv[1]
     subprocess.run(command, shell=True)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     main()
 '''
     
-code = code.format(mDir)
+code = code.format(svdir)
 with open('executable.py', 'w') as f:
     f.write(code)
 
