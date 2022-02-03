@@ -10,7 +10,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from .hub import Hub
-from .param import svp, icon_path
+from .param import svp, pf
 
 
 class GUI(ttk.Frame):
@@ -55,7 +55,8 @@ class GUI(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap(icon_path)
+        if pf == 'Windows':
+            self.palette.iconbitmap(svp('img/icon.ico'))
         self.palette.resizable(height=False, width=False)
         
         self.SV.root.withdraw()
@@ -946,7 +947,8 @@ class GUI(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap(icon_path)
+        if pf == 'Windows':
+            self.fpt_win.iconbitmap(svp('img/icon.ico'))
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1069,7 +1071,8 @@ class GUI(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap(icon_path)
+        if pf == 'Windows':
+            win.iconbitmap(svp('img/icon.ico'))
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

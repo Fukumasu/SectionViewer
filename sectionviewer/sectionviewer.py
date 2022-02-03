@@ -11,13 +11,14 @@ from tkinter import ttk
 
 from .gui import GUI
 from .stack import STAC
-from .param import svp, icon_path
+from .param import svp, pf
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
         root = tk.Tk()
         root.withdraw()
-        root.iconbitmap(icon_path)
+        if pf == 'Windows':
+            root.iconbitmap(svp('img/icon.ico'))
         icon = cv2.imread(svp('img/resources.png'))[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
@@ -61,7 +62,8 @@ class SectionViewer(ttk.Frame):
                 
             master = tk.Toplevel(self.root)
             master.withdraw()
-            master.iconbitmap(icon_path)
+            if pf == 'Windows':
+                master.iconbitmap(svp('img/icon.ico'))
             self.wins += [master]
             if file_path[-5:] == '.stac':
                 gui = STAC(self, master, file_path)
@@ -78,8 +80,6 @@ class SectionViewer(ttk.Frame):
             if close:
                 self.root.destroy()
 
-    
-pf = platform.system()
     
 def launch(file_path=None):
     
@@ -106,7 +106,8 @@ def launch(file_path=None):
         file_path = sys.argv[1]
     if file_path == None:
         root = tk.Tk()
-        root.iconbitmap(icon_path)
+        if pf == 'Windows':
+            root.iconbitmap(svp('img/icon.ico'))
         icon = cv2.imread(svp('img/resources.png'))[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)

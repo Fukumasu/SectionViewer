@@ -17,7 +17,7 @@ from tkinter import messagebox
 from .channels import Channels
 from .geometry import Geometry
 from . import utils as ut
-from .param import svp, icon_path
+from .param import svp, pf
 
 
 class Stack:
@@ -29,7 +29,8 @@ class Stack:
     def settings(self):
         self.stack_win = tk.Toplevel(self.Hub.gui.master)
         self.stack_win.withdraw()
-        self.stack_win.iconbitmap(icon_path)
+        if pf == 'Windows':
+            self.stack_win.iconbitmap(svp('img/icon.ico'))
         self.stack_win.title('Stack')
         self.stack_win.resizable(width=False, height=False)
         
@@ -295,7 +296,8 @@ class Stack:
         
         master = tk.Toplevel(gui.SV.root)
         master.withdraw()
-        master.iconbitmap(icon_path)
+        if pf == 'Windows':
+            master.iconbitmap(svp('img/icon.ico'))
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
         
@@ -392,7 +394,8 @@ class Stack:
             
             master = tk.Toplevel(gui.SV.root)
             master.withdraw()
-            master.iconbitmap(icon_path)
+            if pf == 'Windows':
+                master.iconbitmap(svp('img/icon.ico'))
             gui.SV.wins += [master]
             STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -440,7 +443,8 @@ class Stack:
         
         master = tk.Toplevel(gui.SV.root)
         master.withdraw()
-        master.iconbitmap(icon_path)
+        if pf == 'Windows':
+            master.iconbitmap(svp('img/icon.ico'))
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -671,7 +675,8 @@ class STAC(ttk.Frame):
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
-        self.palette.iconbitmap(icon_path)
+        if pf == 'Windows':
+            self.palette.iconbitmap(svp('img/icon.ico'))
         self.palette.resizable(height=False, width=False)
         def hide():
             self.palette.grab_release()
@@ -878,7 +883,8 @@ class STAC(ttk.Frame):
         else:
             self.close_win = tk.Toplevel(self.master)
             self.close_win.withdraw()
-            self.close_win.iconbitmap(icon_path)
+            if pf == 'Windows':
+                self.close_win.iconbitmap(svp('img/icon.ico'))
             self.close_win.title('Closing')
             self.close_win.resizable(width=False, height=False)
             
@@ -1234,7 +1240,8 @@ class STAC(ttk.Frame):
     def ask_fps(self, path):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
-        self.fps_win.iconbitmap(icon_path)
+        if pf == 'Windows':
+            self.fps_win.iconbitmap(svp('img/icon.ico'))
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1350,7 +1357,8 @@ class STAC(ttk.Frame):
     def ask_option(self, master, title, options, geometry=None):
         win = tk.Toplevel(master)
         win.withdraw()
-        win.iconbitmap(icon_path)
+        if pf == 'Windows':
+            win.iconbitmap(svp('img/icon.ico'))
         win.title(title)
         if geometry != None:
             win.geometry(geometry)
