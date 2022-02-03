@@ -8,7 +8,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-from .path import icon_path
+from .param import icon_path
 
 
 class Geometry:

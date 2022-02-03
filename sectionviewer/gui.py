@@ -10,7 +10,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from .hub import Hub
-from .path import svp, icon_path
+from .param import svp, icon_path
 
 
 class GUI(ttk.Frame):

@@ -17,7 +17,7 @@ from tkinter import messagebox
 from .channels import Channels
 from .geometry import Geometry
 from . import utils as ut
-from .path import svp, icon_path
+from .param import svp, icon_path
 
 
 class Stack:

@@ -11,7 +11,7 @@ from tkinter import ttk
 
 from .gui import GUI
 from .stack import STAC
-from .path import svp, icon_path
+from .param import svp, icon_path
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):

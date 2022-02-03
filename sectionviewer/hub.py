@@ -18,7 +18,7 @@ from .stack import Stack
 from .snapshots import Snapshots
 
 from . import utils as ut
-from .path import svp
+from .param import svp
 
 
 class Hub:
