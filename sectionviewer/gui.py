@@ -1,4 +1,5 @@
 import os
+import platform
 import shutil
 import time
 import traceback
@@ -10,8 +11,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from .hub import Hub
-from .param import svp, pf
 
+pf = platform.system()
 
 class GUI(ttk.Frame):
     def __init__(self, SV, master, file_path):
@@ -20,7 +21,7 @@ class GUI(ttk.Frame):
         self.file_dir = os.path.dirname(file_path)
         self.file_name = os.path.basename(file_path)
         
-        resources = cv2.imread(svp('img/resources.png'))
+        resources = cv2.imread('img/resources.png')
         c_image = resources[:35,:36]
         self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         p_image = resources[:35,36:72]
@@ -56,7 +57,7 @@ class GUI(ttk.Frame):
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
         if pf == 'Windows':
-            self.palette.iconbitmap(svp('img/icon.ico'))
+            self.palette.iconbitmap('img/icon.ico')
         self.palette.resizable(height=False, width=False)
         
         self.SV.root.withdraw()

@@ -18,7 +18,6 @@ from .stack import Stack
 from .snapshots import Snapshots
 
 from . import utils as ut
-from .param import svp
 
 
 class Hub:
@@ -811,7 +810,7 @@ class Hub:
             
             if path[-4:] == '.mp4':
                 gui.ask_fps(path)
-                with open(svp('init_dir.txt'), 'w') as f:
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             
@@ -843,7 +842,7 @@ class Hub:
                                              + traceback.format_exception_only(type(e), e)[0],
                                              parent=self.gui.master)
                         return
-                    with open(svp('init_dir.txt'), 'w') as f:
+                    with open('init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -856,7 +855,7 @@ class Hub:
                 return
             
             if self.imwrite(path, im):
-                with open(svp('init_dir.txt'), 'w') as f:
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
         
     

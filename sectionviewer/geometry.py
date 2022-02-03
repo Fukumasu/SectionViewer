@@ -1,6 +1,7 @@
 import math
 import os
 import pickle
+import platform
 
 import numpy as np
 import tkinter as tk
@@ -8,8 +9,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 
-from .param import svp, pf
-
+pf = platform.system()
 
 class Geometry:
     def __init__(self, Hub):
@@ -69,7 +69,7 @@ class Geometry:
         self.details_win = tk.Toplevel(self.Hub.gui.master)
         self.details_win.withdraw()
         if pf == 'Windows':
-            self.details.iconbitmap(svp('img/icon.ico'))
+            self.details.iconbitmap('img/icon.ico')
         self.details_win.title('Details')
         
         note = ttk.Notebook(self.details_win)
@@ -442,7 +442,7 @@ class Geometry:
         self.bar_win = tk.Toplevel(self.Hub.gui.master)
         self.bar_win.withdraw()
         if pf == 'Windows':
-            self.bar_win.iconbitmap(svp('img/icon.ico'))
+            self.bar_win.iconbitmap('img/icon.ico')
         self.bar_win.title('Scale bar')
         self.bar_win.geometry('250x80')
         self.bar_win.resizable(width=False, height=False)

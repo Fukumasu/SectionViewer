@@ -11,15 +11,18 @@ from tkinter import ttk
 
 from .gui import GUI
 from .stack import STAC
-from .param import svp, pf
+
+pf = platform.system()
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        
         root = tk.Tk()
         root.withdraw()
         if pf == 'Windows':
-            root.iconbitmap(svp('img/icon.ico'))
-        icon = cv2.imread(svp('img/resources.png'))[-128:,:128]
+            root.iconbitmap('img/icon.ico')
+        icon = cv2.imread('img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
@@ -47,10 +50,10 @@ class SectionViewer(ttk.Frame):
                          ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
                          ('SV multi-stack files', '*.stac'),
                          ('All files', '*')]
-            if not os.path.isfile(svp('init_dir.txt')):
-                with open(svp('init_dir.txt'), 'w') as f:
+            if not os.path.isfile('init_dir.txt'):
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.expanduser('~/Desktop'))
-            with open(svp('init_dir.txt'), 'r') as f:
+            with open('init_dir.txt', 'r') as f:
                 initialdir = f.read()
             if not os.path.isdir(initialdir):
                 initialdir = os.path.expanduser('~/Desktop')
@@ -63,7 +66,7 @@ class SectionViewer(ttk.Frame):
             master = tk.Toplevel(self.root)
             master.withdraw()
             if pf == 'Windows':
-                master.iconbitmap(svp('img/icon.ico'))
+                master.iconbitmap('img/icon.ico')
             self.wins += [master]
             if file_path[-5:] == '.stac':
                 gui = STAC(self, master, file_path)
@@ -71,7 +74,7 @@ class SectionViewer(ttk.Frame):
                 gui = GUI(self, master, file_path)
             
             if hasattr(gui, 'Hub'):
-                with open(svp('init_dir.txt'), 'w') as f:
+                with open('init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(file_path))
         else:
             close = True
@@ -82,15 +85,16 @@ class SectionViewer(ttk.Frame):
 
     
 def launch(file_path=None):
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     
     if pf == 'Windows':
-        with open(svp('exe_path.txt'), 'r') as f:
+        with open('exe_path.txt', 'r') as f:
             exe_path = f.read()
         if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
             print('preparing installer...')
-            subprocess.run('python ' + svp('setup_msi.py') + ' bdist_msi',
+            subprocess.run('python ' + 'setup_msi.py bdist_msi',
                            stdout=subprocess.PIPE, shell=True)
-            with open(svp('exe_path.txt'), 'r') as f:
+            with open('exe_path.txt', 'r') as f:
                 exe_path0 = f.read()
             if os.path.isfile(exe_path0):
                 print('successfully installed')
@@ -98,7 +102,7 @@ def launch(file_path=None):
                 if sys.argv[1:2] == ['--reinstall']:
                     sys.argv = sys.argv[:1] + sys.argv[2:]
             else:
-                with open(svp('exe_path.txt'), 'w') as f:
+                with open('exe_path.txt', 'w') as f:
                     f.write(exe_path)
                 print('canceled')
                 return
@@ -107,8 +111,8 @@ def launch(file_path=None):
     if file_path == None:
         root = tk.Tk()
         if pf == 'Windows':
-            root.iconbitmap(svp('img/icon.ico'))
-        icon = cv2.imread(svp('img/resources.png'))[-128:,:128]
+            root.iconbitmap('img/icon.ico')
+        icon = cv2.imread('img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
@@ -122,9 +126,9 @@ def launch(file_path=None):
                      ('SV multi-stack files', '*.stac'),
                      ('All files', '*')]
         if not os.path.isfile('init_dir.txt'):
-            with open(svp('init_dir.txt'), 'w') as f:
+            with open('init_dir.txt', 'w') as f:
                 f.write(os.path.expanduser('~/Desktop'))
-        with open(svp('init_dir.txt'), 'r') as f:
+        with open('init_dir.txt', 'r') as f:
             initialdir = f.read()
         if not os.path.isdir(initialdir):
             initialdir = os.path.expanduser('~/Desktop')
