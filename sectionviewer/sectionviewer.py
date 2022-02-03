@@ -133,6 +133,10 @@ def launch(file_path=None):
     return file_path
 
 
+def console_command():
+    launch()
+
+
 def main(*args):
     app = SectionViewer(args)
     app.mainloop()
