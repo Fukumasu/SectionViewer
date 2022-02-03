@@ -22,8 +22,8 @@ class Position:
         
         self.pos = pos
         self.angs = {'l':[32,256,2], 'h':[-32,-256,-2], 'i':[-32,-256,-2],
-                     'n':[32,256,2], 'j':[4,1], 'k':[-4,-1],
-                     'down':[-4,-1], 'up':[4,1], 'left':[4,1],'right':[-4,-1]}
+                     'n':[32,256,2], 'j':[4,1,0], 'k':[-4,-1,0],
+                     'down':[-4,-1,0], 'up':[4,1,0], 'left':[4,1,0],'right':[-4,-1,0]}
         self.byhand = False
     
     
@@ -47,7 +47,8 @@ class Position:
     def key_pressed(self, key, n):
         if key in self.angs:
             ang = self.angs[key][n]
-            self.set_pos(key, ang)
+            if ang:
+                self.set_pos(key, ang)
         
     def clicked(self, click):
         la, lb = self.Hub.geometry['im_size']

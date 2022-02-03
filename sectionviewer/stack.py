@@ -810,20 +810,36 @@ class STAC(ttk.Frame):
         self.stack_canvas.config(yscrollcommand=self.bary_set)
         self.stack_canvas.config(xscrollcommand=self.barx_set)
         
-        self.stack_canvas.bind('<MouseWheel>', lambda event: 
-                                 self.stack_canvas.\
-                                     yview_scroll(int(-event.delta/120), 'units'))
-        self.stack_canvas.bind('<Shift-MouseWheel>', lambda event: 
-                                 self.stack_canvas.\
-                                     xview_scroll(int(-event.delta/120), 'units'))
-        self.stack_canvas.bind('<Control-MouseWheel>', self.zm_scroll)
+        if pf == 'Windows':
+            self.stack_canvas.bind('<MouseWheel>', lambda event: 
+                                     self.stack_canvas.\
+                                         yview_scroll(int(-event.delta/120), 'units'))
+            self.stack_canvas.bind('<Shift-MouseWheel>', lambda event: 
+                                     self.stack_canvas.\
+                                         xview_scroll(int(-event.delta/120), 'units'))
+            self.stack_canvas.bind('<Control-MouseWheel>', 
+                                   lambda event: self.zm_scroll(event, int(event.delta/120)))
+        elif pf == 'Linux':
+            self.stack_canvas.bind('<Button-4>', lambda event: 
+                                       self.sec_canvas.yview_scroll(1, 'units'))
+            self.stack_canvas.bind('<Button-5>', lambda event: 
+                                       self.sec_canvas.yview_scroll(-1, 'units'))
+            self.stack_canvas.bind('<Shift-Button-4>', lambda event: 
+                                       self.sec_canvas.xview_scroll(1, 'units'))
+            self.stack_canvas.bind('<Shift-Button-5>', lambda event: 
+                                       self.sec_canvas.xview_scroll(-1, 'units'))
+            self.stack_canvas.bind('<Control-Button-4>', 
+                                   lambda event: self.zm_scroll(event, -1))
+            self.stack_canvas.bind('<Control-Button-5>', 
+                                   lambda event: self.zm_scroll(event, 1))
         
         self.stack_canvas.pack(side=tk.LEFT, anchor=tk.NW)
         self.stack_cf.pack(side=tk.LEFT)
         
         self.stack_cf.bind('<Configure>', self.stack_configure)
         
-        self.master.state('zoomed')
+        if pf == 'Windows':
+            self.master.state('zoomed')
         fill ='#ffffff' if self.white.get() else '#000000'
         self.im_back = self.stack_canvas.create_rectangle(0,0,2000,2000, fill=fill, width=0)
         self.im_id = self.stack_canvas.create_image(0, 0, anchor='nw')
@@ -956,10 +972,9 @@ class STAC(ttk.Frame):
             self.lock = True
             self.master.after(1, self.zm_enter_)
     
-    def zm_scroll(self, event):
+    def zm_scroll(self, event, delta):
         if not self.lock:
             self.lock = True
-            delta = int(event.delta/120)
             x, y = event.x, event.y
             w, h = self.stack_cf.winfo_width()-4, self.stack_cf.winfo_height()-4
             fix = (x/w, y/h)

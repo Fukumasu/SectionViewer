@@ -120,7 +120,11 @@ class GUI(ttk.Frame):
         self.click_time = 0
         self.p_num = -1
         self.mode = 0
-        self.flags = np.array([1,4,131072,256])
+        
+        if pf == 'Windows':
+            self.flags = np.array([1,4,131072,256])
+        elif pf == 'Linux':
+            self.flags = np.array([1,4,8,256])
         
         self.first = True
         
@@ -244,7 +248,8 @@ class GUI(ttk.Frame):
         self.sec_canvas.pack(side=tk.LEFT, anchor=tk.NW)
         self.sec_cf.pack(side=tk.LEFT)
         
-        self.master.state('zoomed')
+        if pf == 'Windows':
+            self.master.state('zoomed')
         fill = '#ffffff' if self.white.get() else '#000000'
         self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
         self.sec_id = self.sec_canvas.create_image(0, 0, anchor='nw')
@@ -316,9 +321,15 @@ class GUI(ttk.Frame):
         self.guide_canvas.bind('<Button-1>', lambda event: [self.master.focus_set(),
                                                             Hub.points.settings(select=self.p_num)])
         self.guide_canvas.bind('<Motion>', self.track_guide)
-        self.guide_canvas.bind('<MouseWheel>', lambda event: 
-                               self.guide_canvas.\
+        if pf == 'Windows':
+            self.guide_canvas.bind('<MouseWheel>', lambda event: 
+                                   self.guide_canvas.\
                                    yview_scroll(int(-event.delta/120), 'units'))
+        elif pf == 'Linux':
+            self.guide_canvas.bind('<Button-4>', lambda event: 
+                                   self.guide_canvas.yview_scroll(1, 'units'))
+            self.guide_canvas.bind('<Button-4>', lambda event: 
+                               self.guide_canvas.yview_scroll(1, 'units'))
         self.guide_im = ImageTk.PhotoImage(Image.fromarray(self.guide[:,:,::-1]))
         self.guide_canvas.itemconfig(self.guide_id, image=self.guide_im)
         self.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(self.side[:,:,2::-1], 
@@ -358,15 +369,31 @@ class GUI(ttk.Frame):
         self.sec_canvas.bind('<Motion>', self.track_sec)
         self.sec_canvas.bind('<Button-1>', self.click_sec)
         self.sec_canvas.bind('<ButtonRelease-1>', self.release_sec)
-        self.sec_canvas.bind('<MouseWheel>', lambda event: 
-                                 self.sec_canvas.\
-                                     yview_scroll(int(-event.delta/120), 'units'))
-        self.sec_canvas.bind('<Shift-MouseWheel>', lambda event: 
-                                 self.sec_canvas.\
-                                     xview_scroll(int(-event.delta/120), 'units'))
+        if pf == 'Windows':
+            self.sec_canvas.bind('<MouseWheel>', lambda event: 
+                                     self.sec_canvas.\
+                                         yview_scroll(int(-event.delta/120), 'units'))
+            self.sec_canvas.bind('<Shift-MouseWheel>', lambda event: 
+                                     self.sec_canvas.\
+                                         xview_scroll(int(-event.delta/120), 'units'))
+            self.sec_canvas.bind('<Control-MouseWheel>', 
+                                 lambda event: self.zm_scroll(event, int(event.delta/120)))
+        elif pf == 'Linux':
+            self.sec_canvas.bind('<Button-4>', lambda event: 
+                                     self.sec_canvas.yview_scroll(1, 'units'))
+            self.sec_canvas.bind('<Button-5>', lambda event: 
+                                     self.sec_canvas.yview_scroll(-1, 'units'))
+            self.sec_canvas.bind('<Shift-Button-4>', lambda event: 
+                                     self.sec_canvas.xview_scroll(1, 'units'))
+            self.sec_canvas.bind('<Shift-Button-5>', lambda event: 
+                                     self.sec_canvas.xview_scroll(-1, 'units'))
+            self.sec_canvas.bind('<Control-Button-4>', 
+                                 lambda event: self.zm_scroll(event, -1))
+            self.sec_canvas.bind('<Control-Button-5>', 
+                                 lambda event: self.zm_scroll(event, 1))
         self.sec_canvas.config(yscrollcommand=self.bary_set)
         self.sec_canvas.config(xscrollcommand=self.barx_set)
-        self.sec_canvas.bind('<Control-MouseWheel>', self.zm_scroll)
+        
         self.sec_cf.bind('<Configure>', self.sec_configure)
         
         self.master.bind('<Key>', self.key)
@@ -464,10 +491,9 @@ class GUI(ttk.Frame):
             self.lock = True
             self.master.after(1, self.zm_enter_)
     
-    def zm_scroll(self, event):
+    def zm_scroll(self, event, delta):
         if not self.lock:
             self.lock = True
-            delta = int(event.delta/120)
             x, y = event.x, event.y
             w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
             fix = (x/w, y/h)
