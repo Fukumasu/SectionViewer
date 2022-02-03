@@ -106,7 +106,7 @@ def launch(file_path=None):
                 return
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
-    if not os.path.isfile(str(file_path)):
+    if file_path == None:
         root = tk.Tk()
         root.iconbitmap('img/icon.ico')
         icon = cv2.imread('img/resources.png')[-128:,:128]
