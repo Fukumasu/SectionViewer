@@ -1,4 +1,5 @@
 import os
+import platform
 import subprocess
 import sys
 
@@ -79,25 +80,30 @@ class SectionViewer(ttk.Frame):
                 self.root.destroy()
 
     
+pf = platform.system()
+    
 def launch(file_path=None):
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     
-    with open('exe_path.txt', 'r') as f:
-        exe_path = f.read()
-    if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
-        print('preparing installer...')
-        subprocess.run('python ' + 'setup_msi.py bdist_msi',
-                       stdout=subprocess.PIPE, shell=True)
+    if pf == 'window':
         with open('exe_path.txt', 'r') as f:
-            exe_path0 = f.read()
-        if os.path.isfile(exe_path0):
-            print('successfully installed')
-            exe_path = exe_path0
-        else:
-            with open('exe_path.txt', 'w') as f:
-                f.write(exe_path)
-            print('canceled')
-            return
+            exe_path = f.read()
+        if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
+            print('preparing installer...')
+            subprocess.run('python ' + 'setup_msi.py bdist_msi',
+                           stdout=subprocess.PIPE, shell=True)
+            with open('exe_path.txt', 'r') as f:
+                exe_path0 = f.read()
+            if os.path.isfile(exe_path0):
+                print('successfully installed')
+                exe_path = exe_path0
+                if sys.argv[1] == '--reinstall':
+                    sys.argv = sys.argv[:1] + sys.argv[2:]
+            else:
+                with open('exe_path.txt', 'w') as f:
+                    f.write(exe_path)
+                print('canceled')
+                return
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
     if not os.path.isfile(str(file_path)):
@@ -129,12 +135,23 @@ def launch(file_path=None):
         root.destroy()
     if len(file_path) == 0:
         return
-    subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
+    if pf == 'windows':
+        subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
+    else:
+        command = os.path.dirname(os.path.abspath(__file__))
+        for _ in range(3):
+            command = os.path.split(command)[0]
+        command = os.path.join(os.path.join(command, 'Scripts'), 'sectionviewer')
+        subprocess.Popen(command + ' {0}'.format(file_path), shell=True)
     return file_path
 
 
-def console_command():
-    launch()
+if pf == 'windows':
+    def console_command():
+        launch()
+else:
+    def console_command():
+        main(sys.argv[1])
 
 
 def main(*args):
