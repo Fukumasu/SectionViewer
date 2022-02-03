@@ -40,7 +40,7 @@ setup(
     cmdclass=cmdclass,
     install_requires=install_requires,
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-    package_data={'': ['*.txt', "*.pyx", 'img/*.png', 'img/icon.ico, 'subdir/launcher.py']},
+    package_data={'': ['*.txt', '*.pyx', 'img/*.png', 'img/icon.ico', 'subdir/launcher.py']},
     include_package_data=True,
     setup_requires=['numpy', 'cython'],
     entry_points = {
