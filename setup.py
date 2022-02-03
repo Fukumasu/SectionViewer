@@ -14,15 +14,18 @@ def build_ext(*args, **kwargs):
     return _build_ext(*args, **kwargs)
 
 install_requires = open('requirements.txt').read().splitlines()
-omp = '-fopenmp'
-icon = 'img/icon.ico'
 
 pf = platform.system()
 if pf == 'Windows':
     install_requires += ['cx-Freeze>=6.7']
+    icon = 'img/icon.ico'
     omp = '/openmp'
 elif pf == 'Darwin':
     icon = 'img/icon.icns'
+    omp = '-fopenmp'
+elif pf == 'Linux':
+    icon = 'img/icon.xbm'
+    omp = '-fopenmp'
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.pyx'],
