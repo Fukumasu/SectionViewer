@@ -19,7 +19,7 @@ icon = 'img/icon.ico'
 
 pf = platform.system()
 if pf == 'Windows':
-    install_requires += ['cxFreeze >= 6.7']
+    install_requires += ['cx-Freeze>=6.7']
     omp = '/openmp'
 elif pf == 'Darwin':
     icon = 'img/icon.icns'
