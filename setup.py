@@ -13,25 +13,22 @@ def build_ext(*args, **kwargs):
             self.include_dirs.append(numpy.get_include())
     return _build_ext(*args, **kwargs)
 
+install_requires = open('requirements.txt').read().splitlines()
+omp = '-fopenmp'
+icon = 'img/icon.ico'
+
 pf = platform.system()
 if pf == 'Windows':
+    install_requires += ['cxFreeze >= 6.7']
     omp = '/openmp'
-    icon = 'img/icon.ico'
 elif pf == 'Darwin':
-    omp = '-fopenmp'
     icon = 'img/icon.icns'
-else:
-    omp = '-fopenmp'
-    icon = 'img/icon.ico'
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.pyx'],
                          extra_compile_args=[omp],
                          extra_link_args=[omp])]
 cmdclass = {'build_ext': build_ext}
-
-def _requires_from_file(filename):
-    return open(filename).read().splitlines()
 
 info = open('info.txt').read()
 exec(info)
@@ -43,14 +40,14 @@ setup(
     packages=['sectionviewer'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
-    install_requires=_requires_from_file('requirements.txt'),
+    install_requires=install_requires,
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
     package_data={'': ['*.txt', "*.pyx", 'img/*.png', icon, 'subdir/launcher.py']},
     include_package_data=True,
     setup_requires=['numpy', 'cython'],
     entry_points = {
         'console_scripts': [
-            'sectionviewer = sectionviewer.sectionviewer:launch'
+            'sectionviewer = sectionviewer.sectionviewer:console_command'
         ]
     }
 )
