@@ -712,7 +712,8 @@ class Points:
                 p3 = sort[i]
                 ps += [p3]
             if len(np.unique(ps)) != len(ps):
-                messagebox.showerror('Error', 'Same point cannot be chosen.')
+                messagebox.showerror('Error', 'The same points cannot be chosen.',
+                                     parent=win)
                 return None
             else:
                 self.move_pos(p1, p2, p3)

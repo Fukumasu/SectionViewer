@@ -680,7 +680,8 @@ class STAC(ttk.Frame):
         try:
             self.Hub = Hub_stack(self, file_path, stac=stac)
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=master)
             self.Hub.load_success = False
         if not self.Hub.load_success:
             return None
@@ -1145,7 +1146,8 @@ class STAC(ttk.Frame):
             else:
                 return False
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=self.master)
             return False
         
         
@@ -1208,7 +1210,8 @@ class STAC(ttk.Frame):
                         tif.imwrite(path, Hub.frame[sort])
                     except Exception as e:
                         messagebox.showerror('Error', 'Failed to export TIFF file :\n'\
-                                             + traceback.format_exception_only(type(e), e)[0])
+                                             + traceback.format_exception_only(type(e), e)[0],
+                                             parent=self.master)
                         return
                     with open('init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))

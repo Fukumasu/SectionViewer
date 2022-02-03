@@ -14,9 +14,9 @@ class Data:
         dat = Hub.data
         
         if len(dat) == 0:
-            messagebox.showinfo('Information',
-                                    '''The project doesn't contain any data files.
-Please choose data file to open.''')
+            messagebox.showerror('Error: No data files in SECV',
+                                 'Please choose a data file to open.',
+                                 parent=Hub.gui.master)
             filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             initialdir = Hub.gui.file_dir
@@ -84,10 +84,12 @@ Please choose data file to open.''')
         
         for i, f in enumerate(files):
             if not os.path.isfile(f):
+                if self.Hub.secv_name == None:
+                    raise FileNotFoundError('[Errno 2] No such file or directory: ' + f)
                 messagebox.showinfo('Information',
-                                    '''Couldn't find the following data file:
+                                    '''The SECV file failed to specify a file:
 {0}
-Please specify the file.'''.format(os.path.basename(f)))
+Please tell where is the file.'''.format(os.path.basename(f)), parent=self.Hub.gui.master)
                 filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                              ('All files', '*')]
                 initialdir = Hub.gui.file_dir
@@ -96,7 +98,7 @@ Please specify the file.'''.format(os.path.basename(f)))
                                                filetypes=filetypes, 
                                                initialdir=initialdir, 
                                                initialfile=initialfile,
-                                               title='Specify {0}'.format(os.path.basename(f)))
+                                               title='Find {0}'.format(os.path.basename(f)))
                 if len(f) == 0:
                     return 0
                 f = f.replace('\\', '/')
@@ -141,7 +143,8 @@ Please specify the file.'''.format(os.path.basename(f)))
                         boxes += [pickle.load(g)]
                 except:
                     messagebox.showerror('Error', 
-                                         "File type '{0}' is not supported.".format(os.path.splitext(f)[1]))
+                                         "File type '{0}' is not supported.".format(os.path.splitext(f)[1]),
+                                         parent=self.Hub.gui.master)
                     return 0
             
         boxes = [boxes[i][None] if boxes[i].ndim == 3 else boxes[i] for i in range(len(boxes))]
@@ -164,7 +167,8 @@ Please specify the file.'''.format(os.path.basename(f)))
             try: box = np.append(box, b, axis=0)
             except:
                 messagebox.showerror('Failed to load data',
-                                     'Width, height and depth must be exactly the same.')
+                                     'Width, height and depth must be exactly the same.',
+                                     parent=self.Hub.gui.master)
                 return 0
             del b, boxes[0]
             n += 1
@@ -175,7 +179,8 @@ Please specify the file.'''.format(os.path.basename(f)))
                 Hub.ch_show = np.append(Hub.ch_show, np.ones(len(box), np.bool))
             except:
                 messagebox.showerror('Failed to load data',
-                                     'Width, height and depth must be exactly the same.')
+                                     'Width, height and depth must be exactly the same.',
+                                     parent=self.Hub.gui.master)
                 return 0
         else:
             Hub.box = box
@@ -198,7 +203,7 @@ Please specify the file.'''.format(os.path.basename(f)))
             messagebox.showinfo('Information',
                                 '''Couldn't find the following data file:
 {0}
-Please specify the file.'''.format(os.path.basename(path)))
+Please tell where is the file.'''.format(os.path.basename(path)), parent=Hub.gui.master)
             filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             initialdir = Hub.gui.file_dir
@@ -224,13 +229,15 @@ Please specify the file.'''.format(os.path.basename(path)))
                     box = pickle.load(f)
             except:
                 messagebox.showerror('Error', 
-                                     "File type '{0}' is not supported.".format(os.path.splitext(path)[1]))
+                                     "File type '{0}' is not supported.".format(os.path.splitext(path)[1]),
+                                     parent=Hub.gui.master)
                 return
             
         box = box[None] if box.ndim == 3 else box
         if box[0].shape != self.Hub.box[0].shape:
             messagebox.showerror('Failed to load data',
-                                 'Width, height and depth must be exactly the same.')
+                                 'Width, height and depth must be exactly the same.',
+                                 parent=Hub.gui.master)
             return
         
         return box

@@ -7,8 +7,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageTk
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 
 from .hub import Hub
 
@@ -51,24 +50,20 @@ class GUI(ttk.Frame):
         super().__init__(master)
         self.title = self.file_name
         self.master.title(self.title)
-        self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         
         # Palette
         self.palette = tk.Toplevel(self.master)
         self.palette.withdraw()
         self.palette.iconbitmap('img/icon.ico')
         self.palette.resizable(height=False, width=False)
-        def hide():
-            self.palette.grab_release()
-            self.palette.withdraw()
-        self.palette.protocol('WM_DELETE_WINDOW', hide)
         
         self.SV.root.withdraw()
         self.create_widgets()
         self.master.update()
         
         def close():
-            self.master.destroy()
+            if self.master.winfo_exists: 
+                self.master.destroy()
             close = True
             for w in self.SV.wins:
                 close = close and not bool(w.winfo_exists())
@@ -77,12 +72,14 @@ class GUI(ttk.Frame):
         try:
             self.Hub = Hub(self, file_path)
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=self.master)
             close()
             return
         if not self.Hub.load_success:
             close()
             return
+        
         def switch(event):
             if str(self.palette.focus_get())[-5:] != 'entry':
                 key = event.keysym
@@ -92,6 +89,7 @@ class GUI(ttk.Frame):
                     self.Hub.points.settings()
                 elif key == 's':
                     self.Hub.snapshots.settings()
+                    
         self.palette.bind('<c>', switch)
         self.palette.bind('<p>', switch)
         self.palette.bind('<s>', switch)
@@ -100,9 +98,15 @@ class GUI(ttk.Frame):
         self.palette.bind('<Control-z>', lambda event: self.Hub.undo())
         self.palette.bind('<Control-Shift-Z>', lambda event: self.Hub.redo())
         self.palette.bind('<Control-y>', lambda event: self.Hub.redo())
-        self.palette.bind('<Return>', lambda event: [self.palette.grab_release(), self.palette.withdraw()])
+        self.palette.bind('<Return>', lambda event: [self.palette.grab_release(), 
+                                                     self.palette.withdraw()])
+        def hide():
+            self.palette.grab_release()
+            self.palette.withdraw()
+        self.palette.protocol('WM_DELETE_WINDOW', hide)
         
         self.create_commands()
+        self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         self.master.deiconify()
         
         self.shift = np.array([0.,0.])
@@ -424,36 +428,24 @@ class GUI(ttk.Frame):
             if reboot:
                 self.SV.open_new(self.SV.root, secv_name)
         else:
-            self.close_win = tk.Toplevel(self.master)
-            self.close_win.withdraw()
-            self.close_win.iconbitmap('img/icon.ico')
-            self.close_win.title('Closing')
-            self.close_win.resizable(width=False, height=False)
-            
-            frame0 = ttk.Frame(self.close_win)
-            frame0.pack(ipadx=10, ipady=10)
-            
-            label = ttk.Label(frame0, text='Will you save changes before you quit?')
-            label.pack(padx=10, pady=20)
-            
-            frame = ttk.Frame(frame0)
-            frame.pack(padx=10)
-            
-            def cancel():
-                self.close_win.grab_release()
-                self.close_win.destroy()
-            def save():
+            ans = messagebox.askyesnocancel(title='Closing', 
+                                            message='Do you want to save '
+                                                    'changes before you quit?',
+                                            parent=self.master)
+            if ans == None:
+                return
+            if ans:
                 if self.Hub.save(secv_name):
                     self.master.destroy()
-                    del self.Hub
-                    close = False if reboot else True
-                    for w in self.SV.wins:
-                        close = close and not bool(w.winfo_exists())
-                    if close:
-                        self.SV.root.destroy()
-                    if reboot:
-                        self.SV.open_new(self.SV.root, secv_name)
-            def discard():
+                del self.Hub
+                close = False if reboot else True
+                for w in self.SV.wins:
+                    close = close and not bool(w.winfo_exists())
+                if close:
+                    self.SV.root.destroy()
+                if reboot:
+                    self.SV.open_new(self.SV.root, secv_name)
+            else:
                 self.master.destroy()
                 del self.Hub
                 close = False if reboot else True
@@ -463,32 +455,7 @@ class GUI(ttk.Frame):
                     self.SV.root.destroy()
                 if reboot:
                     self.SV.open_new(self.SV.root, secv_name)
-            
-            button0 = ttk.Button(frame, text='Cancel', command=cancel)
-            button0.grid(column=0, row=1)
-            button1 = ttk.Button(frame, text='Discard', command=discard)
-            button1.grid(column=1, row=1)
-            button2 = ttk.Button(frame, text='Save', command=save)
-            button2.grid(column=2, row=1)
-            
-            self.close_win.deiconify()
-            self.close_win.grab_set()
-            
-            buttons = [button0, button1, button2]
-            self.idx = 2
-            button2.focus_set()
-            def left():
-                self.idx -= 1
-                self.idx %= 3
-                buttons[self.idx].focus_set()
-            def right():
-                self.idx += 1
-                self.idx %= 3
-                buttons[self.idx].focus_set()
-                
-            self.close_win.bind('<Left>', lambda event: left())
-            self.close_win.bind('<Right>', lambda event: right())
-            self.close_win.bind('<Return>', lambda event: self.close_win.focus_get().invoke())
+                    
     
     def zm_enter(self):
         if not self.lock:
@@ -1132,3 +1099,6 @@ class GUI(ttk.Frame):
         
         master.wait_window(win)
         return option.get()
+    
+    
+        

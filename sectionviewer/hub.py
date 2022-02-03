@@ -139,7 +139,8 @@ class Hub:
 
         if len(self.box) == 0:
             messagebox.showerror('Error', 
-                                 "No data couldn't be extracted")
+                                 "No data couldn't be extracted",
+                                 parent=self.gui.master)
             self.load_success = False
             return
         
@@ -148,7 +149,8 @@ class Hub:
             self.position = Position(self)
             if not self.calc_geometry():
                 messagebox.showerror('Error', 
-                                     'Data shape is invalid\n CZYX = {0}'.format(self.box.shape))
+                                     'Data shape is invalid\n CZYX = {0}'.format(self.box.shape),
+                                     parent=self.gui.master)
                 self.load_success = False
                 return
         if self.secv_name==None:
@@ -755,7 +757,8 @@ class Hub:
             with open(path, 'wb') as f:
                 pickle.dump(secv, f, protocol=4)
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=self.gui.master)
             return False
             
         self.gui.iDir = path
@@ -779,7 +782,8 @@ class Hub:
             else:
                 return False
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=self.gui.master)
             return False
     
     
@@ -841,7 +845,8 @@ class Hub:
                         tif.imwrite(path, self.frame[sort])
                     except Exception as e:
                         messagebox.showerror('Error', 'Failed to export TIFF file :\n'\
-                                             + traceback.format_exception_only(type(e), e)[0])
+                                             + traceback.format_exception_only(type(e), e)[0],
+                                             parent=self.gui.master)
                         return
                     with open('init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))
@@ -920,7 +925,8 @@ class Reload:
         Hub = self.Hub
         path = Hub.secv_name
         if path == None:
-            messagebox.showerror('Error', 'Only SECV files can be reloaded.')
+            messagebox.showerror('Error', 'Only SECV files can be reloaded.',
+                                 parent=self.Hub.gui.master)
             return
         try:
             with open(path, 'rb') as f:
@@ -931,7 +937,8 @@ class Reload:
             chs = secv['channels']
             pts = secv['points']
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=self.Hub.gui.master)
             return None
         
         if 'snapshots' in secv:
@@ -956,7 +963,8 @@ class Reload:
                 else: del old[-1]
         except Exception as e:
             messagebox.showerror('Error', 'Failed to reload {0} :\n'.format(path)\
-                                  + traceback.format_exception_only(type(e), e)[0])
+                                  + traceback.format_exception_only(type(e), e)[0],
+                                  parent=self.Hub.gui.master)
             return None
             
         if len(new) > 0:

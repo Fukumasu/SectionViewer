@@ -81,6 +81,7 @@ class SectionViewer(ttk.Frame):
 
     
 pf = platform.system()
+pf = 'Darwin'
     
 def launch(file_path=None):
     os.chdir(os.path.dirname(os.path.abspath(__file__)))

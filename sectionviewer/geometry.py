@@ -176,7 +176,8 @@ class Geometry:
                                                initialdir=os.path.dirname(path1), title='Open')
             path2 = path2.replace('\\', '/')
             ans = messagebox.askokcancel('Replacing source file',
-                                         'The project will be restarted to replace source file.')
+                                         'The project will be restarted to replace source file.',
+                                         parent=self.details_win)
             if not ans:
                 return
             files = [d[0] for d in data]
@@ -197,11 +198,13 @@ class Geometry:
                 shape2 = (1, *shape2)
             if (len(data) == 1) and (len(data[option.get()][1]) != shape2[0]):
                 messagebox.showerror('Failed to replace data',
-                                      'Number of channels must be exactly the same.')
+                                      'Number of channels must be exactly the same.',
+                                      parent=self.details_win)
                 return
             elif (len(data) > 1) and ((len(data[option.get()][1]), *shape[1:]) != shape2):
                 messagebox.showerror('Failed to replace data',
-                                      'Number of channels, width, height and depth must be exactly the same.')
+                                      'Number of channels, width, height and depth must be exactly the same.',
+                                      parent=self.details_win)
                 return
             with open(self.Hub.secv_name, 'rb') as f:
                 secv = pickle.load(f)

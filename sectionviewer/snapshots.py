@@ -469,8 +469,9 @@ class Snapshots:
                 pts = [[p[0], [p[1][0], p[1][1], p[1][2]], 
                        [p[2][0], p[2][1], p[2][2]]] for p in secv['points']]
             except Exception as e:
-                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
-                return None
+                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                     parent=Hub.gui.palette)
+                return
         else:
             pts = []
             for s in select:
@@ -490,8 +491,8 @@ class Snapshots:
             a += [pts]
             b += [Hub.points]
         
-        ul = self.Hub.gui.upperleft
-        iw0, ih0 = self.Hub.geometry['im_size']
+        ul = Hub.gui.upperleft
+        iw0, ih0 = Hub.geometry['im_size']
         try:
             for v, m in zip(a, b):
                 old += [m.val]
@@ -500,7 +501,8 @@ class Snapshots:
                     typ += [m]
                 else: del old[-1]
         except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0])
+            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                 parent=Hub.gui.palette)
             return None
         
         if len(new) > 0:
