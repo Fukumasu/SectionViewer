@@ -18,13 +18,8 @@ install_requires = open('requirements.txt').read().splitlines()
 pf = platform.system()
 if pf == 'Windows':
     install_requires += ['cx-Freeze>=6.7']
-    icon = 'img/icon.ico'
     omp = '/openmp'
-elif pf == 'Darwin':
-    icon = 'img/icon.icns'
-    omp = '-fopenmp'
-elif pf == 'Linux':
-    icon = 'img/icon.xbm'
+else:
     omp = '-fopenmp'
 
 ext_modules = [Extension('sectionviewer.utils', 
@@ -45,7 +40,7 @@ setup(
     cmdclass=cmdclass,
     install_requires=install_requires,
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-    package_data={'': ['*.txt', "*.pyx", 'img/*.png', icon, 'subdir/launcher.py']},
+    package_data={'': ['*.txt', "*.pyx", 'img/*.png', 'img/icon.ico, 'subdir/launcher.py']},
     include_package_data=True,
     setup_requires=['numpy', 'cython'],
     entry_points = {
