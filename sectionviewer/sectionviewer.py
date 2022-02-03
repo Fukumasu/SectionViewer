@@ -85,7 +85,7 @@ pf = platform.system()
 def launch(file_path=None):
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     
-    if pf == 'window':
+    if pf == 'Windows':
         with open('exe_path.txt', 'r') as f:
             exe_path = f.read()
         if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
@@ -135,7 +135,7 @@ def launch(file_path=None):
         root.destroy()
     if len(file_path) == 0:
         return
-    if pf == 'windows':
+    if pf == 'Windows':
         subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
     else:
         command = os.path.dirname(os.path.abspath(__file__))
@@ -146,12 +146,12 @@ def launch(file_path=None):
     return file_path
 
 
-if pf == 'windows':
+if pf == 'Windows':
     def console_command():
         launch()
 else:
     def console_command():
-        main(sys.argv[1])
+        main()
 
 
 def main(*args):
