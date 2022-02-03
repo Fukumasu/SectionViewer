@@ -97,7 +97,7 @@ def launch(file_path=None):
             if os.path.isfile(exe_path0):
                 print('successfully installed')
                 exe_path = exe_path0
-                if sys.argv[1] == '--reinstall':
+                if sys.argv[1:2] == ['--reinstall']:
                     sys.argv = sys.argv[:1] + sys.argv[2:]
             else:
                 with open('exe_path.txt', 'w') as f:
