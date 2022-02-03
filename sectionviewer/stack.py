@@ -707,7 +707,10 @@ class STAC(ttk.Frame):
         self.master.deiconify()
         self.stack_cf.focus_set()
         
-        self.flags = np.array([1,4,131072,256])
+        if pf == 'Windows':
+            self.flags = np.array([1,4,131072,256])
+        elif pf == 'Linux':
+            self.flags = np.array([1,4,8,256])
         
         self.first = True
         
