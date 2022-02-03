@@ -49,7 +49,7 @@ setup(
     include_package_data=True,
     setup_requires=['numpy', 'cython'],
     entry_points = {
-        'gui_scripts': [
+        'console_scripts': [
             'sectionviewer = sectionviewer.sectionviewer:console_command'
         ]
     }
