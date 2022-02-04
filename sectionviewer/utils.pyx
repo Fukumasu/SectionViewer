@@ -12,6 +12,177 @@ ctypedef cnp.uint8_t DTYPE_t4
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+cpdef calc_exist(cnp.ndarray[DTYPE_t2, ndim=2] pos, cnp.ndarray[DTYPE_t3, ndim=1] c,
+                 int dz, int dy, int dx, int m, int n):
+    cdef float z0, y0, x0, za, ya, xa, zb, yb, xb, zc, yc, xc
+    cdef int i0 = 0
+    cdef int i1 = m
+    cdef bint exist = False
+    
+    if pos[2,0] > 0:
+        za = -pos[0,0]/pos[2,0] + c[1] + 1
+        zb = -pos[1,0]/pos[2,0]
+        zc = dz/pos[2,0] - 1 + za
+    elif pos[2,0] < 0:
+        za = dz/pos[2,0] - pos[0,0]/pos[2,0] + c[1] + 1
+        zb = -pos[1,0]/pos[2,0]
+        zc = -dz/pos[2,0] - 1 + za
+    else:
+        za = 0
+        zb = 0
+        zc = n
+        if pos[1,0] > 0:
+            i0 = min(max(i0, int(c[0] - pos[0,0]/pos[1,0] + 1)), m)
+            i1 = max(min(i1, int(c[0] + (dz - pos[0,0])/pos[1,0])), i0)
+            z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
+            while i0 < i1 and z0 // dz != 0:
+                i0 += 1
+                z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
+            z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
+            while i1 > i0 and z0 // dz != 0:
+                i1 -= 1
+                z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
+            if i0 == i1:
+                return False
+        elif pos[1,0] < 0:
+            i0 = min(max(i0, int(c[0] + (dz - pos[0,0])/pos[1,0] + 1)), m)
+            i1 = max(min(i1, int(c[0] - pos[0,0]/pos[1,0])), i0)
+            z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
+            while i0 < i1 and z0 // dz != 0:
+                i0 += 1
+                z0 = pos[0,0] + (i0 - c[0])*pos[1,0]
+            z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
+            while i1 > i0 and z0 // dz != 0:
+                i1 -= 1
+                z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
+            if i0 == i1:
+                return False
+        elif pos[0,0] < 0 or pos[0,0] >= dz:
+            return False
+    if pos[2,1] > 0:
+        ya = -pos[0,1]/pos[2,1] + c[1] + 1
+        yb = -pos[1,1]/pos[2,1]
+        yc = dy/pos[2,1] - 1 + ya
+    elif pos[2,1] < 0:
+        ya = dy/pos[2,1] - pos[0,1]/pos[2,1]+ c[1] + 1
+        yb = -pos[1,1]/pos[2,1]
+        yc = -dy/pos[2,1] - 1 + ya
+    else:
+        ya = 0
+        yb = 0
+        yc = n
+        if pos[1,1] > 0:
+            i0 = min(max(i0, int(c[0] - pos[0,1]/pos[1,1] + 1)), m)
+            i1 = max(min(i1, int(c[0] + (dy - pos[0,1])/pos[1,1])), i0)
+            y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
+            while i0 < i1 and y0 // dy != 0:
+                i0 += 1
+                y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
+            y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
+            while i1 > i0 and y0 // dy != 0:
+                i1 -= 1
+                y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
+            if i0 == i1:
+                return False
+        elif pos[1,0] < 0:
+            i0 = min(max(i0, int(c[0] + (dy - pos[0,1])/pos[1,1] + 1)), m)
+            i1 = max(min(i1, int(c[0] - pos[0,1]/pos[1,1])), i0)
+            y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
+            while i0 < i1 and y0 // dy != 0:
+                i0 += 1
+                y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
+            y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
+            while i1 > i0 and y0 // dy != 0:
+                i1 -= 1
+                y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
+            if i0 == i1:
+                return False
+        elif pos[0,1] < 0 or pos[0,1] >= dy:
+            return False
+    if pos[2,2] > 0:
+        xa = -pos[0,2]/pos[2,2] + c[1] + 1
+        xb = -pos[1,2]/pos[2,2]
+        xc = dx/pos[2,2] - 1 + xa
+    elif pos[2,2] < 0:
+        xa = dx/pos[2,2] - pos[0,2]/pos[2,2] + c[1] + 1
+        xb = -pos[1,2]/pos[2,2]
+        xc = -dx/pos[2,2] - 1 + xa
+    else:
+        xa = 0
+        xb = 0
+        xc = n
+        if pos[1,2] > 0:
+            i0 = min(max(i0, int(c[0] - pos[0,2]/pos[1,2] + 1)), m)
+            i1 = max(min(i1, int(c[0] + (dx - pos[0,2])/pos[1,2])), i0)
+            x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
+            while i0 < i1 and x0 // dx != 0:
+                i0 += 1
+                x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
+            x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
+            while i1 > i0 and x0 // dx != 0:
+                i1 -= 1
+                x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
+            if i0 == i1:
+                return False
+        elif pos[1,2] < 0:
+            i0 = min(max(i0, int(c[0] + (dx - pos[0,2])/pos[1,2] + 1)), m)
+            i1 = max(min(i1, int(c[0] - pos[0,2]/pos[1,2])), i0)
+            x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
+            while i0 < i1 and x0 // dx != 0:
+                i0 += 1
+                x0 = pos[0,2] + (i0 - c[0])*pos[1,2]
+            x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
+            while i1 > i0 and x0 // dx != 0:
+                i1 -= 1
+                x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
+            if i0 == i1:
+                return False
+        elif pos[0,2] < 0 or pos[0,2] >= dx:
+            return False
+        
+        for i in prange(i0, i1, nogil=True):
+            m = i - c[0]
+            z0 = pos[0,0] + m*pos[1,0]
+            y0 = pos[0,1] + m*pos[1,1]
+            x0 = pos[0,2] + m*pos[1,2]
+            
+            s = int(min(max(za + zb*m, ya + yb*m, xa + xb*m, 0), n))
+            e = int(max(min(zc + zb*m, yc + yb*m, xc + xb*m, n), s))
+            
+            if s == e:
+                continue
+            
+            x = s - c[1]
+            z = z0 + x*pos[2,0]
+            y = y0 + x*pos[2,1]
+            x = x0 + x*pos[2,2]
+            while s < e and (z//dz!=0 or y//dy!=0 or x//dx!=0):
+                s = s + 1
+                x = s - c[1]
+                z = z0 + x*pos[2,0]
+                y = y0 + x*pos[2,1]
+                x = x0 + x*pos[2,2]
+                
+            x = e - c[1] - 1
+            z = z0 + x*pos[2,0]
+            y = y0 + x*pos[2,1]
+            x = x0 + x*pos[2,2]
+            while e > s and (z//dz!=0 or y//dy!=0 or x//dx!=0):
+                e = e - 1
+                x = e - c[1] - 1
+                z = z0 + x*pos[2,0]
+                y = y0 + x*pos[2,1]
+                x = x0 + x*pos[2,2]
+            
+            if s == e:
+                continue
+            exist += True
+            
+    return exist
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=2] pos,
                    cnp.ndarray[DTYPE_t, ndim=3] res, cnp.ndarray[DTYPE_t3, ndim=1] c,
                    cnp.ndarray[DTYPE_t3, ndim=1] ch_show):

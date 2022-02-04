@@ -1,4 +1,8 @@
+import time
+
 import numpy as np
+
+from . import utils as ut
 
 
 class Position:
@@ -130,7 +134,10 @@ class Position:
         gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.pos = new
-        if not self.Hub.calc_frame():
+        dz, dy, dx = Hub.box[0].shape
+        m, n = Hub.frame[0].shape
+        if not ut.calc_exist(pos, np.array(Hub.frame[0].shape)//2,
+                             dz, dy, dx, m, n):
             self.pos = pos
             hist[-1][1][2] = pos
             if hist[-1][1][1] == pos:
@@ -140,30 +147,27 @@ class Position:
                 gui.edit_menu.entryconfig('Undo', state='disable')
             if Hub.hidx == Hub.hidx_saved:
                 gui.master.title(gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
-            self.Hub.calc_frame()
+        self.apply()
+        
+    
+    def apply(self):
+        Hub = self.Hub
+        gui = Hub.gui
+        Hub.calc_frame()
         if gui.g_on.get():
-            if self.Hub.gui.guide_mode == 'guide':
-                self.Hub.calc_guide()
+            if gui.guide_mode == 'guide':
+                Hub.calc_guide()
             else:
-                self.Hub.calc_sideview()
+                Hub.calc_sideview()
+    
             
     def undo(self, arg):
         self.pos = arg[1]
-        self.Hub.calc_frame()
-        if self.Hub.gui.g_on.get():
-            if self.Hub.gui.guide_mode == 'guide':
-                self.Hub.calc_guide()
-            else:
-                self.Hub.calc_sideview()
+        self.apply()
         
     def redo(self, arg):
         self.pos = arg[2]
-        self.Hub.calc_frame()
-        if self.Hub.gui.g_on.get():
-            if self.Hub.gui.guide_mode == 'guide':
-                self.Hub.calc_guide()
-            else:
-                self.Hub.calc_sideview()
+        self.apply()
             
     def reload(self, pos):
         Hub = self.Hub
