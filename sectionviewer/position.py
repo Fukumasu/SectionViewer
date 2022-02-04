@@ -129,7 +129,6 @@ class Position:
         if idx == -1 and hist[-1][1][0] == branch and Hub.hidx_saved != -1 and branch != 0:
             hist[-1][1][2] = new
         else:
-            self.post_calc = False
             if idx != -1:
                 hist[idx:] = hist[idx:idx+1]
             hist += [[self, [branch, pos, new]]]
@@ -165,7 +164,11 @@ class Position:
             if Hub.hidx == Hub.hidx_saved:
                 gui.master.title(gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
+        if branch == 0:
+            self.post_calc = False
         self.apply()
+        if branch == 0:
+            self.post_calc = False
         
     
     def apply(self):
