@@ -15,7 +15,7 @@ ctypedef cnp.uint8_t DTYPE_t4
 cpdef calc_exist(cnp.ndarray[DTYPE_t2, ndim=2] pos, cnp.ndarray[DTYPE_t3, ndim=1] c,
                  int dz, int dy, int dx, int m, int n):
     cdef float z, y, x, z0, y0, x0, za, ya, xa, zb, yb, xb, zc, yc, xc
-    cdef int s, e
+    cdef int s, e, i
     cdef int i0 = 0
     cdef int i1 = m
     cdef bint exist = False
