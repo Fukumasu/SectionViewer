@@ -31,7 +31,6 @@ class Position:
         self.byhand = False
         
         self.pre_updt_time = 0
-        self.post_calc = False
     
     
     def __getattr__(self, name):
@@ -164,29 +163,21 @@ class Position:
             if Hub.hidx == Hub.hidx_saved:
                 gui.master.title(gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
-        if branch == 0:
-            self.post_calc = False
         self.apply()
-        if branch == 0:
-            self.post_calc = False
         
     
     def apply(self):
         now = time.time()
-        if now - self.pre_updt_time < 0.01 or self.post_calc:
-            self.post_calc = False
-            self.pre_updt_time = now
-            return
-        Hub = self.Hub
-        gui = Hub.gui
-        Hub.calc_frame()
-        if gui.g_on.get():
-            if gui.guide_mode == 'guide':
-                Hub.calc_guide()
-            else:
-                Hub.calc_sideview()
-        self.pre_updt_time = now
-        self.post_calc = True
+        if now - self.pre_updt_time > 0.05:
+            Hub = self.Hub
+            gui = Hub.gui
+            Hub.calc_frame()
+            if gui.g_on.get():
+                if gui.guide_mode == 'guide':
+                    Hub.calc_guide()
+                else:
+                    Hub.calc_sideview()
+        self.pre_updt_time = time.time()
     
             
     def undo(self, arg):

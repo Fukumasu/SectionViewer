@@ -119,6 +119,7 @@ class GUI(ttk.Frame):
         
         self.click = None
         self.click_time = 0
+        self.key_time = 0
         self.p_num = -1
         self.mode = 0
         
@@ -398,14 +399,15 @@ class GUI(ttk.Frame):
         self.sec_cf.bind('<Configure>', self.sec_configure)
         
         self.master.bind('<Key>', self.key)
-        self.master.bind('<KeyRelease>', Hub.position.key_release)
         
-        
+    
     def key(self, event):
+        self.master.unbind('<Key>')
         if self.master.focus_get()==self.combo_zm:
             return
         if self.master.focus_get()==self.combo_th:
             return
+
         key = event.keysym
         if event.state//self.flags[1]%2 == 1:
             if key == 'o':
@@ -436,6 +438,11 @@ class GUI(ttk.Frame):
             else:
                 self.Hub.position.key_pressed(key.lower(), 0)
         
+        self.master.after(100, self.key_bind)
+
+    def key_bind(self):
+        self.master.unbind('<Key>')
+        self.master.bind('<Key>', self.key)
     
     def on_close(self, reboot=False):
         secv_name = self.Hub.secv_name
