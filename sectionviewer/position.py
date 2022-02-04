@@ -29,6 +29,9 @@ class Position:
                      'n':[32,256,2], 'j':[4,1,0], 'k':[-4,-1,0],
                      'down':[-4,-1,0], 'up':[4,1,0], 'left':[4,1,0],'right':[-4,-1,0]}
         self.byhand = False
+        
+        self.pre_updt_time = 0
+        self.post_calc = False
     
     
     def __getattr__(self, name):
@@ -53,6 +56,13 @@ class Position:
             ang = self.angs[key][n]
             if ang:
                 self.set_pos(key, ang)
+                
+    def key_release(self, event):
+        self.post_calc = False
+        key = event.keysym
+        if key in self.angs or key in ['z', 'y']:
+            self.apply()
+            self.post_calc = False
         
     def clicked(self, click):
         la, lb = self.Hub.geometry['im_size']
@@ -63,31 +73,31 @@ class Position:
             key = ['l',0,'n','n',0,'h','h',0,'i','i',0][key]
             if key != 0:
                 ang = self.angs[key][2]
-                self.set_pos(key, ang)
+                self.set_pos(key, ang, branch=0)
         
-    def set_pos(self, key, ang):
+    def set_pos(self, key, ang, branch=None):
         pos = np.array(self.pos)
         op, ny, nx = pos.copy()
         nz = np.cross(ny, nx)
         if key in ['l', 'h']:
             theta = np.pi/ang
             pos[2] = np.cos(theta)*nx + np.sin(theta)*nz
-            branch = 1
+            if branch == None: branch = 1
         elif key in ['i', 'n']:
             phi = np.pi/ang
             pos[1] = np.cos(phi)*ny + np.sin(phi)*nz
-            branch = 2
+            if branch == None: branch = 2
         elif key in ['j', 'k']:
             pos[0] += ang*nz
-            branch = 3
+            if branch == None: branch = 3
         elif key in ['down', 'up']:
             pos[0] += ang*ny
-            branch = 4
+            if branch == None: branch = 4
         elif key in ['left', 'right']:
             pos[0] += ang*nx
-            branch = 5
+            if branch == None: branch = 5
         else:
-            return None
+            return
         self.new(pos, branch)
         return True
     
@@ -119,6 +129,7 @@ class Position:
         if idx == -1 and hist[-1][1][0] == branch and Hub.hidx_saved != -1 and branch != 0:
             hist[-1][1][2] = new
         else:
+            self.post_calc = False
             if idx != -1:
                 hist[idx:] = hist[idx:idx+1]
             hist += [[self, [branch, pos, new]]]
@@ -153,10 +164,16 @@ class Position:
                 gui.edit_menu.entryconfig('Undo', state='disable')
             if Hub.hidx == Hub.hidx_saved:
                 gui.master.title(gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        
         self.apply()
         
     
     def apply(self):
+        now = time.time()
+        if now - self.pre_updt_time < 0.01 or self.post_calc:
+            self.post_calc = False
+            self.pre_updt_time = now
+            return
         Hub = self.Hub
         gui = Hub.gui
         Hub.calc_frame()
@@ -165,6 +182,8 @@ class Position:
                 Hub.calc_guide()
             else:
                 Hub.calc_sideview()
+        self.pre_updt_time = now
+        self.post_calc = True
     
             
     def undo(self, arg):

@@ -288,7 +288,7 @@ class GUI(ttk.Frame):
                                    accelerator='Ctrl+Z')
         self.edit_menu.add_command(label='Redo', 
                                    command=Hub.redo, 
-                                   accelerator='Ctrl+Y, Ctrl+Shift+Z')
+                                   accelerator='Ctrl+Y')
         
         self.settings_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.settings_menu.add_command(label='Channels', 
@@ -398,7 +398,7 @@ class GUI(ttk.Frame):
         self.sec_cf.bind('<Configure>', self.sec_configure)
         
         self.master.bind('<Key>', self.key)
-        self.master.bind('<KeyRelease>', lambda event: self.key_bind())
+        self.master.bind('<KeyRelease>', Hub.position.key_release)
         
         
     def key(self, event):
@@ -406,13 +406,6 @@ class GUI(ttk.Frame):
             return
         if self.master.focus_get()==self.combo_th:
             return
-        if event.keysym in ['Control_L', 'Control_R',
-                            'Shift_L', 'Shift_R', 'Alt_L', 'Alt_R']:
-            return
-        self.master.unbind('<Key>')
-        self.master.after(1, self._key, event)
-    
-    def _key(self, event):
         key = event.keysym
         if event.state//self.flags[1]%2 == 1:
             if key == 'o':
@@ -427,7 +420,7 @@ class GUI(ttk.Frame):
                 self.Hub.export()
             elif key == 'z':
                 self.Hub.undo()
-            elif key in ('Z', 'y'):
+            elif key == 'y':
                 self.Hub.redo()
             else:
                 self.Hub.position.key_pressed(key, 2)
@@ -442,10 +435,6 @@ class GUI(ttk.Frame):
                 self.Hub.position.key_pressed(key.lower(), 1)
             else:
                 self.Hub.position.key_pressed(key.lower(), 0)
-        self.master.after(20, self.key_bind)
-    
-    def key_bind(self):
-        self.master.bind('<Key>', self.key)
         
     
     def on_close(self, reboot=False):
