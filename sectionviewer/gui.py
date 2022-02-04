@@ -402,6 +402,9 @@ class GUI(ttk.Frame):
         
     
     def key(self, event):
+        if event.keysym in ['Control_L', 'Control_R', 
+                            'Shift_L', 'Shift_R', 'Alt_L', 'Alt_R']:
+            return
         self.master.unbind('<Key>')
         if self.master.focus_get()==self.combo_zm:
             return
