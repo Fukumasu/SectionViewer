@@ -442,7 +442,7 @@ class GUI(ttk.Frame):
                 self.Hub.position.key_pressed(key.lower(), 1)
             else:
                 self.Hub.position.key_pressed(key.lower(), 0)
-        self.master.after(30, self.key_bind)
+        self.master.after(1, self.key_bind)
     
     def key_bind(self):
         self.master.bind('<Key>', self.key)
