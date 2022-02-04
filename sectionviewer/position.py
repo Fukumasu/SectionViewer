@@ -134,10 +134,16 @@ class Position:
         gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.pos = new
+        
         dz, dy, dx = Hub.box[0].shape
         m, n = Hub.frame[0].shape
-        if not ut.calc_exist(pos, np.array(Hub.frame[0].shape)//2,
-                             dz, dy, dx, m, n):
+        pos_ = np.array(new)
+        pos_[:,0] /= Hub.ratio
+        pos_[0] += np.array([dz, dy, dx])//2
+        pos_[1:] /= Hub.geometry['exp_rate']
+        
+        if not ut.calc_exist(pos_, np.array(Hub.frame[0].shape)//2,
+                             dz-1, dy-1, dx-1, m, n):
             self.pos = pos
             hist[-1][1][2] = pos
             if hist[-1][1][1] == pos:

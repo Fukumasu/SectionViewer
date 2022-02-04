@@ -69,7 +69,7 @@ class Geometry:
         self.details_win = tk.Toplevel(self.Hub.gui.master)
         self.details_win.withdraw()
         if pf == 'Windows':
-            self.details.iconbitmap('img/icon.ico')
+            self.details_win.iconbitmap('img/icon.ico')
         self.details_win.title('Details')
         
         note = ttk.Notebook(self.details_win)

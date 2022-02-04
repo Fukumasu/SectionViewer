@@ -8,17 +8,16 @@ ctypedef cnp.uint16_t DTYPE_t
 ctypedef cnp.float_t DTYPE_t2
 ctypedef cnp.int_t DTYPE_t3
 ctypedef cnp.uint8_t DTYPE_t4
-
-
+        
+        
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef calc_exist(cnp.ndarray[DTYPE_t2, ndim=2] pos, cnp.ndarray[DTYPE_t3, ndim=1] c,
-                 int dz, int dy, int dx, int m, int n):
-    cdef float z, y, x, z0, y0, x0, za, ya, xa, zb, yb, xb, zc, yc, xc
-    cdef int s, e, i
+                   int dz, int dy, int dx, int m, int n):
+    cdef int i, j, s, e
+    cdef float z0, y0, x0, z, y, x, za, ya, xa, zb, yb, xb, zc, yc, xc
     cdef int i0 = 0
     cdef int i1 = m
-    cdef bint exist = False
     
     if pos[2,0] > 0:
         za = -pos[0,0]/pos[2,0] + c[1] + 1
@@ -140,46 +139,44 @@ cpdef calc_exist(cnp.ndarray[DTYPE_t2, ndim=2] pos, cnp.ndarray[DTYPE_t3, ndim=1
                 return False
         elif pos[0,2] < 0 or pos[0,2] >= dx:
             return False
+    
+    for i in range(i0, i1):
+        j = i - c[0]
+        z0 = pos[0,0] + j*pos[1,0]
+        y0 = pos[0,1] + j*pos[1,1]
+        x0 = pos[0,2] + j*pos[1,2]
         
-        for i in prange(i0, i1, nogil=True):
-            m = i - c[0]
-            z0 = pos[0,0] + m*pos[1,0]
-            y0 = pos[0,1] + m*pos[1,1]
-            x0 = pos[0,2] + m*pos[1,2]
-            
-            s = int(min(max(za + zb*m, ya + yb*m, xa + xb*m, 0), n))
-            e = int(max(min(zc + zb*m, yc + yb*m, xc + xb*m, n), s))
-            
-            if s == e:
-                continue
-            
+        s = int(min(max(za + zb*j, ya + yb*j, xa + xb*j, 0), n))
+        e = int(max(min(zc + zb*j, yc + yb*j, xc + xb*j, n), s))
+        
+        if s == e:
+            continue
+        
+        x = s - c[1]
+        z = z0 + x*pos[2,0]
+        y = y0 + x*pos[2,1]
+        x = x0 + x*pos[2,2]
+        while s < e and (z//dz!=0 or y//dy!=0 or x//dx!=0):
+            s = s + 1
             x = s - c[1]
             z = z0 + x*pos[2,0]
             y = y0 + x*pos[2,1]
             x = x0 + x*pos[2,2]
-            while s < e and (z//dz!=0 or y//dy!=0 or x//dx!=0):
-                s = s + 1
-                x = s - c[1]
-                z = z0 + x*pos[2,0]
-                y = y0 + x*pos[2,1]
-                x = x0 + x*pos[2,2]
-                
+            
+        x = e - c[1] - 1
+        z = z0 + x*pos[2,0]
+        y = y0 + x*pos[2,1]
+        x = x0 + x*pos[2,2]
+        while e > s and (z//dz!=0 or y//dy!=0 or x//dx!=0):
+            e = e - 1
             x = e - c[1] - 1
             z = z0 + x*pos[2,0]
             y = y0 + x*pos[2,1]
             x = x0 + x*pos[2,2]
-            while e > s and (z//dz!=0 or y//dy!=0 or x//dx!=0):
-                e = e - 1
-                x = e - c[1] - 1
-                z = z0 + x*pos[2,0]
-                y = y0 + x*pos[2,1]
-                x = x0 + x*pos[2,2]
-            
-            if s == e:
-                continue
-            exist += True
-            
-    return exist
+        
+        if s == e:
+            continue
+        return True
 
 
 @cython.boundscheck(False)
