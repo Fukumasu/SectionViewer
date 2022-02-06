@@ -66,9 +66,12 @@ class SectionViewer(ttk.Frame):
             file_path = file_path.replace('\\', '/')
                 
             master = tk.Toplevel(self.root)
-            master.withdraw()
             if pf == 'Windows':
                 master.iconbitmap('img/icon.ico')
+                master.state('zoomed')
+            else:
+                w, h = self.screenwidth, self.screenheight
+                master.geometry('{0}x{1}+0+0'.format(w, h))
             self.wins += [master]
             if file_path[-5:] == '.stac':
                 gui = STAC(self, master, file_path)

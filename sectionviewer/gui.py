@@ -28,7 +28,7 @@ class GUI(ttk.Frame):
         self.p_image = ImageTk.PhotoImage(Image.fromarray(p_image[:,:,::-1]))
         s_image = resources[:35,72:108]
         self.s_image = ImageTk.PhotoImage(Image.fromarray(s_image[:,:,::-1]))
-        k_image = resources[35:204]
+        k_image = resources[204:373] if pf == 'Darwin' else resources[35:204]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
         self.xyz = resources[:22,108:174]
         e_image = resources[:14,174:188]
@@ -124,7 +124,6 @@ class GUI(ttk.Frame):
         
         self.create_commands()
         self.master.protocol('WM_DELETE_WINDOW', self.on_close)
-        self.master.deiconify()
         
         if pf == 'Windows':
             self.flags = np.array([1,4,131072,4,256])
@@ -254,11 +253,6 @@ class GUI(ttk.Frame):
         self.sec_canvas.pack(side=tk.LEFT, anchor=tk.NW)
         self.sec_cf.pack(side=tk.LEFT)
         
-        if pf == 'Windows':
-            self.master.state('zoomed')
-        else:
-            w, h = self.SV.screenwidth, self.SV.screenheight
-            self.master.geometry('{0}x{1}+0+0'.format(w, h))
         fill = '#ffffff' if self.white.get() else '#000000'
         self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
         self.sec_id = self.sec_canvas.create_image(0, 0, anchor='nw')

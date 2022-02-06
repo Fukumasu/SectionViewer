@@ -844,11 +844,6 @@ class STAC(ttk.Frame):
         
         self.stack_cf.bind('<Configure>', self.stack_configure)
         
-        if pf == 'Windows':
-            self.master.state('zoomed')
-        else:
-            w, h = self.SV.screenwidth, self.SV.screenheight
-            self.master.geometry('{0}x{1}+0+0'.format(w, h))
         fill ='#ffffff' if self.white.get() else '#000000'
         self.im_back = self.stack_canvas.create_rectangle(0,0,2000,2000, fill=fill, width=0)
         self.im_id = self.stack_canvas.create_image(0, 0, anchor='nw')
