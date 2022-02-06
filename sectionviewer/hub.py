@@ -126,7 +126,7 @@ class Hub:
         if path[-5:] == '.secv':
             self.box = []
             self.data = Data(self)
-        else:
+        if not hasattr(self, 'zoom'):
             w, h = gui.sec_cf.winfo_width()-4, gui.sec_cf.winfo_height()-4
             iw, ih = self.geometry['im_size']
             zoom = min((w-10)/iw, (h-10)/ih)
