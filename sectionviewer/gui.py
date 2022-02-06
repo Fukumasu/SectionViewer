@@ -120,6 +120,7 @@ class GUI(ttk.Frame):
         self.click = None
         self.click_time = 0
         self.key_time = 0
+        self.event_time = -np.inf
         self.p_num = -1
         self.mode = 0
         
@@ -399,13 +400,16 @@ class GUI(ttk.Frame):
         self.sec_cf.bind('<Configure>', self.sec_configure)
         
         self.master.bind('<Key>', self.key)
-        
+    
     
     def key(self, event):
-        if event.keysym in ['Control_L', 'Control_R', 
-                            'Shift_L', 'Shift_R', 'Alt_L', 'Alt_R']:
+        t = time.time()
+        self.event_time = max(self.event_time, event.time - t*1000)
+        print(self.event_time)
+        if event.time - self.key_time < 20:
             return
-        self.master.unbind('<Key>')
+        if event.char == '':
+            return
         if self.master.focus_get()==self.combo_zm:
             return
         if self.master.focus_get()==self.combo_th:
@@ -441,11 +445,8 @@ class GUI(ttk.Frame):
             else:
                 self.Hub.position.key_pressed(key.lower(), 0)
         
-        self.master.after(60, self.key_bind)
+        self.key_time = time.time()*1000 + self.event_time
 
-    def key_bind(self):
-        self.master.unbind('<Key>')
-        self.master.bind('<Key>', self.key)
     
     def on_close(self, reboot=False):
         secv_name = self.Hub.secv_name
@@ -977,7 +978,7 @@ class GUI(ttk.Frame):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
         if pf == 'Windows':
-            self.fpt_win.iconbitmap(svp('img/icon.ico'))
+            self.fpt_win.iconbitmap('img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1101,7 +1102,7 @@ class GUI(ttk.Frame):
         win = tk.Toplevel(master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap(svp('img/icon.ico'))
+            win.iconbitmap('img/icon.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

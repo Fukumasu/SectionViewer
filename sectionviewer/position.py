@@ -167,17 +167,14 @@ class Position:
         
     
     def apply(self):
-        now = time.time()
-        if now - self.pre_updt_time > 0.05:
-            Hub = self.Hub
-            gui = Hub.gui
-            Hub.calc_frame()
-            if gui.g_on.get():
-                if gui.guide_mode == 'guide':
-                    Hub.calc_guide()
-                else:
-                    Hub.calc_sideview()
-        self.pre_updt_time = time.time()
+        Hub = self.Hub
+        gui = Hub.gui
+        Hub.calc_frame()
+        if gui.g_on.get():
+            if gui.guide_mode == 'guide':
+                Hub.calc_guide()
+            else:
+                Hub.calc_sideview()
     
             
     def undo(self, arg):
