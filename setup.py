@@ -19,7 +19,9 @@ pf = platform.system()
 if pf == 'Windows':
     install_requires += ['cx-Freeze>=6.7']
     omp = '/openmp'
-else:
+elif pf == 'Darwin':
+    omp = ''
+elif pf == 'Linux':
     omp = '-fopenmp'
 
 ext_modules = [Extension('sectionviewer.utils', 
