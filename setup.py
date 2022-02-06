@@ -24,8 +24,9 @@ else:
 
 ext_modules = [Extension('sectionviewer.utils', 
                          sources=['sectionviewer/utils.pyx'],
-                         extra_compile_args=[omp],
-                         extra_link_args=[omp])]
+              #           extra_compile_args=[omp],
+              #           extra_link_args=[omp])
+              ]
 cmdclass = {'build_ext': build_ext}
 
 info = open('info.txt').read()
