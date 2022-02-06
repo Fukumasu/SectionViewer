@@ -125,9 +125,11 @@ class GUI(ttk.Frame):
         self.mode = 0
         
         if pf == 'Windows':
-            self.flags = np.array([1,4,131072,256])
+            self.flags = np.array([1,4,131072,4,256])
+        elif pf == 'Darwin':
+            self.flags = np.array([1,4,16,8,256])
         elif pf == 'Linux':
-            self.flags = np.array([1,4,8,256])
+            self.flags = np.array([1,4,8,4,256])
         
         self.first = True
         
@@ -267,30 +269,35 @@ class GUI(ttk.Frame):
         
         self.menu_bar = tk.Menu(self.master)
         
+        if pf == 'Darwin':
+            ctrl = 'Command+'
+        else:
+            ctrl = 'Ctrl+'
+        
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.file_menu.add_command(label='Open',
                                    command=lambda: self.SV.open_new(self.master),
-                                   accelerator='Ctrl+O')
+                                   accelerator=ctrl+'O')
         self.file_menu.add_command(label='Reload',
                                    command=lambda: Hub.reload(),
-                                   accelerator='Ctrl+R')
+                                   accelerator=ctrl+'R')
         self.file_menu.add_command(label='Save', 
                                    command=lambda: Hub.save(Hub.secv_name), 
-                                   accelerator='Ctrl+S')
+                                   accelerator=ctrl+'S')
         self.file_menu.add_command(label='Save As',
                                    command=lambda: Hub.save(), 
-                                   accelerator='Ctrl+Shift+S')
+                                   accelerator=ctrl+'Shift+S')
         self.file_menu.add_command(label='Export', 
                                    command=Hub.export, 
-                                   accelerator='Ctrl+E')
+                                   accelerator=ctrl+'E')
         
         self.edit_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.edit_menu.add_command(label='Undo', 
                                    command=Hub.undo, 
-                                   accelerator='Ctrl+Z')
+                                   accelerator=ctrl+'Z')
         self.edit_menu.add_command(label='Redo', 
                                    command=Hub.redo, 
-                                   accelerator='Ctrl+Y')
+                                   accelerator=ctrl+'Y')
         
         self.settings_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.settings_menu.add_command(label='Channels', 
@@ -405,10 +412,7 @@ class GUI(ttk.Frame):
     def key(self, event):
         t = time.time()
         self.event_time = max(self.event_time, event.time - t*1000)
-        print(self.event_time)
         if event.time - self.key_time < 20:
-            return
-        if event.char == '':
             return
         if self.master.focus_get()==self.combo_zm:
             return
@@ -416,7 +420,7 @@ class GUI(ttk.Frame):
             return
 
         key = event.keysym
-        if event.state//self.flags[1]%2 == 1:
+        if event.state//self.flags[3]%2 == 1:
             if key == 'o':
                 self.SV.open_new(self.master)
             elif key == 'r':
@@ -762,7 +766,7 @@ class GUI(ttk.Frame):
         la, lb = self.Hub.geometry['im_size']
         iw, ih = len(self.section[0]), len(self.section)
         op, ny, nx = self.Hub.position.asarray()
-        if (event.state//self.flags[3])%2 == 0:
+        if (event.state//self.flags[4])%2 == 0:
             dc, dz, dy, dx = self.Hub.box.shape
             v = np.array([x, y], np.float) - np.array([la//2, lb//2])
             p = op + ny*v[1]/self.Hub.geometry['exp_rate'] + nx*v[0]/self.Hub.geometry['exp_rate']

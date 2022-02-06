@@ -709,9 +709,11 @@ class STAC(ttk.Frame):
         self.stack_cf.focus_set()
         
         if pf == 'Windows':
-            self.flags = np.array([1,4,131072,256])
+            self.flags = np.array([1,4,131072,4,256])
+        elif pf == 'Darwin':
+            self.flags = np.array([1,4,16,8,256])
         elif pf == 'Linux':
-            self.flags = np.array([1,4,8,256])
+            self.flags = np.array([1,4,8,4,256])
         
         self.first = True
         
@@ -861,7 +863,7 @@ class STAC(ttk.Frame):
         key = event.keysym
         if self.master.focus_get()==self.combo_zm:
             return None
-        if event.state//self.flags[1]%2 == 1:
+        if event.state//self.flags[3]%2 == 1:
             if key == 'o':
                 self.SV.open_new(self.master)
             elif key == 's':
