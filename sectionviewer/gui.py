@@ -49,6 +49,20 @@ class GUI(ttk.Frame):
         self.upperleft = (0,0)
         self.lock = False
         
+        self.shift = np.array([0.,0.])
+        self.angle = 0.
+        self.expand = 1.
+        self.trim = np.array([0.,0.])
+        
+        self.click = None
+        self.click_time = 0
+        self.key_time = 0
+        self.event_time = -np.inf
+        self.p_num = -1
+        self.mode = 0
+        
+        self.first = True
+        
         super().__init__(master)
         self.title = self.file_name
         self.master.title(self.title)
@@ -112,18 +126,6 @@ class GUI(ttk.Frame):
         self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         self.master.deiconify()
         
-        self.shift = np.array([0.,0.])
-        self.angle = 0.
-        self.expand = 1.
-        self.trim = np.array([0.,0.])
-        
-        self.click = None
-        self.click_time = 0
-        self.key_time = 0
-        self.event_time = -np.inf
-        self.p_num = -1
-        self.mode = 0
-        
         if pf == 'Windows':
             self.flags = np.array([1,4,131072,4,256])
         elif pf == 'Darwin':
@@ -131,7 +133,6 @@ class GUI(ttk.Frame):
         elif pf == 'Linux':
             self.flags = np.array([1,4,8,4,256])
         
-        self.first = True
         
         
     def create_widgets(self):
@@ -255,6 +256,9 @@ class GUI(ttk.Frame):
         
         if pf == 'Windows':
             self.master.state('zoomed')
+        else:
+            w, h = self.SV.screenwidth, self.SV.screenheight
+            self.master.geometry('{0}x{1}+0+0'.format(w, h))
         fill = '#ffffff' if self.white.get() else '#000000'
         self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
         self.sec_id = self.sec_canvas.create_image(0, 0, anchor='nw')

@@ -32,6 +32,8 @@ class SectionViewer(ttk.Frame):
         root.title('SectionViewer')
         super().__init__(root)
         self.root = root
+        self.screenwidth = root.winfo_screenwidth()
+        self.screenheight = root.winfo_screenheight()
         
         if len(arg) == 0:
             arg = sys.argv[1:]
