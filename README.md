@@ -1,4 +1,4 @@
-# SectionViewer
+# SectionViewer ![image](https://github.com/Fukumasu/SectionViewer/blob/master/sectionviewer/img/icon_48x48.png)
 
 ![gif](https://github.com/Fukumasu/SectionViewer/blob/master/sectionviewer/img/SectionViewer.gif)
 
