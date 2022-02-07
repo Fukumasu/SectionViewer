@@ -416,7 +416,8 @@ class GUI(ttk.Frame):
             return
         if self.master.focus_get()==self.combo_th:
             return
-
+        
+        done = True
         key = event.keysym
         if event.state//self.flags[3]%2 == 1:
             if key == 'o':
@@ -434,20 +435,22 @@ class GUI(ttk.Frame):
             elif key == 'y':
                 self.Hub.redo()
             else:
-                self.Hub.position.key_pressed(key, 2)
+                done = False
+        elif event.state//self.flags[1]%2 == 1:
+            done = self.Hub.position.key_pressed(key, 2)
         else:
             if key in ['a', 'b', 'g']:
                 getattr(self, 'chk_{0}'.format(key)).invoke()
             elif key in ['c', 'p', 's']:
                 getattr(self, '{0}_button'.format(key)).invoke()
-            elif key == 'Delete':
-                self.Hub.points.del_pt(x=[self.p_num])
+            elif key in ['Delete', 'BackSpace']:
+                done = self.Hub.points.del_pt(x=[self.p_num])
             elif event.state//self.flags[0]%2 == 1:
-                self.Hub.position.key_pressed(key.lower(), 1)
+                done = self.Hub.position.key_pressed(key.lower(), 1)
             else:
-                self.Hub.position.key_pressed(key.lower(), 0)
-        
-        self.key_time = time.time()*1000 + self.event_time
+                done = self.Hub.position.key_pressed(key.lower(), 0)
+        if done:
+            self.key_time = time.time()*1000 + self.event_time
 
     
     def on_close(self, reboot=False):

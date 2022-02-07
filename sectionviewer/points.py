@@ -874,7 +874,7 @@ class Points:
             x = self.treeview.selection()
             x = [int(i) for i in x]
         elif x == [-1]:
-            return None
+            return False
         x = np.sort(x).tolist()
         ps = [self.pts[i] for i in x]
         
@@ -895,6 +895,8 @@ class Points:
         gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         self.del_points(x)
+        
+        return True
     
     
     def clicked(self, click, num=None):

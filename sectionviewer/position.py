@@ -55,6 +55,8 @@ class Position:
             ang = self.angs[key][n]
             if ang:
                 self.set_pos(key, ang)
+                return True
+        return False
                 
     def key_release(self, event):
         self.post_calc = False

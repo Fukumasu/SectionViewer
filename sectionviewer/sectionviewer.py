@@ -95,6 +95,8 @@ def launch(file_path=None):
         with open('exe_path.txt', 'r') as f:
             exe_path = f.read()
         if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
+            with open('exe_path.txt', 'w') as f:
+                f.write('')
             print('preparing installer...')
             subprocess.run('python ' + 'setup_msi.py bdist_msi',
                            stdout=subprocess.PIPE, shell=True)

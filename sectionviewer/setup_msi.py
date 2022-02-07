@@ -8,9 +8,6 @@ import info
 
 svdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
 os.chdir(svdir)
-
-with open('exe_path.txt', 'w') as f:
-    f.write('')
     
 code = '''
 import os
