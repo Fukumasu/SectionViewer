@@ -21,7 +21,7 @@ from . import utils as ut
 
 
 class Hub:
-    def __init__(self, gui, path):
+    def __init__(self, gui, path, secv=None):
         self.gui = gui
         
         self.data = []
@@ -31,17 +31,11 @@ class Hub:
         self.points = []
         self.snapshots = []
         
-        self.thickness = 1
-        gui.thickness.set('1')
-        gui.a_on.set(True)
-        gui.b_on.set(True)
-        gui.p_on.set(True)
-        gui.g_on.set(True)
-        gui.white.set(False)
+        self.thickness = int(gui.thickness.get())
+        if hasattr(gui, 'zoom'):
+            self.zoom = int(gui.zoom.get())/100
         
-        if path[-5:] == '.secv':
-            with open(path, 'rb') as st:
-                secv = pickle.load(st)
+        if secv != None:
             self.data = secv['data']
             if 'geometry' in secv:
                 self.geometry = secv['geometry']
@@ -51,27 +45,6 @@ class Hub:
                 self.channels = secv['channels']
             if 'points' in secv:
                 self.points = secv['points']
-            if 'display' in secv:
-                display = secv['display']
-                if 'thickness' in display:
-                    self.thickness = int(display['thickness'])
-                    gui.thickness.set(str(self.thickness))
-                if 'axis' in display:
-                    gui.a_on.set(display['axis'])
-                if 'scale bar' in display:
-                    gui.b_on.set(display['scale bar'])
-                if 'points' in display:
-                    gui.p_on.set(display['points'])
-                if 'guide' in display:
-                    gui.g_on.set(display['guide'])
-                if 'white back' in display:
-                    gui.white.set(display['white back'])
-                if 'zoom' in display:
-                    gui.zoom.set(str(int(display['zoom']*100)))
-                    self.zoom = int(gui.zoom.get())/100
-                if 'upperleft' in display:
-                    gui.upperleft = display['upperleft']
-                    
             if 'snapshots' in secv:
                 self.snapshots = secv['snapshots']
             if 'memories' in secv:
@@ -107,8 +80,10 @@ class Hub:
         self.l = l
         self.s = s
         
-        self.g_l = 800
-        self.g_im = np.empty([self.g_l,self.g_l,3], np.uint8)
+        self.g_shape = self.gui.g_shape
+        self.g_im = np.empty([self.g_shape[0], self.g_shape[1],3], np.uint8)
+        self.g_im2 = np.empty([3,self.g_shape[0], self.g_shape[1]], np.uint8)
+        self.g_section = np.empty([self.g_shape[0], self.g_shape[1]])
         self.g_edges = np.array([[-1, 1, 2,-1, 3,-1,-1,-1], \
                                  [-1,-1,-1, 0,-1, 0,-1,-1], \
                                  [-1,-1,-1, 0,-1,-1, 0,-1], \
@@ -118,7 +93,7 @@ class Hub:
                                  [-1,-1,-1,-1,-1,-1,-1, 0], \
                                  [-1,-1,-1,-1,-1,-1,-1,-1]])
         self.g_vivid = [(160,130,110), ( 23, 23,170), ( 23,170, 23), (170, 23, 23)]
-        self.g_thick = [2, 3, 3, 3]
+        self.g_thick = [1, 1, 1, 1]
         
         self.calc_guide()
         self.gui.master.update()
@@ -457,78 +432,77 @@ class Hub:
         points[:,1:] -= c
         peaks[:,1:] -= c
         
-        l = self.g_l
-        e = l/self.L*0.9
-        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + l//2
+        h, w = self.g_im.shape[:2]
+        e = min(w/self.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
+        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + np.array([w,h])//2
         points = (points[:,::-1]*e).astype(np.int)
-        points[:,:2] += l//2
-        self.guide_points = (points*(400/l)).astype(np.int)
-        sec = ((sec - c)[:,::-1]*e).astype(np.int) + l//2
-        c = (l//2 - c[::-1]*e).astype(np.int)
+        points[:,:2] += np.array([w,h])//2
+        self.guide_points = points.astype(np.int)
+        self.guide_points[:,:2] += np.array(self.gui.g_anchor[::-1])
+        sec = ((sec - c)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
+        uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
+        uls = np.fmax(uls, 0)
+        square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))
+        c = (np.array([w,h])//2 - c[::-1]*e).astype(np.int)
+        
         im_size = (e*im_size/exp_rate/2).astype(np.int)
         ul, br = (c[0] - im_size[0], c[1] - im_size[1]), (c[0] + im_size[0], c[1] + im_size[1])
-        h, w = self.g_im.shape[:2]
-        seed = np.average(sec, axis=0).astype(np.int)
         ul0 = (max(0, ul[0]), max(0, ul[1]))
         br0 = (max(0, br[0]), max(0, br[1]))
         
-        im0 = np.zeros([h, w, 3], np.uint8)
-        im0[:] = 255
-        cv2.polylines(im0, sec[None,sort], True, (0,0,0), 1)
-        mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
-        cv2.floodFill(im0, mask, seedPoint=tuple(seed), newVal=(255,220,255))
-        cv2.polylines(im0, sec[None,sort], True, (255,220,255), 2, cv2.LINE_AA)
-        section = (255 - im0[:,:,1:2])/35
+        im0 = self.g_im2
+        im0[0] = 255
+        cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA)
+        transparent = 0.5
+        section = self.g_section
+        section[:] = 255
+        section -= im0[0]
+        section /= 15/transparent
         
-        im1 = np.zeros([h, w, 3], np.uint8)
-        im1[:] = 255
-        cv2.polylines(im1, sec[None,sort], True, (0,0,0), 1)
-        mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
-        cv2.floodFill(im1, mask, seedPoint=tuple(seed), newVal=(240,240,240))
-        cv2.polylines(im1, sec[None,sort], True, (240,240,240), 2, cv2.LINE_AA)
-        
-        im = np.zeros([h, w, 3], np.uint8)
-        im[:] = 240
-        cv2.polylines(im, sec[None,sort], True, (0,0,0), 1)
-        mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
-        cv2.floodFill(im, mask, seedPoint=tuple(seed), newVal=(220,220,220))
-        cv2.polylines(im, sec[None,sort], True, (220,220,220), 2, cv2.LINE_AA)
-        
-        im[ul0[1]:br0[1], ul0[0]:br0[0]] = im1[ul0[1]:br0[1], ul0[0]:br0[0]]
+        im = self.g_im
+        im[:,:,0] = im0[0]
+        im[:,:,0] -= 15
+        im[ul0[1]:br0[1], ul0[0]:br0[0], 0] += 15
+        im[:,:,1:] = im[:,:,:1]
         
         if rect:
             if hasattr(self, 'zoom') and hasattr(self.gui, 'sec_cf'):
                 iw, ih = self.geometry['im_size']
                 iw, ih = iw*self.zoom, ih*self.zoom
-                w, h = self.gui.sec_cf.winfo_width()-4, self.gui.sec_cf.winfo_height()-4
+                cw, ch = self.gui.sec_cf.winfo_width()-4, self.gui.sec_cf.winfo_height()-4
                 x0, y0 = self.gui.upperleft
-                x1, y1 = x0 + w, y0 + h
+                x1, y1 = x0 + cw, y0 + ch
                 x0, x1, y0, y1 = x0/iw, x1/iw, y0/ih, y1/ih
                 self.ul1 = (int(ul[0] + (br[0]-ul[0])*x0), int(ul[1] + (br[1]-ul[1])*y0))
                 self.br1 = (int(ul[0] + (br[0]-ul[0])*x1), int(ul[1] + (br[1]-ul[1])*y1))
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
-                im[ul2[1]:br2[1], ul2[0]:br2[0]] = im0[ul2[1]:br2[1], ul2[0]:br2[0]]
+                window = (slice(ul2[1], br2[1]), slice(ul2[0], br2[0]))
         else:
             if hasattr(self, 'ul1'):
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
-                im[ul2[1]:br2[1], ul2[0]:br2[0]] = im0[ul2[1]:br2[1], ul2[0]:br2[0]]
+                window = (slice(ul2[1], br2[1]), slice(ul2[0], br2[0]))
+                
+        im[(*window,1)] = (255 - section[window]*(35/transparent)).astype(np.uint8)
+        im[(*window,slice(None,None,2))] = 255
+        section = section[:,:,None][square]
         
-        im0 = im.copy()
+        im0 = im0.transpose(1,2,0)[square]
+        im0[:] = im[square]
         
         order = np.argsort(points[:,2])
         within = within[order]
         p_order = order[(points[order,2]>0)*~within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
         where = np.array(np.where((edges>=0)*~neg[None]*~neg[:,None])).T
-        for w in where:
-            eg = int(edges[tuple(w)])
-            cv2.line(im, tuple(peaks[w[0]]), tuple(peaks[w[1]]),
+        for pair in where:
+            eg = int(edges[tuple(pair)])
+            cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
                      vivid[eg], thick[eg], cv2.LINE_AA)
         for i in range(len(sec)):
             eg = int(edges[tuple(pn[:,i])])
@@ -538,42 +512,36 @@ class Hub:
         p_order = order[(points[order,2]>0)*within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
-        im = (0.7*section*im0 + (1 - 0.7*section)*im).astype(np.uint8)
+        im[square] = (section*im0 + (1 - section)*im[square]).astype(np.uint8)
         
-        cv2.line(im, (0, c[1]), (l, c[1]), (255,255,255), 1, cv2.LINE_AA)
-        cv2.line(im, (c[0], 0), (c[0], l), (255,255,255), 1, cv2.LINE_AA)
+        im[c[1],:] = 255
+        im[:,c[0]] = 255
         
         n_order = order[(points[order,2]<=0)*within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
         for i in range(len(sec)):
             eg = int(edges[tuple(pn[:,i])])
             cv2.line(im, tuple(sec[i]), tuple(peaks[pn[:,i][neg[pn[:,i]]][0]]),\
                      vivid[eg], thick[eg], cv2.LINE_AA)
         where = np.array(np.where((edges>=0)*neg[None]*neg[:,None])).T
-        for w in where:
-            eg = int(edges[tuple(w)])
-            cv2.line(im, tuple(peaks[w[0]]), tuple(peaks[w[1]]),\
+        for pair in where:
+            eg = int(edges[tuple(pair)])
+            cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),\
                      vivid[eg], thick[eg], cv2.LINE_AA)
                 
         n_order = order[(points[order,2]<=0)*~within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
-        im[:20,:-20] = 240
-        im[-20:,20:] = 240
-        im[20:,:20] = 240
-        im[:-20,-20:] = 240
-        
-        im = cv2.resize(im, (400,400))
         im[:22,-66:] -= np.fmin(255 - self.gui.xyz, im[:22,-66:])
         
         gui = self.gui
@@ -691,7 +659,7 @@ class Hub:
         
         gui.side = im
         
-        if hasattr(gui, 'guide_canvas'):
+        if hasattr(gui, 'side_canvas'):
             gui.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(im[:,:,2::-1], im[:,:,3:], axis=2)))
             gui.side_canvas.itemconfig(gui.side_id, image=gui.side_im)
             gui.side_canvas.itemconfig(gui.side_back, fill='#ffffff' if gui.white.get() else '#000000')
@@ -747,7 +715,7 @@ class Hub:
         display['axis'] = self.gui.a_on.get()
         display['scale bar'] = self.gui.b_on.get()
         display['points'] = self.gui.p_on.get()
-        display['guide'] = self.gui.g_on.get()
+        display['dock'] = self.gui.d_on.get()
         display['white back'] = self.gui.white.get()
         display['zoom'] = self.zoom
         display['upperleft'] = self.gui.upperleft
@@ -979,10 +947,10 @@ class Reload:
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
-            if Hub.gui.g_on.get():
+            if Hub.gui.d_on.get():
                 if Hub.gui.guide_mode == 'guide':
                     Hub.calc_guide()
-                else:
+                elif Hub.gui.guide_mode == 'sideview':
                     Hub.calc_sideview()
     
     
@@ -1002,10 +970,10 @@ class Reload:
         if not self.Hub.calc_geometry():
             self.Hub.position.pos = [[0.,0.,0.], [0.,1.,0.], [0.,0.,1.]]
             self.Hub.calc_geometry()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
         
         for cl in [self.Hub.channels, self.Hub.points, self.Hub.snapshots]:

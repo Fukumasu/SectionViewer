@@ -66,11 +66,13 @@ class Geometry:
     
     
     def details(self):
-        self.details_win = tk.Toplevel(self.Hub.gui.master)
-        self.details_win.withdraw()
-        if pf == 'Windows':
-            self.details_win.iconbitmap('img/icon.ico')
-        self.details_win.title('Details')
+        Hub = self.Hub
+        gui = Hub.gui
+        gui.dock_canvas.moveto(gui.dock_id, 500, 0)
+        
+        self.details_win = tk.LabelFrame(gui.master, text='Details', relief='raised',
+                                       fg='blue', font=('arial', 12, 'bold'))
+        self.details_id = gui.dock_canvas.create_window(0, 0, anchor='nw', window=self.details_win)
         
         note = ttk.Notebook(self.details_win)
         note.grid(row=0, column=0, columnspan=2, padx=15, pady=10)
@@ -285,13 +287,40 @@ class Geometry:
                     self.pos_v[j][i].set(str(pos[j,i]))
         ttk.Button(frame, text='initialize', comman=initialize).grid(row=4,column=3, pady=20)
         
+        def repair():
+            gui.dock_canvas.delete(self.details_id)
+            gui.dock_canvas.moveto(gui.dock_id, 0, 0)
+            Hub.put_points()
+            gui.master.unbind('<Return>')
+            gui.master.unbind('<Left>')
+            gui.master.unbind('<Right>')
+            gui.master.unbind('<Up>')
+            gui.master.unbind('<Down>')
+            gui.master.protocol('WM_DELETE_WINDOW', gui.on_close)
+            gui.menu_bar.entryconfig('File', state='active')
+            gui.menu_bar.entryconfig('Edit', state='active')
+            gui.menu_bar.entryconfig('Settings', state='active')
+            gui.menu_bar.entryconfig('Tools', state='active')
+            gui.bar_entry['state'] = tk.ACTIVE
+            gui.combo_th['state'] = tk.ACTIVE
+            gui.chk_a['state'] = tk.ACTIVE
+            gui.chk_b['state'] = tk.ACTIVE
+            gui.chk_d['state'] = tk.ACTIVE
+            gui.chk_p['state'] = tk.ACTIVE
+            gui.rad_b['state'] = tk.ACTIVE
+            gui.rad_w['state'] = tk.ACTIVE
+            gui.d_switch()
+            gui.master.bind('<Key>', gui.key)
+            gui.scale.pack(side=tk.LEFT)
+            gui.sec_canvas.bind('<Motion>', gui.track_sec)
+            gui.sec_canvas.bind('<Button-1>', gui.click_sec)
+            gui.sec_canvas.bind('<ButtonRelease-1>', gui.release_sec)
+        
         def cancel():
-            self.details_win.grab_release()
-            self.details_win.destroy()
+            repair()
         
         self.cancel_button = ttk.Button(self.details_win, text='Cancel', command = cancel)
         self.cancel_button.grid(row=1, column=0, pady=10, sticky=tk.E)
-            
         
         def ok():
             key, new = [], []
@@ -325,21 +354,17 @@ class Geometry:
                 pass
             if len(self.Hub.history) - h == 2:
                 self.Hub.group_history(2)
-            self.details_win.grab_release()
-            self.details_win.destroy()
+            repair()
             
-        self.ok_button = ttk.Button(self.details_win, text='OK', command = ok)
+        self.ok_button = ttk.Button(self.details_win, text='OK', command=ok)
         self.ok_button.grid(row=1, column=1, pady=10, sticky=tk.W)
         
-        self.details_win.resizable(width=False, height=False)
-        self.details_win.deiconify()
         self.details_win.update()
         canvas.config(scrollregion=(0,0,
                                     max(250,ch_frame.winfo_width()),
                                     max(150,ch_frame.winfo_height())))
         
         note.focus_set()
-        self.details_win.grab_set()
         
         
         def left():
@@ -429,83 +454,75 @@ class Geometry:
                 self.ok_button.focus_set()
             else:
                 w.invoke()
-        
-        self.details_win.bind('<Left>', lambda event: left())
-        self.details_win.bind('<Right>', lambda event: right())
-        self.details_win.bind('<Up>', lambda event: up())
-        self.details_win.bind('<Down>', lambda event: down())
-        self.details_win.bind('<Return>', lambda event: enter())
-        self.ok_button.bind('<Destroy>', lambda event: cancel())
-        
-        
-    def set_bar_length(self):
-        self.bar_win = tk.Toplevel(self.Hub.gui.master)
-        self.bar_win.withdraw()
-        if pf == 'Windows':
-            self.bar_win.iconbitmap('img/icon.ico')
-        self.bar_win.title('Scale bar')
-        self.bar_win.geometry('250x80')
-        self.bar_win.resizable(width=False, height=False)
-        
-        frame1 = ttk.Frame(self.bar_win)
-        frame1.pack(pady=10)
-        
-        label1 = ttk.Label(frame1, text='Length : ')
-        label1.pack(side=tk.LEFT)
-        number = tk.StringVar()
-        number.set(str(self.geo['bar_len']))
-        entry = ttk.Entry(frame1, textvariable=number, width=6, justify=tk.RIGHT)
-        entry.pack(side=tk.LEFT)
-        label2 = ttk.Label(frame1, text=' μm')
-        label2.pack(side=tk.LEFT)
-        
-        frame2 = ttk.Frame(self.bar_win)
-        frame2.pack()
-        
-        def cancel():
-            self.bar_win.grab_release()
-            self.bar_win.destroy()
-        
-        def ok():
-            try:
-                bar_len = float(number.get())
-                if self.geo['bar_len'] != bar_len:
-                    self.new(['bar_len'], [bar_len])
-            except:
-                pass
-            self.bar_win.grab_release()
-            self.bar_win.destroy()
                 
-        button1 = ttk.Button(frame2, text='Cancel', command=cancel)
-        button1.pack(side=tk.LEFT)
-        button2 = ttk.Button(frame2, text='OK', command=ok)
-        button2.pack(side=tk.LEFT)
+        gui.master.protocol('WM_DELETE_WINDOW', cancel)
+        gui.menu_bar.entryconfig('File', state='disabled')
+        gui.menu_bar.entryconfig('Edit', state='disabled')
+        gui.menu_bar.entryconfig('Settings', state='disabled')
+        gui.menu_bar.entryconfig('Tools', state='disabled')
+        gui.bar_entry['state'] = tk.DISABLED
+        gui.combo_th['state'] = tk.DISABLED
+        gui.chk_a['state'] = tk.DISABLED
+        gui.chk_b['state'] = tk.DISABLED
+        gui.chk_d['state'] = tk.DISABLED
+        gui.chk_p['state'] = tk.DISABLED
+        gui.rad_b['state'] = tk.DISABLED
+        gui.rad_w['state'] = tk.DISABLED
+        gui.master.unbind('<Key>')
+        gui.scale.pack_forget()
+        gui.sec_canvas.unbind('<Motion>')
+        gui.sec_canvas.unbind('<Button-1>')
+        gui.sec_canvas.unbind('<ButtonRelease-1>')
+        if not gui.d_on.get():
+            gui.d_on.set(True)
+            gui.d_switch()
+            gui.d_on.set(False)
+        gui.master.bind('<Return>', lambda event: enter())
+        gui.master.bind('<Left>', lambda event: left())
+        gui.master.bind('<Right>', lambda event: right())
+        gui.master.bind('<Up>', lambda event: up())
+        gui.master.bind('<Down>', lambda event: down())
         
-        def enter():
-            try: self.bar_win.focus_get().invoke()
-            except: button2.invoke()
-        def down():
-            try: 
-                self.bar_win.focus_get().get()
-                button2.focus_set()
-            except: pass
-        def left():
-            try: self.bar_win.focus_get().get()
-            except: button1.focus_set()
-        def right():
-            try: self.bar_win.focus_get().get()
-            except: button2.focus_set()
-        self.bar_win.bind('<Return>', lambda event: enter())
-        self.bar_win.bind('<Up>', lambda event: entry.focus_set())
-        self.bar_win.bind('<Down>', lambda event: down())
-        self.bar_win.bind('<Left>', lambda event: left())
-        self.bar_win.bind('<Right>', lambda event: right())
         
-        self.bar_win.deiconify()
-        self.entry = entry
-        self.entry.focus_set()
-        self.bar_win.grab_set()
-    
+    def set_bar_length(self, *args):
+        new = self.Hub.gui.bar_text.get()[:10]
+        self.Hub.gui.bar_text.set_bar(new)
+        try:
+            new = float(new)
+        except:
+            return
+        if self.geo['bar_len'] == new:
+            return
+        Hub = self.Hub
+        idx, hist = Hub.hidx, Hub.history
+        if idx == -1 and hist[-1][0] == self \
+            and 'bar_len' in hist[-1][1][0] and Hub.hidx_saved != -1:
+            hist[-1][1][2][0] = new
+        else:
+            if idx != -1:
+                hist[idx:] = hist[idx:idx+1]
+            hist += [[self, [['bar_len'], [self.geo['bar_len']], [new]]]]
+            if Hub.hidx_saved > idx:
+                Hub.hidx_saved = -1 - len(hist)
+            else: 
+                Hub.hidx_saved -= idx + 2
+            Hub.hidx = -1
+        
+        if self.geo['bar_len'] == None:
+            Hub.gui.bar_entry.configure(state=tk.NORMAL)
+            
+        self.geo['bar_len'] = new
+        
+        gui = Hub.gui
+        gui.edit_menu.entryconfig('Undo', state='normal')
+        gui.edit_menu.entryconfig('Redo', state='disable')
+        gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
+        
+        Hub.lpx = int(self.geo['bar_len']/self.geo['res_xy']*self.geo['exp_rate'])
+        Hub.put_axes_bar()
+            
+    def bar_entry_out(self, event):
+        self.Hub.gui.bar_text.set_bar(self.geo['bar_len'])
     
     def new(self, key, new):
         Hub = self.Hub
@@ -531,6 +548,8 @@ class Geometry:
             key += ['bar_len']
             old += [self.geo['bar_len']]
             self.geo['bar_len'] = new[-1]
+            self.Hub.gui.bar_text.set_bar(self.geo['bar_len'])
+            
             
         if old == new:
             return None
@@ -540,7 +559,7 @@ class Geometry:
             hist[idx:] = hist[idx:idx+1]
         
         if 'bar_len' in key and None in old:
-            Hub.gui.bar_button.configure(state=tk.NORMAL)
+            Hub.gui.bar_entry.configure(state=tk.NORMAL)
             
         hist += [[self, [key, old, new]]]
         if Hub.hidx_saved > idx:
@@ -555,8 +574,8 @@ class Geometry:
         gui.master.title('*' + gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
         
         if key == ['bar_len']:
-            self.Hub.lpx = int(self.geo['bar_len']/self.geo['res_xy']*self.geo['exp_rate'])
-            self.Hub.put_points()
+            Hub.lpx = int(self.geo['bar_len']/self.geo['res_xy']*self.geo['exp_rate'])
+            Hub.put_axes_bar()
         else:
             if 'im_size' in key:
                 num = key.index('im_size')
@@ -583,25 +602,23 @@ class Geometry:
                     gui.master.title(gui.title if Hub.hidx != Hub.hidx_saved else gui.title)
                 self.Hub.calc_geometry()
                     
-            if gui.g_on.get():
+            if gui.d_on.get():
                 if self.Hub.gui.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.Hub.gui.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
-        
-        self.Hub.gui.bar_text.set('Scale bar: {0} μm'.format(self.geo['bar_len']))
         
             
     def undo(self, arg):
         for k, n in zip(arg[0], arg[1]):
             self.geo[k] = n
         if 'bar_len' in arg[0]:
-            self.Hub.gui.bar_text.set('Scale bar: {0} μm'.format(self.geo['bar_len']))
+            self.Hub.gui.bar_text.set_bar(self.geo['bar_len'])
             if self.geo['bar_len'] == None:
-                self.Hub.gui.bar_button.configure(state=tk.DISABLED)
+                self.Hub.gui.bar_entry.configure(state=tk.DISABLED)
         if arg[0] == ['bar_len']:
             self.Hub.lpx = int(self.geo['bar_len']/self.geo['res_xy']*self.geo['exp_rate'])
-            self.Hub.put_points()
+            self.Hub.put_axes_bar()
         else:
             if 'im_size' in arg[0]:
                 Hub = self.Hub
@@ -617,22 +634,22 @@ class Geometry:
                 gui.upperleft = (int(gui.upperleft[0] + o1 - n1), 
                                  int(gui.upperleft[1] + o2 - n2))
             self.Hub.calc_geometry()
-            if self.Hub.gui.g_on.get():
+            if self.Hub.gui.d_on.get():
                 if self.Hub.gui.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.Hub.gui.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
         
     def redo(self, arg):
         if 'bar_len' in arg[0] and self.geo['bar_len'] == None:
-            self.Hub.gui.bar_button.configure(state=tk.NORMAL)
+            self.Hub.gui.bar_entry.configure(state=tk.NORMAL)
         for k, n in zip(arg[0], arg[2]):
             self.geo[k] = n
         if 'bar_len' in arg[0]:
-            self.Hub.gui.bar_text.set('Scale bar: {0} μm'.format(self.geo['bar_len']))
+            self.Hub.gui.bar_text.set_bar(self.geo['bar_len'])
         if arg[0] == ['bar_len']:
             self.Hub.lpx = int(self.geo['bar_len']/self.geo['res_xy']*self.geo['exp_rate'])
-            self.Hub.put_points()
+            self.Hub.put_axes_bar()
         else:
             if 'im_size' in arg[0]:
                 Hub = self.Hub
@@ -648,10 +665,10 @@ class Geometry:
                 gui.upperleft = (int(gui.upperleft[0] + o1 - n1), 
                                  int(gui.upperleft[1] + o2 - n2))
             self.Hub.calc_geometry()
-            if self.Hub.gui.g_on.get():
+            if self.Hub.gui.d_on.get():
                 if self.Hub.gui.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.Hub.gui.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
                 
     def reload(self, geo):

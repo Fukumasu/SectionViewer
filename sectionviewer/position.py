@@ -172,10 +172,10 @@ class Position:
         Hub = self.Hub
         gui = Hub.gui
         Hub.calc_frame()
-        if gui.g_on.get():
+        if gui.d_on.get():
             if gui.guide_mode == 'guide':
                 Hub.calc_guide()
-            else:
+            elif gui.guide_mode == 'sideview':
                 Hub.calc_sideview()
     
             

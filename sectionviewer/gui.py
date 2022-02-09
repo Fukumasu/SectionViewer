@@ -1,4 +1,5 @@
 import os
+import pickle
 import platform
 import shutil
 import time
@@ -22,12 +23,6 @@ class GUI(ttk.Frame):
         self.file_name = os.path.basename(file_path)
         
         resources = cv2.imread('img/resources.png')
-        c_image = resources[:35,:36]
-        self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
-        p_image = resources[:35,36:72]
-        self.p_image = ImageTk.PhotoImage(Image.fromarray(p_image[:,:,::-1]))
-        s_image = resources[:35,72:108]
-        self.s_image = ImageTk.PhotoImage(Image.fromarray(s_image[:,:,::-1]))
         k_image = resources[204:373] if pf == 'Darwin' else resources[35:204]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
         self.xyz = resources[:22,108:174]
@@ -38,16 +33,42 @@ class GUI(ttk.Frame):
         ver_image = resources[:20,208:228]
         self.ver_image = ImageTk.PhotoImage(Image.fromarray(ver_image[:,:,::-1]))
         
-        self.thickness = tk.StringVar()
-        self.a_on = tk.BooleanVar()
-        self.b_on = tk.BooleanVar()
-        self.p_on = tk.BooleanVar()
-        self.g_on = tk.BooleanVar()
-        self.white = tk.BooleanVar()
+        self.thickness = tk.StringVar(value='1')
+        self.a_on = tk.BooleanVar(value=True)
+        self.b_on = tk.BooleanVar(value=True)
+        self.p_on = tk.BooleanVar(value=True)
+        self.d_on = tk.BooleanVar(value=True)
+        self.white = tk.BooleanVar(value=False)
         self.depth = tk.IntVar()
-        self.zoom = tk.StringVar()
         self.upperleft = (0,0)
+        
+        if file_path[-5:] == '.secv':
+            with open(file_path, 'rb') as sv:
+                secv = pickle.load(sv)
+                
+        if 'display' in secv:
+            display = secv['display']
+            if 'thickness' in display:
+                self.thickness.set(str(int(display['thickness'])))
+            if 'axis' in display:
+                self.a_on.set(display['axis'])
+            if 'scale bar' in display:
+                self.b_on.set(display['scale bar'])
+            if 'points' in display:
+                self.p_on.set(display['points'])
+            if 'dock' in display:
+                self.d_on.set(display['dock'])
+            if 'white back' in display:
+                self.white.set(display['white back'])
+            if 'zoom' in display:
+                self.zoom = tk.StringVar(value=str(int(display['zoom']*100)))
+            if 'upperleft' in display:
+                self.upperleft = display['upperleft']
+        
         self.lock = False
+        
+        self.g_shape = (400, 400)
+        self.g_anchor = (0, 0)
         
         self.shift = np.array([0.,0.])
         self.angle = 0.
@@ -61,18 +82,9 @@ class GUI(ttk.Frame):
         self.p_num = -1
         self.mode = 0
         
-        self.first = True
-        
         super().__init__(master)
         self.title = self.file_name
         self.master.title(self.title)
-        
-        # Palette
-        self.palette = tk.Toplevel(self.master)
-        self.palette.withdraw()
-        if pf == 'Windows':
-            self.palette.iconbitmap('img/icon.ico')
-        self.palette.resizable(height=False, width=False)
         
         self.SV.root.withdraw()
         self.create_widgets()
@@ -87,7 +99,7 @@ class GUI(ttk.Frame):
             if close:
                 self.SV.root.destroy()
         try:
-            self.Hub = Hub(self, file_path)
+            self.Hub = Hub(self, file_path, secv=secv)
         except Exception as e:
             messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
                                  parent=self.master)
@@ -96,32 +108,7 @@ class GUI(ttk.Frame):
         if not self.Hub.load_success:
             close()
             return
-        
-        def switch(event):
-            if str(self.palette.focus_get())[-5:] != 'entry':
-                key = event.keysym
-                if key == 'c':
-                    self.Hub.channels.settings()
-                elif key == 'p':
-                    self.Hub.points.settings()
-                elif key == 's':
-                    self.Hub.snapshots.settings()
                     
-        self.palette.bind('<c>', switch)
-        self.palette.bind('<p>', switch)
-        self.palette.bind('<s>', switch)
-        self.palette.bind('<Control-s>', lambda event: self.Hub.save(self.Hub.secv_name))
-        self.palette.bind('<Control-w>', lambda event: self.Hub.save())
-        self.palette.bind('<Control-z>', lambda event: self.Hub.undo())
-        self.palette.bind('<Control-Shift-Z>', lambda event: self.Hub.redo())
-        self.palette.bind('<Control-y>', lambda event: self.Hub.redo())
-        self.palette.bind('<Return>', lambda event: [self.palette.grab_release(), 
-                                                     self.palette.withdraw()])
-        def hide():
-            self.palette.grab_release()
-            self.palette.withdraw()
-        self.palette.protocol('WM_DELETE_WINDOW', hide)
-        
         self.create_commands()
         self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         
@@ -131,44 +118,65 @@ class GUI(ttk.Frame):
             self.flags = np.array([1,4,16,8,256])
         elif pf == 'Linux':
             self.flags = np.array([1,4,8,4,256])
+            
+        if self.Hub.secv_name != None:
+            self.Hub.save(self.Hub.secv_name)
         
         
         
     def create_widgets(self):
-        # Guide
-        self.guide_note = ttk.Notebook(self.master)
-        self.guide_note.pack(padx=10, pady=10, side=tk.RIGHT)
         
-        self.guide_frame = ttk.Frame(self.guide_note)
+        self.menu_bar = tk.Menu(self.master)
+        
+        self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.edit_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.settings_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.tools_menu = tk.Menu(self.menu_bar, tearoff=0)
+        
+        self.menu_bar.add_cascade(label='File', menu=self.file_menu)
+        self.menu_bar.add_cascade(label='Edit', menu=self.edit_menu)
+        self.menu_bar.add_cascade(label='Settings', menu=self.settings_menu)
+        self.menu_bar.add_cascade(label='Tools', menu=self.tools_menu)
+        
+        self.master.config(menu=self.menu_bar)
+        
+        # Dock
+        self.dock_frame = tk.Frame(self.master)
+        if self.d_on.get():
+            self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT, anchor=tk.N)
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=410, height=590)
+        self.dock_canvas.pack(side=tk.LEFT)
+        self.dock_note = ttk.Notebook(self.master)
+        self.dock_id = self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
+        bary = tk.Scrollbar(self.dock_frame, orient=tk.VERTICAL)
+        bary.pack(side=tk.RIGHT, fill=tk.Y)
+        bary.config(command=self.dock_canvas.yview)
+        self.dock_canvas.config(yscrollcommand=bary.set)
+        self.dock_canvas.config(scrollregion=(0,0,410,590))
+        
+        self.guide_frame = ttk.Frame(self.dock_note)
+        self.guide_upper = ttk.Frame(self.guide_frame)
+        self.guide_upper.pack(anchor=tk.W, padx=10, pady=3)
+        self.g_mode = tk.StringVar(value='guide')
+        self.rad_g = ttk.Radiobutton(self.guide_upper, text='Skeleton', value='guide', 
+                                     variable=self.g_mode)
+        self.rad_g.pack(side=tk.LEFT)
+        self.rad_s = ttk.Radiobutton(self.guide_upper, text='Side view', value='sideview', 
+                                     variable=self.g_mode)
+        self.rad_s.pack(side=tk.LEFT)
+        y, x = self.g_anchor
         self.guide_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
-        bary = tk.Scrollbar(self.guide_frame, orient=tk.VERTICAL)
-        bary.pack(side=tk.RIGHT, fill=tk.Y)
-        bary.config(command=self.guide_canvas.yview)
-        self.guide_canvas.config(yscrollcommand=bary.set)
-        self.guide_canvas.config(scrollregion=(0,0,400,569))
-        self.guide_id = self.guide_canvas.create_image(0, 0, anchor='nw')
-        self.guide_canvas.create_image(0, 400, anchor='nw', image=self.k_image)
+        self.guide_id = self.guide_canvas.create_image(x, y, anchor='nw')
+        self.guide_canvas.create_image(5, 380, anchor='nw', image=self.k_image)
         self.guide_canvas.pack()
-        self.guide_note.add(self.guide_frame, text='Guide')
+        self.dock_note.add(self.guide_frame, text='Guide')
         
-        self.side_frame = ttk.Frame(self.guide_note)
-        self.side_canvas = tk.Canvas(self.side_frame, width=400, height=569)
-        bary = tk.Scrollbar(self.side_frame, orient=tk.VERTICAL)
-        bary.pack(side=tk.RIGHT, fill=tk.Y)
-        bary.config(command=self.side_canvas.yview)
-        self.side_canvas.config(yscrollcommand=bary.set)
-        self.side_canvas.config(scrollregion=(0,0,400,569))
+        self.side_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
         fill = '#ffffff' if self.white.get() else '#000000'
         self.side_back = self.side_canvas.create_rectangle(0, 0, 400, 569, fill=fill, width=0)
         self.side_id = self.side_canvas.create_image(0, 0, anchor='nw')
-        self.side_canvas.pack()
-        self.guide_note.add(self.side_frame, text='Side view')
         
-        name = self.guide_note.tab(self.guide_note.select(), 'text')
-        if name == 'Guide':
-            self.guide_mode = 'guide'
-        else:
-            self.guide_mode = 'sideview'
+        self.guide_mode = 'guide'
         
         # Main
         self.main_frame = ttk.Frame(self.master)
@@ -177,17 +185,8 @@ class GUI(ttk.Frame):
         self.top = ttk.Frame(self.main_frame)
         self.top.pack(side=tk.TOP, anchor=tk.N, fill=tk.X, expand=True)
         
-        self.buttons = ttk.Frame(self.top)
-        self.buttons.pack(side=tk.LEFT, padx=5, pady=5)
-        self.c_button = ttk.Button(self.buttons, image=self.c_image)
-        self.c_button.grid(column=0, row=0)
-        self.p_button = ttk.Button(self.buttons, image=self.p_image)
-        self.p_button.grid(column=1, row=0)
-        self.s_button = ttk.Button(self.buttons, image=self.s_image)
-        self.s_button.grid(column=2, row=0)
-        
         self.display = ttk.LabelFrame(self.top, text='Display')
-        self.display.pack(side=tk.RIGHT, ipady=3)
+        self.display.pack(side=tk.LEFT, padx=10, ipady=3)
         
         ttk.Label(self.display, text='Zoom [%]').grid(column=0, row=0, padx=5, sticky=tk.W)
         self.e_button = ttk.Button(self.display, width=4, image=self.e_image)
@@ -207,8 +206,8 @@ class GUI(ttk.Frame):
         self.chk_b.grid(column=3, row=1, padx=5, sticky=tk.W)
         self.chk_p = ttk.Checkbutton(self.display, variable=self.p_on, text='Points')
         self.chk_p.grid(column=4, row=0, padx=5, sticky=tk.W)
-        self.chk_g = ttk.Checkbutton(self.display, variable=self.g_on, text='Guide (G)')
-        self.chk_g.grid(column=4, row=1, padx=5, sticky=tk.W)
+        self.chk_d = ttk.Checkbutton(self.display, variable=self.d_on, text='Dock (D)')
+        self.chk_d.grid(column=4, row=1, padx=5, sticky=tk.W)
         self.rad_b = ttk.Radiobutton(self.display, text='Black', value=False, 
                                      variable=self.white)
         self.rad_b.grid(column=5, row=0, padx=5, sticky=tk.W)
@@ -219,10 +218,13 @@ class GUI(ttk.Frame):
         self.bottom = ttk.Frame(self.main_frame)
         self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
         
+        ttk.Label(self.bottom, text='µm').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         self.bar_text = tk.StringVar()
-        self.bar_text.set('Scale bar: None μm')
-        self.bar_button = ttk.Button(self.bottom, textvariable=self.bar_text)
-        self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
+        self.bar_text.set('0')
+        self.bar_entry = ttk.Entry(self.bottom, textvariable=self.bar_text,
+                                   width=10, justify=tk.RIGHT)
+        self.bar_entry.pack(side=tk.RIGHT, anchor=tk.N, pady=5)
+        ttk.Label(self.bottom, text='Scale bar:').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         
         self.coor_text = tk.StringVar()
         self.coor_text.set('[x,y,z] =\n    vals =')
@@ -256,7 +258,7 @@ class GUI(ttk.Frame):
         fill = '#ffffff' if self.white.get() else '#000000'
         self.sec_back = self.sec_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
         self.sec_id = self.sec_canvas.create_image(0, 0, anchor='nw')
-        if self.g_on.get():
+        if self.d_on.get():
             self.master.minsize(850, 400)
         else:
             self.master.minsize(400, 400)
@@ -265,14 +267,11 @@ class GUI(ttk.Frame):
     def create_commands(self):
         Hub = self.Hub
         
-        self.menu_bar = tk.Menu(self.master)
-        
         if pf == 'Darwin':
             ctrl = 'Command+'
         else:
             ctrl = 'Ctrl+'
         
-        self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.file_menu.add_command(label='Open',
                                    command=lambda: self.SV.open_new(self.master),
                                    accelerator=ctrl+'O')
@@ -289,7 +288,6 @@ class GUI(ttk.Frame):
                                    command=Hub.export, 
                                    accelerator=ctrl+'E')
         
-        self.edit_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.edit_menu.add_command(label='Undo', 
                                    command=Hub.undo, 
                                    accelerator=ctrl+'Z')
@@ -297,58 +295,36 @@ class GUI(ttk.Frame):
                                    command=Hub.redo, 
                                    accelerator=ctrl+'Y')
         
-        self.settings_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.settings_menu.add_command(label='Channels', 
                                        command=Hub.channels.settings,
                                        accelerator='C')
         self.settings_menu.add_command(label='Points', 
                                        command=Hub.points.settings,
                                        accelerator='P')
-        self.settings_menu.add_command(label='Scale bar', 
-                                       command=Hub.geometry.set_bar_length)
         self.settings_menu.add_command(label='Details', 
                                        command=Hub.geometry.details)
         
-        self.tools_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.tools_menu.add_command(label='Snapshots', command=Hub.snapshots.settings,
                                     accelerator='S')
         self.tools_menu.add_command(label='Stack', command=Hub.stack.settings)
-        
-        self.menu_bar.add_cascade(label='File', menu=self.file_menu)
-        self.menu_bar.add_cascade(label='Edit', menu=self.edit_menu)
-        self.menu_bar.add_cascade(label='Settings', menu=self.settings_menu)
-        self.menu_bar.add_cascade(label='Tools', menu=self.tools_menu)
-        
-        self.master.config(menu=self.menu_bar)
         
         if len(Hub.history) == 1:
             self.edit_menu.entryconfig('Undo', state='disable')
         if Hub.hidx == -1:
             self.edit_menu.entryconfig('Redo', state='disable')
-            
+        
+        self.rad_g.configure(command=self.gs_switch)
+        self.rad_s.configure(command=self.gs_switch)        
+        
         self.guide_canvas.bind('<Button-1>', lambda event: [self.master.focus_set(),
                                                             Hub.points.settings(select=self.p_num)])
         self.guide_canvas.bind('<Motion>', self.track_guide)
-        if pf == 'Windows':
-            self.guide_canvas.bind('<MouseWheel>', lambda event: 
-                                   self.guide_canvas.\
-                                   yview_scroll(int(-event.delta/120), 'units'))
-        elif pf == 'Linux':
-            self.guide_canvas.bind('<Button-4>', lambda event: 
-                                   self.guide_canvas.yview_scroll(1, 'units'))
-            self.guide_canvas.bind('<Button-4>', lambda event: 
-                               self.guide_canvas.yview_scroll(1, 'units'))
         self.guide_im = ImageTk.PhotoImage(Image.fromarray(self.guide[:,:,::-1]))
         self.guide_canvas.itemconfig(self.guide_id, image=self.guide_im)
         self.side_im = ImageTk.PhotoImage(Image.fromarray(np.append(self.side[:,:,2::-1], 
                                                                     self.side[:,:,3:], axis=2)))
         self.side_canvas.itemconfig(self.side_id, image=self.side_im)
-        self.guide_note.bind('<<NotebookTabChanged>>', self.guide_note_changed)
-        
-        self.buttons.bind('<Button-1>', lambda event: self.master.focus_set())
-        self.c_button.configure(command=Hub.channels.settings)
-        self.p_button.configure(command=Hub.points.settings)
-        self.s_button.configure(command=Hub.snapshots.settings)
+        self.dock_note.bind('<<NotebookTabChanged>>', self.dock_note_changed)
         
         self.e_button.configure(command=self.fit_frame)
         self.combo_zm.bind('<Return>', lambda event: self.zm_enter())
@@ -360,14 +336,21 @@ class GUI(ttk.Frame):
         self.chk_a.configure(command=self.a_switch)
         self.chk_b.configure(command=self.b_switch)
         self.chk_p.configure(command=lambda: [Hub.put_points(), Hub.calc_guide()])
-        self.chk_g.configure(command=self.g_switch)
+        self.chk_d.configure(command=self.d_switch)
         self.rad_b.configure(command=self.wb_switch)
         self.rad_w.configure(command=self.wb_switch)
         
-        self.bar_text.set('Scale bar: {0} μm'.format(Hub.geometry['bar_len']))
-        self.bar_button.configure(command=Hub.geometry.set_bar_length)
+        def set_bar(new):
+            self.bar_text.trace_vdelete('w', self.bar_text.trace_id)
+            self.bar_text.set(new)
+            self.bar_text.trace_id = self.bar_text.trace('w', Hub.geometry.set_bar_length)
+        self.bar_text.trace_id = self.bar_text.trace('w', Hub.geometry.set_bar_length)
+        self.bar_text.set_bar = set_bar
+        self.bar_text.set_bar(Hub.geometry['bar_len'])
         if Hub.geometry['bar_len'] == None:
-            self.bar_button.configure(state=tk.DISABLED)
+            self.bar_entry.configure(state=tk.DISABLED)
+        self.bar_entry.bind('<FocusOut>', Hub.geometry.bar_entry_out)
+            
         self.scale.configure(command=Hub.position.scale)
         self.scale.configure(to=self.scale_to)
         self.scale.bind('<Button-1>', Hub.position.scale_clicked)
@@ -403,19 +386,16 @@ class GUI(ttk.Frame):
         self.sec_canvas.config(xscrollcommand=self.barx_set)
         
         self.sec_cf.bind('<Configure>', self.sec_configure)
-        
         self.master.bind('<Key>', self.key)
-    
+        
     
     def key(self, event):
         t = time.time()
+        if event.time - self.key_time < 40:
+            return
         self.event_time = max(self.event_time, event.time - t*1000)
-        if event.time - self.key_time < 20:
-            return
-        if self.master.focus_get()==self.combo_zm:
-            return
-        if self.master.focus_get()==self.combo_th:
-            return
+        
+        Hub = self.Hub
         
         done = True
         key = event.keysym
@@ -423,32 +403,40 @@ class GUI(ttk.Frame):
             if key == 'o':
                 self.SV.open_new(self.master)
             elif key == 'r':
-                self.Hub.reload()
+                Hub.reload()
             elif key == 's':
-                self.Hub.save(self.Hub.secv_name)
+                Hub.save(Hub.secv_name)
             elif key == 'S':
-                self.Hub.save()
+                Hub.save()
             elif key == 'e':
-                self.Hub.export()
+                Hub.export()
             elif key == 'z':
-                self.Hub.undo()
+                Hub.undo()
             elif key == 'y':
-                self.Hub.redo()
+                Hub.redo()
             else:
                 done = False
         elif event.state//self.flags[1]%2 == 1:
-            done = self.Hub.position.key_pressed(key, 2)
+            done = Hub.position.key_pressed(key, 2)
         else:
-            if key in ['a', 'b', 'g']:
+            focus = str(self.master.focus_get()).rsplit('!', 1)[-1]
+            if 'entry' in focus:
+                return
+            elif 'combo' in focus:
+                return
+            if key in ['a', 'b', 'd']:
                 getattr(self, 'chk_{0}'.format(key)).invoke()
-            elif key in ['c', 'p', 's']:
-                getattr(self, '{0}_button'.format(key)).invoke()
+            elif key in ['g', 'c', 'p', 's']:
+                {'g': lambda: self.dock_note.select(self.dock_note.tabs()[0]),
+                 'c': Hub.channels.settings,
+                 'p': Hub.points.settings,
+                 's': Hub.snapshots.settings}[key]()
             elif key in ['Delete', 'BackSpace']:
-                done = self.Hub.points.del_pt(x=[self.p_num])
+                done = Hub.points.del_pt(x=[self.p_num])
             elif event.state//self.flags[0]%2 == 1:
-                done = self.Hub.position.key_pressed(key.lower(), 1)
+                done = Hub.position.key_pressed(key.lower(), 1)
             else:
-                done = self.Hub.position.key_pressed(key.lower(), 0)
+                done = Hub.position.key_pressed(key.lower(), 0)
         if done:
             self.key_time = time.time()*1000 + self.event_time
 
@@ -475,14 +463,14 @@ class GUI(ttk.Frame):
             if ans:
                 if self.Hub.save(secv_name):
                     self.master.destroy()
-                del self.Hub
-                close = False if reboot else True
-                for w in self.SV.wins:
-                    close = close and not bool(w.winfo_exists())
-                if close:
-                    self.SV.root.destroy()
-                if reboot:
-                    self.SV.open_new(self.SV.root, secv_name)
+                    del self.Hub
+                    close = False if reboot else True
+                    for w in self.SV.wins:
+                        close = close and not bool(w.winfo_exists())
+                    if close:
+                        self.SV.root.destroy()
+                    if reboot:
+                        self.SV.open_new(self.SV.root, secv_name)
             else:
                 self.master.destroy()
                 del self.Hub
@@ -592,6 +580,17 @@ class GUI(ttk.Frame):
             return None
         self.Hub.thickness = thickness
         self.Hub.calc_frame()
+        
+    def gs_switch(self):
+        self.guide_mode = self.g_mode.get()
+        if self.guide_mode == 'guide':
+            self.side_canvas.pack_forget()
+            self.Hub.calc_guide()
+            self.guide_canvas.pack()
+        else:
+            self.guide_canvas.pack_forget()
+            self.Hub.calc_sideview()
+            self.side_canvas.pack()
     
     def a_switch(self):
         self.Hub.put_axes_bar()
@@ -599,23 +598,23 @@ class GUI(ttk.Frame):
     def b_switch(self):
         self.Hub.put_axes_bar()
     
-    def g_switch(self):
-        if self.g_on.get():
+    def d_switch(self):
+        if self.d_on.get():
             if self.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
             self.main_frame.pack_forget()
-            self.guide_note.pack(pady=10, padx=10, side=tk.RIGHT)
+            self.dock_frame.pack(pady=10, padx=10, side=tk.RIGHT)
             self.main_frame.pack(fill=tk.BOTH, expand=True)
             self.master.minsize(850, 400)
         else:
-            self.guide_note.pack_forget()
+            self.dock_frame.pack_forget()
             self.master.minsize(400, 400)
             
     def wb_switch(self):
         self.Hub.calc_image()
-        if self.g_on.get():
+        if self.d_on.get() and self.guide_mode == 'sideview':
             self.Hub.calc_sideview()
         
     
@@ -626,20 +625,6 @@ class GUI(ttk.Frame):
     def sec_configure(self, event):
         w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
         iw, ih = self.Hub.geometry['im_size']
-        if not hasattr(self.Hub, 'zoom'):
-            zoom = min((w-10)/iw, (h-10)/ih)
-            self.zoom.set(str(int(zoom*100)))
-            self.Hub.zoom = float(self.zoom.get())/100
-            zoom = self.Hub.zoom
-            iw1, ih1 = int(iw*zoom), int(ih*zoom)
-            self.upperleft = (int(iw1//2-w//2), int(ih1//2-h//2))
-        if self.first:
-            self.first = False
-            if not isinstance(self.Hub.secv_name, type(None)):
-                self.Hub.save(self.Hub.secv_name)
-            
-            self.Hub.calc_geometry()
-            self.Hub.calc_guide()
         
         zoom = self.Hub.zoom
         iw, ih = int(iw*zoom), int(ih*zoom)
@@ -834,10 +819,10 @@ class GUI(ttk.Frame):
             M = np.float32([[1,0,self.shift[0]],[0,1,self.shift[1]]])
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
-            if self.g_on.get():
+            if self.d_on.get():
                 if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
             self.Hub.position.pos = pos_.tolist()
             self.Hub.sec_raw = sec_raw
@@ -857,10 +842,10 @@ class GUI(ttk.Frame):
             M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), -self.angle/np.pi*180, 1)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
-            if self.g_on.get():
+            if self.d_on.get():
                 if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
             self.Hub.position.pos = pos_.tolist()
             self.Hub.sec_raw = sec_raw
@@ -876,10 +861,10 @@ class GUI(ttk.Frame):
             M = cv2.getRotationMatrix2D((float(la//2), float(lb//2)), 0, self.expand)
             self.Hub.sec_raw = cv2.warpAffine(sec_raw, M, (la, lb))
             self.Hub.put_points()
-            if self.g_on.get():
+            if self.d_on.get():
                 if self.guide_mode == 'guide':
                     self.Hub.calc_guide()
-                else:
+                elif self.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
             self.Hub.geometry.geo['exp_rate'] = exp_rate
             self.Hub.sec_raw = sec_raw
@@ -924,7 +909,7 @@ class GUI(ttk.Frame):
                 self.sec_canvas.coords(self.sec_back, x, y, x+t0, y+t1)
                 self.sec_canvas.itemconfig(self.sec_id, image=self.sec_im)
                 self.sec_canvas.itemconfig(self.sec_back, fill='#ffffff' if self.white.get() else '#000000')
-                if self.g_on.get():
+                if self.d_on.get():
                     if self.guide_mode == 'guide':
                         self.Hub.calc_guide(rect=False)
                 self.Hub.geometry.geo['im_size'] = im_size
@@ -935,14 +920,23 @@ class GUI(ttk.Frame):
         self.master.after(10, motion_bind)
             
             
-    def guide_note_changed(self, event):
-        name = self.guide_note.tab(self.guide_note.select(), 'text')
+    def dock_note_changed(self, event):
+        name = self.dock_note.tab(self.dock_note.select(), 'text')
         if name == 'Guide':
-            self.Hub.calc_guide()
-            self.guide_mode = 'guide'
-        else:
-            self.Hub.calc_sideview()
-            self.guide_mode = 'sideview'
+            self.guide_mode = self.g_mode.get()
+            if self.guide_mode == 'guide':
+                self.Hub.calc_guide()
+            elif self.guide_mode == 'sideview':
+                self.Hub.calc_sideview()
+        elif name == 'Channels':
+            self.Hub.channels.settings()
+            self.guide_mode = ''
+        elif name == 'Points':
+            self.Hub.points.settings()
+            self.guide_mode = ''
+        elif name == 'Snapshots':
+            self.Hub.snapshots.settings()
+            self.guide_mode = ''
             
             
     def track_guide(self, event):
@@ -960,12 +954,12 @@ class GUI(ttk.Frame):
                 name = self.Hub.points.getnames()[nearest]
                 color = color//1.5
                 color = (int(color[0]), int(color[1]), int(color[2]))
-                p = points[nearest]
-                guide = cv2.circle(guide, tuple(p[:2]), 4, (255,255,255), -1, lineType=cv2.LINE_AA)
-                guide = cv2.circle(guide, tuple(p[:2]), 3, color, -1, lineType=cv2.LINE_AA)
+                p = points[nearest][:2] - np.array(self.g_anchor[::-1])
+                guide = cv2.circle(guide, tuple(p), 4, (255,255,255), -1, lineType=cv2.LINE_AA)
+                guide = cv2.circle(guide, tuple(p), 3, color, -1, lineType=cv2.LINE_AA)
                 
-                cv2.putText(guide, name, tuple(p[:2]+12), 2, 0.5, (255,255,255), 3, cv2.LINE_AA)
-                cv2.putText(guide, name, tuple(p[:2]+12), 2, 0.5, color, 1, cv2.LINE_AA)
+                cv2.putText(guide, name, tuple(p+12), 2, 0.5, (255,255,255), 3, cv2.LINE_AA)
+                cv2.putText(guide, name, tuple(p+12), 2, 0.5, color, 1, cv2.LINE_AA)
                 
                 self.guide_im = ImageTk.PhotoImage(Image.fromarray(guide[:,:,::-1]))
                 self.guide_canvas.itemconfig(self.guide_id, image=self.guide_im)

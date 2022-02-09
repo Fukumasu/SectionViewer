@@ -21,29 +21,27 @@ class Snapshots:
         self.use_pts = True
         
         self.name_var = tk.StringVar()
-        self.name_var.trace('w', self.ss_name)
+        def set_nm(new):
+            self.name_var.trace_vdelete('w', self.name_var.trace_id)
+            self.name_var.set(new)
+            self.name_var.trace_id = self.name_var.trace('w', self.ss_name)
+        self.name_var.trace_id = self.name_var.trace('w', self.ss_name)
+        self.name_var.set_nm = set_nm
         self.pos_on = tk.BooleanVar()
         self.chs_on = tk.BooleanVar()
         self.pts_on = tk.BooleanVar()
         
         # settings
         
-        frame0 = ttk.Frame(Hub.gui.palette)
+        frame0 = ttk.Frame(Hub.gui.dock_note)
         self.set_frame = frame0
+        Hub.gui.dock_note.add(frame0, text='Snapshots')
         
         frame1 = ttk.Frame(frame0)
-        frame1.pack(side=tk.LEFT)
+        frame1.pack(pady=10)
         
-        frame2 = ttk.Frame(frame1)
-        frame2.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
-        button1 = ttk.Button(frame2, text='Snap', command=self.add_ss)
-        button1.pack(side=tk.LEFT, padx=2)
-        button2 = ttk.Button(frame2, text='Delete', command=self.del_ss)
-        button2.pack(side=tk.LEFT, padx=2)
-        self.button_dl = button2
-        
-        self.treeview = ttk.Treeview(frame1, height=15)
-        self.treeview.column('#0', width=200, stretch=False)
+        self.treeview = ttk.Treeview(frame1, height=6)
+        self.treeview.column('#0', width=330, stretch=False)
         self.treeview.heading('#0', text='Saved configurations', anchor=tk.W)
     
         bary = tk.Scrollbar(frame1, orient=tk.VERTICAL)
@@ -51,39 +49,25 @@ class Snapshots:
         bary.config(command=self.treeview.yview)
         self.treeview.config(yscrollcommand=bary.set)
         self.treeview.pack(padx=10, pady=5)
+        
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
-                          if e.state//4%2!=1 else None)
+                          if e.state//Hub.gui.flags[3]%2!=1 else None)
         self.treeview.bind('<<TreeviewSelect>>', self.ss_select)
+        self.treeview.bind('<Control-a>', lambda event:
+                           self.treeview.selection_set(self.treeview.get_children()))
+        self.selected = []
+        
         for i in np.argsort(self.names()):
             self.treeview.insert('', 'end', str(i), text=' '+self.snapshots[i]['name'])
-        
+            
         frame3 = ttk.Frame(frame0)
-        frame3.pack(side=tk.LEFT, padx=10, pady=5, ipadx=5, ipady=5)
+        frame3.pack(padx=10, pady=5, fill=tk.X)
         
-        self.entry_nm = ttk.Entry(frame3, textvariable=self.name_var)
-        self.entry_nm.pack()
-        
-        note = ttk.Notebook(frame3)
-        note.pack(padx=10, pady=5, ipadx=5, ipady=5)
-        
-        self.im_size = 300
-        
-        prev_frame = ttk.Frame(note)
-        self.canvas1 = tk.Canvas(prev_frame, width=self.im_size, height=self.im_size)
-        self.canvas1.pack()
-        note.add(prev_frame, text='Preview')
-        
-        guide_frame = ttk.Frame(note)
-        self.canvas2 = tk.Canvas(guide_frame, width=self.im_size, height=self.im_size)
-        self.canvas2.pack()
-        note.add(guide_frame, text='Guide')
-        
-        self.im1_back = self.canvas1.create_rectangle(0,0,self.im_size,self.im_size, width=0)
-        self.im1_id = self.canvas1.create_image(self.im_size//2, self.im_size//2)
-        self.im2_id = self.canvas2.create_image(self.im_size//2, self.im_size//2)
-        
-        frame4 = ttk.Frame(frame3)
-        frame4.pack(anchor=tk.E, padx=10)
+        button1 = ttk.Button(frame3, text='Delete', command=self.del_ss)
+        button1.pack(side=tk.RIGHT, padx=5)
+        self.button_dl = button1
+        button2 = ttk.Button(frame3, text='Snap', command=self.add_ss)
+        button2.pack(side=tk.RIGHT, padx=5)
         
         self.pos_on.set(self.use_pos)
         self.chs_on.set(self.use_chs)
@@ -101,23 +85,51 @@ class Snapshots:
                 self.button_ov['state'] = tk.DISABLED
                 self.button_rs['state'] = tk.DISABLED
         
-        self.pos_chk = ttk.Checkbutton(frame4, variable=self.pos_on, text='Position',
+        self.pts_chk = ttk.Checkbutton(frame3, variable=self.pts_on, text='Points',
                                        command=chk)
-        self.pos_chk.pack(side=tk.LEFT, padx=5)
-        self.chs_chk = ttk.Checkbutton(frame4, variable=self.chs_on, text='Channels',
+        self.pts_chk.pack(side=tk.RIGHT, padx=5)
+        self.chs_chk = ttk.Checkbutton(frame3, variable=self.chs_on, text='Channels',
                                        command=chk)
-        self.chs_chk.pack(side=tk.LEFT, padx=5)
-        self.pts_chk = ttk.Checkbutton(frame4, variable=self.pts_on, text='Points',
+        self.chs_chk.pack(side=tk.RIGHT, padx=5)
+        self.pos_chk = ttk.Checkbutton(frame3, variable=self.pos_on, text='Position',
                                        command=chk)
-        self.pts_chk.pack(side=tk.LEFT, padx=5)
-        frame5 = ttk.Frame(frame4)
-        frame5.pack(side=tk.LEFT, padx=10)
-        button3 = ttk.Button(frame5, text='Override', command=self.override_ss)
-        button3.pack(pady=2)
+        self.pos_chk.pack(side=tk.RIGHT, padx=5)
+        
+        
+        
+        frame2 = ttk.Frame(frame0, relief='groove')
+        self.frame2 = frame2
+        
+        frame4 = ttk.Frame(frame2)
+        frame4.pack(padx=10, pady=10, fill=tk.X)
+        button3 = ttk.Button(frame4, text='Override', command=self.override_ss)
+        button3.pack(side=tk.RIGHT, padx=5)
         self.button_ov = button3
-        button4 = ttk.Button(frame5, text='Restore', command=self.restore_ss)
-        button4.pack(pady=2)
+        button4 = ttk.Button(frame4, text='Restore', command=self.restore_ss)
+        button4.pack(side=tk.RIGHT, padx=5)
         self.button_rs = button4
+        
+        self.entry_nm = ttk.Entry(frame4, textvariable=self.name_var, width=30)
+        self.entry_nm.pack(side=tk.LEFT, padx=5)
+        
+        note = ttk.Notebook(frame2)
+        note.pack(padx=10, pady=5, ipadx=5, ipady=5)
+        
+        self.im_size = (250, 350)
+        
+        prev_frame = ttk.Frame(note)
+        self.canvas1 = tk.Canvas(prev_frame, width=self.im_size[1], height=self.im_size[0])
+        self.canvas1.pack()
+        note.add(prev_frame, text='Preview')
+        
+        guide_frame = ttk.Frame(note)
+        self.canvas2 = tk.Canvas(guide_frame, width=self.im_size[1], height=self.im_size[0])
+        self.canvas2.pack()
+        note.add(guide_frame, text='Guide')
+        
+        self.im1_back = self.canvas1.create_rectangle(0,0,self.im_size[1],self.im_size[0], width=0)
+        self.im1_id = self.canvas1.create_image(self.im_size[1]//2, self.im_size[0]//2)
+        self.im2_id = self.canvas2.create_image(self.im_size[1]//2, self.im_size[0]//2)
         
     
     def __getattr__(self, name):
@@ -138,23 +150,11 @@ class Snapshots:
     
     def settings(self):
         gui = self.Hub.gui
-        gui.palette.title('Snapshots')
-        for w in gui.palette.pack_slaves():
-            w.pack_forget()
-        self.set_frame.pack(pady=10, padx=5)
-        gui.palette.unbind('<Control-a>')
-        gui.palette.bind('<Control-a>', lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        if len(gui.dock_note.tabs()) < 2:
+            return
+        gui.dock_note.select(gui.dock_note.tabs()[3])
         self.refresh_tree()
-        
-        gui.palette.deiconify()
-        gui.palette.grab_set()
-        self.treeview.focus_set()
-        x = self.treeview.get_children()
-        if len(x) > 0:
-            self.treeview.focus(x[0])
-            self.treeview.selection_set(x[0])
-        else:
-            self.treeview.selection_set()
+        self.treeview.selection_set(self.selected)
             
             
     def refresh_tree(self):
@@ -166,27 +166,20 @@ class Snapshots:
     
     def ss_select(self, event):
         selection = self.treeview.selection()
+        self.selected = selection
         
         if len(selection) == 0:
-            self.pos_chk['state'] = tk.ACTIVE
-            self.chs_chk['state'] = tk.ACTIVE
-            self.pts_chk['state'] = tk.ACTIVE
             self.button_dl['state'] = tk.DISABLED
-            self.entry_nm['state'] = tk.DISABLED
-            self.button_ov['state'] = tk.DISABLED
-            self.button_rs['state'] = tk.DISABLED
-            im1 = np.empty([10,10,3], np.uint8)
-            im1 = ImageTk.PhotoImage(Image.fromarray(im1))
-            self.canvas1.coords(self.im1_back, 0,0,0,0)
-            self.canvas1.itemconfig(self.im1_id, image=im1)
-            self.canvas2.itemconfig(self.im2_id, image=im1)
-            return None
-        elif len(selection) == 1:
             self.pos_chk['state'] = tk.ACTIVE
             self.chs_chk['state'] = tk.ACTIVE
             self.pts_chk['state'] = tk.ACTIVE
+            self.frame2.pack_forget()
+            return
+        elif len(selection) == 1:
             self.button_dl['state'] = tk.ACTIVE
-            self.entry_nm['state'] = tk.ACTIVE
+            self.pos_chk['state'] = tk.ACTIVE
+            self.chs_chk['state'] = tk.ACTIVE
+            self.pts_chk['state'] = tk.ACTIVE
             self.pos_on.set(self.use_pos)
             self.chs_on.set(self.use_chs)
             self.pts_on.set(self.use_pts)
@@ -196,6 +189,7 @@ class Snapshots:
             else:
                 self.button_ov['state'] = tk.DISABLED
                 self.button_rs['state'] = tk.DISABLED
+            self.frame2.pack(padx=10, pady=5, fill=tk.X)
         else:
             if str(self.pos_chk['state']) == 'active':
                 self.use_pos = self.pos_on.get()
@@ -208,17 +202,18 @@ class Snapshots:
                 self.chs_chk['state'] = tk.DISABLED
                 self.pts_chk['state'] = tk.DISABLED
             self.button_dl['state'] = tk.ACTIVE
-            self.entry_nm['state'] = tk.DISABLED
             self.button_ov['state'] = tk.ACTIVE
             self.button_rs['state'] = tk.ACTIVE
+            self.frame2.pack(padx=10, pady=5, ipadx=5, ipady=5, fill=tk.X)
         
         secv = self.snapshots[int(self.treeview.selection()[0])]
-        self.name_var.set(secv['name'])
+        self.name_var.set_nm(secv['name'])
         im1 = self.preview_im(secv)
         im1 = np.append(im1[:,:,2::-1], im1[:,:,3:], axis=2)
         self.im1 = ImageTk.PhotoImage(Image.fromarray(im1))
-        l, h, w = self.im_size, *im1.shape[:2]
-        self.canvas1.coords(self.im1_back, l//2 - w//2, l//2 - h//2, l//2 + (w+1)//2, l//2 + (h+1)//2)
+        l1, l2, h, w = *self.im_size, *im1.shape[:2]
+        self.canvas1.coords(self.im1_back, l2//2 - w//2, l1//2 - h//2, 
+                            l2//2 + (w+1)//2, l1//2 + (h+1)//2)
         self.canvas1.itemconfig(self.im1_id, image=self.im1)
         im2 = self.preview_guide(secv)
         self.im2 = ImageTk.PhotoImage(Image.fromarray(im2[:,:,::-1]))
@@ -266,7 +261,7 @@ class Snapshots:
         if x != self.treeview.selection():
             self.treeview.selection_set(x)
         else:
-            self.name_var.set(new)
+            self.name_var.set_nm(new)
         self.snapshots[int(x[0])]['name'] = new
     
     
@@ -299,10 +294,10 @@ class Snapshots:
         secv['points'] = points
         
         names = self.names()
-        nm = '_new_state_0'
+        nm = 'cf0'
         i = 1
         while nm in names:
-            nm = '_new_state_{0}'.format(i)
+            nm = 'cf{0}'.format(i)
             i += 1
         secv['name'] = nm
         
@@ -332,6 +327,7 @@ class Snapshots:
             self.snapshots = self.snapshots[:i] + [s] + self.snapshots[i:]
         
         self.refresh_tree()
+        self.selected = x
         self.treeview.selection_set(x)
         
     
@@ -372,7 +368,9 @@ class Snapshots:
             select[select>i] -= 1
             
         self.refresh_tree()
-        self.treeview.selection_set(list(select))
+        x = list(select)
+        self.selected = x
+        self.treeview.selection_set(x)
 
     
     def override_ss(self):
@@ -452,6 +450,7 @@ class Snapshots:
         for i, secv in zip(x, secvs):
             self.snapshots[i] = secv
         self.pre_selection = []
+        self.selected = [str(x[0])]
         self.treeview.selection_set(str(x[0]))
 
 
@@ -526,10 +525,10 @@ class Snapshots:
             self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
             
             Hub.calc_geometry()
-            if Hub.gui.g_on.get():
+            if Hub.gui.d_on.get():
                 if Hub.gui.guide_mode == 'guide':
                     Hub.calc_guide()
-                else:
+                elif Hub.gui.guide_mode == 'sideview':
                     Hub.calc_sideview()
             for cl in [Hub.channels, Hub.points]:
                 names = cl.getnames()
@@ -552,10 +551,10 @@ class Snapshots:
         iw1, ih1 = self.Hub.geometry['im_size']
         self.Hub.gui.upperleft = (ul[0]-iw0//2+iw1//2, ul[1]-ih0//2+ih1//2)
         self.Hub.calc_geometry()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
         
         for cl in [self.Hub.channels, self.Hub.points]:
@@ -637,11 +636,11 @@ class Snapshots:
             im[-25:-20, -20-lpx:-20,3] = 255 - im[-25:-20, -20-lpx:-20,3]
         
         lb, la = im[:,:,0].shape
-        L = max(la, lb)
-        la = round(la*self.im_size/L)
-        lb = round(lb*self.im_size/L)
+        a = min(self.im_size[1]/la, self.im_size[0]/lb)
+        la = round(la*a)
+        lb = round(lb*a)
         im = cv2.resize(im, (la, lb))
-        exp_rate *= self.im_size/L
+        exp_rate *= a
         
         pts = secv['points']
         
@@ -789,37 +788,26 @@ class Snapshots:
         points[:,1:] *= eye/(points[:,:1] + eye)
         peaks[:,1:] *= eye/(peaks[:,:1] + eye)
         
-        l = Hub.g_l
-        e = l/Hub.L*0.9
-        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + l//2
+        h, w = 280, 400
+        e = min(w/Hub.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
+        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + np.array([w,h])//2
         points = (points[:,::-1]*e).astype(np.int)
-        points[:,:2] += l//2
-        sec = ((sec - c)[:,::-1]*e).astype(np.int) + l//2
-        c = (l//2 - c[::-1]*e).astype(np.int)
+        points[:,:2] +=  np.array([w,h])//2
+        sec = ((sec - c)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
+        c = (np.array([w,h])//2 - c[::-1]*e).astype(np.int)
         
         im_size = (e*im_size/exp_rate/2).astype(np.int)
-        ul, br = (c[0] - im_size[0], c[1] - im_size[1]), (c[0] + im_size[0], c[1] + im_size[1])
-        h, w = Hub.g_l,Hub.g_l
-        seed = np.average(sec, axis=0).astype(np.int)
-        ul0 = (max(0, ul[0]), max(0, ul[1]))
-        br0 = (max(0, br[0]), max(0, br[1]))
         
-        im1 = np.zeros([h, w, 3], np.uint8)
-        im1[:] = 255
-        cv2.polylines(im1, sec[None,sort], True, (0,0,0), 1)
-        mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
-        cv2.floodFill(im1, mask, seedPoint=tuple(seed), newVal=(255,220,255))
-        cv2.polylines(im1, sec[None,sort], True, (255,220,255), 2, cv2.LINE_AA)
-        section = (255 - im1[:,:,1:2])/35
+        im0 = np.empty([h, w], np.uint8)
+        im0[:] = 240
+        cv2.fillConvexPoly(im0, sec[sort], 220, lineType=cv2.LINE_AA)
+        transparent = 0.7
+        section = (240 - im0)/(20/transparent)
+        section = section[:,:,None]
         
-        im = np.zeros([h, w, 3], np.uint8)
-        im[:] = 240
-        cv2.polylines(im, sec[None,sort], True, (0,0,0), 1)
-        mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
-        cv2.floodFill(im, mask, seedPoint=tuple(seed), newVal=(220,220,220))
-        cv2.polylines(im, sec[None,sort], True, (220,220,220), 2, cv2.LINE_AA)
-        
-        im[ul0[1]:br0[1], ul0[0]:br0[0]] = im1[ul0[1]:br0[1], ul0[0]:br0[0]]
+        im = np.empty([h, w, 3], np.uint8)
+        im[:,:,::2] = (section*15 + 240).astype(np.uint8)
+        im[:,:,1] = im0
         
         im0 = im.copy()
         
@@ -828,13 +816,13 @@ class Snapshots:
         p_order = order[(points[order,2]>0)*~within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
         where = np.array(np.where((edges>=0)*~neg[None]*~neg[:,None])).T
-        for w in where:
-            eg = int(edges[tuple(w)])
-            cv2.line(im, tuple(peaks[w[0]]), tuple(peaks[w[1]]),
+        for pair in where:
+            eg = int(edges[tuple(pair)])
+            cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
                      vivid[eg], thick[eg], cv2.LINE_AA)
         for i in range(len(sec)):
             eg = int(edges[tuple(pn[:,i])])
@@ -844,13 +832,13 @@ class Snapshots:
         p_order = order[(points[order,2]>0)*within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
-        im = (0.7*section*im0 + (1 - 0.7*section)*im).astype(np.uint8)
+        im = (section*im0 + (1 - section)*im).astype(np.uint8)
         
-        cv2.line(im, (0, c[1]), (l, c[1]), (255,255,255), 1, cv2.LINE_AA)
-        cv2.line(im, (c[0], 0), (c[0], l), (255,255,255), 1, cv2.LINE_AA)
+        im[c[1],:] = 255
+        im[:,c[0]] = 255
         
         n_order = order[(points[order,2]<=0)*within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
@@ -863,26 +851,21 @@ class Snapshots:
             cv2.line(im, tuple(sec[i]), tuple(peaks[pn[:,i][neg[pn[:,i]]][0]]),\
                      vivid[eg], thick[eg], cv2.LINE_AA)
         where = np.array(np.where((edges>=0)*neg[None]*neg[:,None])).T
-        for w in where:
-            eg = int(edges[tuple(w)])
-            cv2.line(im, tuple(peaks[w[0]]), tuple(peaks[w[1]]),\
+        for pair in where:
+            eg = int(edges[tuple(pair)])
+            cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),\
                      vivid[eg], thick[eg], cv2.LINE_AA)
                 
         n_order = order[(points[order,2]<=0)*~within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
-        im[:20,:-20] = 240
-        im[-20:,20:] = 240
-        im[20:,:20] = 240
-        im[:-20,-20:] = 240
-        
-        im = cv2.resize(im, (400,400))
         im[:22,-66:] -= np.fmin(255 - Hub.gui.xyz, im[:22,-66:])
         
-        im = cv2.resize(im, (self.im_size, self.im_size))
+        a = min(self.im_size[0]/len(im), self.im_size[1]/len(im[0]))
+        im = cv2.resize(im, (int(len(im[0])*a), int(len(im)*a)))
         
         return im
     

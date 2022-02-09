@@ -1,3 +1,4 @@
+import platform
 import time
 
 import cv2
@@ -6,6 +7,8 @@ from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+
+pf = platform.system()
 
 
 class Points:
@@ -34,8 +37,12 @@ class Points:
                        'ss': tk.StringVar(),
                        'ls': tk.StringVar(),
                        'cr': tk.StringVar()}
-        
-        self.variables['nm'].trace('w', self.pt_name)
+        def set_nm(new):
+            self.variables['nm'].trace_vdelete('w', self.variables['nm'].trace_id)
+            self.variables['nm'].set(new)
+            self.variables['nm'].trace_id = self.variables['nm'].trace('w', self.pt_name)
+        self.variables['nm'].trace_id = self.variables['nm'].trace('w', self.pt_name)
+        self.variables['nm'].set_nm = set_nm
         self.variables['r'].trace('w', lambda *args: self.variables['rs'].set(str(self.variables['r'].get())))
         self.variables['g'].trace('w', lambda *args: self.variables['gs'].set(str(self.variables['g'].get())))
         self.variables['b'].trace('w', lambda *args: self.variables['bs'].set(str(self.variables['b'].get())))
@@ -45,11 +52,12 @@ class Points:
         
         # settings
         
-        frame0 = ttk.Frame(Hub.gui.palette)
+        frame0 = ttk.Frame(Hub.gui.dock_note)
         self.set_frame = frame0
+        Hub.gui.dock_note.add(frame0, text='Points')
             
         frame1 = ttk.Frame(frame0)
-        frame1.pack(side=tk.LEFT)
+        frame1.pack(pady=10)
         
         frameb = ttk.Frame(frame1)
         frameb.pack(side=tk.BOTTOM, anchor=tk.E, padx=10)
@@ -61,17 +69,21 @@ class Points:
         button2.pack(side=tk.LEFT)
         self.button_dl = button2
         
-        self.treeview = ttk.Treeview(frame1, height=15)
-        self.treeview.column('#0', width=200, stretch=False)
+        self.treeview = ttk.Treeview(frame1, height=6)
+        self.treeview.column('#0', width=330, stretch=False)
         self.treeview.heading('#0', text='Points', anchor=tk.W)
         bary = tk.Scrollbar(frame1, orient=tk.VERTICAL)
         bary.pack(side=tk.LEFT, fill=tk.Y)
         bary.config(command=self.treeview.yview)
         self.treeview.config(yscrollcommand=bary.set)
         self.treeview.pack(padx=10, pady=5)
+        
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
-                          if e.state//4%2!=1 else None)
+                          if e.state//Hub.gui.flags[3]%2!=1 else None)
         self.treeview.bind('<<TreeviewSelect>>', self.pt_select)
+        self.treeview.bind('<Control-a>', lambda event:
+                           self.treeview.selection_set(self.treeview.get_children()))
+        self.selected = []
         
         names = self.getnames()
         colors = np.array(self.getcolors())
@@ -85,15 +97,14 @@ class Points:
             self.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
             self.treeview.insert('', 'end', str(i), text=' '+names[i], image=self.icons[i])
         
-        frame2 = ttk.Frame(frame0)
-        frame2.pack(side=tk.TOP, pady=10)
+        frame2 = ttk.Frame(frame0, relief='groove')
         self.frame2 = frame2
             
-        self.entry_nm = ttk.Entry(frame2, textvariable=self.variables['nm'])
-        self.entry_nm.grid(row=0, column=0, columnspan=2, pady=10)
+        self.entry_nm = ttk.Entry(frame2, textvariable=self.variables['nm'], width=30)
+        self.entry_nm.pack(padx=25, pady=15, anchor=tk.W)
         
         note = ttk.Notebook(frame2)
-        note.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=5, ipady=5)
+        note.pack(padx=10, pady=5, ipadx=5, ipady=5)
         self.pt_note = note
         
         def select_entry():
@@ -129,11 +140,11 @@ class Points:
         ttk.Label(rgb_frame, text='  R:  ').grid(column=0, row=1)
         ttk.Label(rgb_frame, text='  G:  ').grid(column=0, row=2)
         ttk.Label(rgb_frame, text='  B:  ').grid(column=0, row=3)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['r'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['r'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=1, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['g'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['g'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=2, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['b'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['b'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=3, pady=7)
         self.entry_r = ttk.Entry(rgb_frame, textvariable=self.variables['rs'], width=5)
         self.entry_r.grid(column=2, row=1, padx=3)
@@ -160,11 +171,11 @@ class Points:
         ttk.Label(hsl_frame, text=' H:  ').grid(column=0, row=1)
         ttk.Label(hsl_frame, text=' S:  ').grid(column=0, row=2)
         ttk.Label(hsl_frame, text=' L:  ').grid(column=0, row=3)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['h'], from_=0, to=3599,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['h'], from_=0, to=3599,
                  orient='horizontal', command=self.hsl).grid(column=1, row=1, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['s'], from_=0, to=1000,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['s'], from_=0, to=1000,
                  orient='horizontal', command=self.hsl).grid(column=1, row=2, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['l'], from_=0, to=1000,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['l'], from_=0, to=1000,
                  orient='horizontal', command=self.hsl).grid(column=1, row=3, pady=7)
         self.entry_h = ttk.Entry(hsl_frame, textvariable=self.variables['hs'], width=5)
         self.entry_h.grid(column=2, row=1, padx=3)
@@ -185,10 +196,12 @@ class Points:
                                                                       columnspan=2, pady=2, sticky=tk.E)
         note.add(hsl_frame, text='HSL')
         
-        label = ttk.Label(frame2, textvariable=self.variables['cr'])
-        label.grid(row=2, column=0, pady=10, padx=10, sticky=tk.E)
-        self.button_cg = ttk.Button(frame2, text='Change', command=self.change)
-        self.button_cg.grid(row=2, column=1, pady=10, padx=10, sticky=tk.E)
+        frame3 = ttk.Frame(frame2)
+        frame3.pack(padx=20, pady=10, ipadx=5, ipady=5, fill=tk.X)
+        self.button_cg = ttk.Button(frame3, text='Change', command=self.change)
+        self.button_cg.pack(pady=10, padx=10, side=tk.RIGHT)
+        label = ttk.Label(frame3, textvariable=self.variables['cr'])
+        label.pack(pady=10, padx=10, side=tk.RIGHT)
         
     
     def __getattr__(self, name):
@@ -217,35 +230,28 @@ class Points:
     
     
     def settings(self, select=None):
-        gui = self.Hub.gui
         if select == -1:
-            return None
-        gui.palette.title('Points')
-        for w in gui.palette.pack_slaves():
-            w.pack_forget()
-        self.set_frame.pack(pady=10, padx=5)
-        gui.palette.unbind('<Control-a>')
-        gui.palette.bind('<Control-a>', lambda event: self.treeview.selection_set(self.treeview.get_children()))
+            return
+        gui = self.Hub.gui
+        if len(gui.dock_note.tabs()) < 2:
+            return
+        gui.dock_note.select(gui.dock_note.tabs()[2])
         self.refresh_tree()
+        self.treeview.selection_set(self.selected)
     
         x = self.treeview.get_children()
         if len(x) == 0:
             self.button_mv['state'] = tk.DISABLED
         else:
             self.button_mv['state'] = tk.ACTIVE
-    
-        gui.palette.deiconify()
-        gui.palette.grab_set()
         
-        if select == None:
-            if len(x) > 0:
-                self.treeview.focus(x[0])
-                self.treeview.selection_set(x[0])
-            else:
-                self.treeview.selection_set()
-        else:
+        if select != None:
             self.treeview.focus(select)
             self.treeview.selection_set(select)
+        
+        if not gui.d_on.get():
+            gui.d_on.set(True)
+            gui.d_switch()
             
             
     def refresh_tree(self):
@@ -269,13 +275,14 @@ class Points:
         
     def pt_select(self, event):
         selection = self.treeview.selection()
+        self.selected = selection
         
         if len(selection) == 0:
             self.button_dl['state'] = tk.DISABLED
             self.frame2.pack_forget()
             return
         else:
-            self.frame2.pack()
+            self.frame2.pack(padx=10, pady=10, fill=tk.X)
         
         self.button_dl['state'] = tk.ACTIVE
         
@@ -284,7 +291,7 @@ class Points:
         bgr = self.pts[i][1]
         hsl = self.Hub.channels.bgr2hsl(bgr)
         
-        self.variables['nm'].set(self.pts[i][0])
+        self.variables['nm'].set_nm(self.pts[i][0])
         self.variables['r'].set(bgr[2])
         self.variables['g'].set(bgr[1])
         self.variables['b'].set(bgr[0])
@@ -377,7 +384,7 @@ class Points:
         if x != self.treeview.selection():
             self.treeview.selection_set(x)
         else:
-            self.variables['nm'].set(new)
+            self.variables['nm'].set_nm(new)
         self.pts[int(x[0])][0] = new
     
         self.Hub.put_points()
@@ -472,10 +479,10 @@ class Points:
             self.variables['l'].set(hsl[2])
             
         self.Hub.calc_image()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
             
             
@@ -483,11 +490,13 @@ class Points:
         Hub = self.Hub
         gui = Hub.gui
         
+        gui.dock_note.select(gui.dock_note.tabs()[0])
+        gui.dock_note.forget(gui.dock_note.tabs()[1])
+        gui.dock_note.forget(gui.dock_note.tabs()[1])
+        gui.dock_note.forget(gui.dock_note.tabs()[1])
+        
         i = self.treeview.selection()[0]
         self.pre_selection = 0
-        
-        gui.palette.grab_release()
-        gui.palette.withdraw()
         
         for w in gui.bottom.pack_slaves():
             w.pack_forget()
@@ -524,15 +533,13 @@ class Points:
             Hub.geometry.geo['exp_rate'] = exp_org
             Hub.geometry.geo['im_size'] = ims_org
             Hub.calc_geometry()
-            if gui.g_on.get():
+            if gui.d_on.get():
                 if gui.guide_mode == 'guide':
                     Hub.calc_guide()
-                else:
+                elif gui.guide_mode == 'sideview':
                     Hub.calc_sideview()
             repair()
-            gui.palette.deiconify()
             self.treeview.focus_set()
-            gui.palette.grab_set()
             self.treeview.focus(i)
             self.treeview.selection_set(i)
         def cancel():
@@ -544,15 +551,13 @@ class Points:
             Hub.geometry.geo['im_size'] = ims_org
             self.pts = pts_org
             Hub.calc_geometry()
-            if gui.g_on.get():
+            if gui.d_on.get():
                 if gui.guide_mode == 'guide':
                     Hub.calc_guide()
-                else:
+                elif gui.guide_mode == 'sideview':
                     Hub.calc_sideview()
             repair()
-            gui.palette.deiconify()
             self.treeview.focus_set()
-            gui.palette.grab_set()
             self.treeview.focus(i)
             self.treeview.selection_set(i)
         def release(event):
@@ -592,15 +597,13 @@ class Points:
                     Hub.geometry.geo['exp_rate'] = exp_org
                     Hub.geometry.geo['im_size'] = ims_org
                     Hub.calc_geometry()
-                    if gui.g_on.get():
+                    if gui.d_on.get():
                         if gui.guide_mode == 'guide':
                             Hub.calc_guide()
-                        else:
+                        elif gui.guide_mode == 'sideview':
                             Hub.calc_sideview()
                     repair()
-                    gui.palette.deiconify()
                     self.treeview.focus_set()
-                    gui.palette.grab_set()
                     self.treeview.focus(i)
                     self.treeview.selection_set(i)
             gui.click = None
@@ -623,9 +626,7 @@ class Points:
         gui.menu_bar.entryconfig('File', state='disabled')
         gui.menu_bar.entryconfig('Settings', state='disabled')
         gui.menu_bar.entryconfig('Tools', state='disabled')
-        for button in gui.buttons.grid_slaves():
-            button['state'] = tk.DISABLED
-        gui.bar_button['state'] = tk.DISABLED
+        gui.bar_entry['state'] = tk.DISABLED
         
         gui.master.bind('<Return>', lambda event: ok())
         
@@ -643,9 +644,7 @@ class Points:
             gui.menu_bar.entryconfig('File', state='active')
             gui.menu_bar.entryconfig('Settings', state='active')
             gui.menu_bar.entryconfig('Tools', state='active')
-            for button in gui.buttons.grid_slaves():
-                button['state'] = tk.ACTIVE
-            gui.bar_button['state'] = tk.ACTIVE
+            gui.bar_entry['state'] = tk.ACTIVE
             
             gui.master.unbind('<Return>')
             
@@ -654,12 +653,18 @@ class Points:
             
             gui.guide_canvas.bind('<Motion>', gui.track_guide)
             gui.guide_canvas.bind('<Button-1>', lambda event: self.settings(select=gui.p_num))
+            
+            gui.dock_note.add(self.Hub.channels.set_frame, text='Channels')
+            gui.dock_note.add(self.set_frame, text='Points')
+            gui.dock_note.add(self.Hub.snapshots.set_frame, text='Snapshots')
+            gui.dock_note.select(gui.dock_note.tabs()[2])
         
             
     def move_to(self):
-        win = tk.Toplevel(self.Hub.gui.palette)
+        win = tk.Toplevel(self.Hub.gui.master)
         win.withdraw()
-        win.iconbitmap('img/icon.ico')
+        if pf == 'Windows':
+            win.iconbitmap('img/icon.ico')
         win.title('Move to')
         
         frame0 = ttk.Frame(win)
@@ -720,12 +725,10 @@ class Points:
             
             win.grab_release()
             win.destroy()
-            self.Hub.gui.palette.grab_set()
             
         def cancel():
             win.grab_release()
             win.destroy()
-            self.Hub.gui.palette.grab_set()
         
         frame2 = ttk.Frame(frame0)
         frame2.pack(padx=5, pady=5)
@@ -857,7 +860,7 @@ class Points:
             
         selection = self.treeview.selection()
         if len(selection) > 1:
-            opt = self.Hub.gui.ask_option(self.Hub.gui.palette, 'Options', 
+            opt = self.Hub.gui.ask_option(self.Hub.gui.master, 'Options', 
                                           ['Current center',
                                            'Average of selected points'],
                                           geometry='250x120')
@@ -962,13 +965,14 @@ class Points:
         for p, i in zip(ps,x):
             self.pts = self.pts[:i] + [p] + self.pts[i:]
         self.Hub.put_points()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
                 
         self.refresh_tree()
+        self.selected = x
         self.treeview.selection_set(x)
         
     
@@ -977,10 +981,10 @@ class Points:
             self.pts = self.pts[:i] + self.pts[i+1:]
             
         self.Hub.put_points()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
             
         select = np.array([int(s) for s in self.treeview.selection()])
@@ -991,15 +995,16 @@ class Points:
             select[select>i] -= 1
         self.refresh_tree()
         x = list(select)
+        self.selected = x
         self.treeview.selection_set(x)
     
     def change_coor(self, num, coor):
         self.pts[num][2] = coor
         self.Hub.put_points()
-        if self.Hub.gui.g_on.get():
+        if self.Hub.gui.d_on.get():
             if self.Hub.gui.guide_mode == 'guide':
                 self.Hub.calc_guide()
-            else:
+            elif self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
         if tuple(str(num)) != self.treeview.selection():
             self.treeview.selection_set(str(num))

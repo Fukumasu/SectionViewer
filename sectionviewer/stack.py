@@ -28,60 +28,61 @@ class Stack:
         self.cancel = False
     
     def settings(self):
-        self.stack_win = tk.Toplevel(self.Hub.gui.master)
-        self.stack_win.withdraw()
-        if pf == 'Windows':
-            self.stack_win.iconbitmap('img/icon.ico')
-        self.stack_win.title('Stack')
-        self.stack_win.resizable(width=False, height=False)
+        Hub = self.Hub
+        gui = Hub.gui
+        gui.dock_canvas.moveto(gui.dock_id, 500, 0)
         
-        op, ny, nx = self.Hub.position.asarray()
+        self.stack_win = tk.LabelFrame(gui.master, text='Stack', relief='raised',
+                                       fg='blue', font=('arial', 12, 'bold'))
+        self.stack_id = gui.dock_canvas.create_window(0, 0, anchor='nw', window=self.stack_win)
+        
+        op, ny, nx = Hub.position.asarray()
         nz = -np.cross(ny, nx)
         n = np.array([nz, ny, nx])
-        dc, dz, dy, dx = self.Hub.box.shape
+        dc, dz, dy, dx = Hub.box.shape
         peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],
                           [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
-        peaks[4:,0] *= self.Hub.ratio
-        peaks -= op + np.array([(dz*self.Hub.ratio)//2,dy//2,dx//2])
+        peaks[4:,0] *= Hub.ratio
+        peaks -= op + np.array([(dz*Hub.ratio)//2,dy//2,dx//2])
         peaks = np.linalg.solve(n.T, peaks.T).T
         from_ = int(np.amin(peaks[:,0]))
         to = int(np.amax(peaks[:,0]))
         
         la, lb = 350, 300
-        lut = self.Hub.lut
-        colors = self.Hub.colors
+        lut = Hub.lut
+        colors = Hub.colors
         self.expansion = la/(to - from_)
         self.center = int(abs(from_)*self.expansion)
         
         pos = np.array([op, ny, nz])
-        pos[:,0] /= self.Hub.ratio
+        pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz, dy, dx])//2
         pos[1:] *= (to - from_)/la
         self.frame1 = np.empty([dc, lb, la], np.uint16)
-        ut.calc_section(self.Hub.box, pos, self.frame1, 
+        ut.calc_section(Hub.box, pos, self.frame1, 
                         np.array([lb//2, self.center], np.int),
-                        np.arange(len(lut))[self.Hub.ch_show])
+                        np.arange(len(lut))[Hub.ch_show])
         image1 = np.empty([*self.frame1.shape[1:], 4], np.uint8)
-        if self.Hub.gui.white.get():
-            ut.calc_bgr_w(self.frame1, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image1)
+        if gui.white.get():
+            ut.calc_bgr_w(self.frame1, lut, colors, np.arange(len(lut))[Hub.ch_show], image1)
         else:
-            ut.calc_bgr(self.frame1, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image1)
+            ut.calc_bgr(self.frame1, lut, colors, np.arange(len(lut))[Hub.ch_show], image1)
         self.image1 = image1.copy()
         image1[:,self.center] = 255 - image1[:,self.center]
         
         pos = np.array([op, nx, nz])
-        pos[:,0] /= self.Hub.ratio
+        pos[:,0] /= Hub.ratio
         pos[0] += np.array([dz, dy, dx])//2
         pos[1:] *= (to - from_)/la
         self.frame2 = np.empty([dc, lb, la], np.uint16)
-        ut.calc_section(self.Hub.box, pos, self.frame2, 
+        ut.calc_section(Hub.box, pos, self.frame2, 
                         np.array([lb//2, self.center], np.int),
-                        np.arange(len(lut))[self.Hub.ch_show])
+                        np.arange(len(lut))[Hub.ch_show])
         image2 = np.empty([*self.frame2.shape[1:], 4], np.uint8)
-        if self.Hub.gui.white.get():
-            ut.calc_bgr_w(self.frame2, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image2)
+        if gui.white.get():
+            ut.calc_bgr_w(self.frame2, lut, colors, np.arange(len(lut))[Hub.ch_show], image2)
         else:
-            ut.calc_bgr(self.frame2, lut, colors, np.arange(len(lut))[self.Hub.ch_show], image2)
+            ut.calc_bgr(self.frame2, lut, colors, np.arange(len(lut))[Hub.ch_show], image2)
         self.image2 = image2.copy()
         image2[:,self.center] = 255 - image2[:,self.center]
         
@@ -92,7 +93,7 @@ class Stack:
         image1 = np.append(image1[:,:,2::-1], image1[:,:,3:], axis=2)
         self.im1 = ImageTk.PhotoImage(Image.fromarray(image1))
         self.canvas1 = tk.Canvas(vert_frame, width=la, height=lb)
-        fill = '#ffffff' if self.Hub.gui.white.get() else '#000000'
+        fill = '#ffffff' if gui.white.get() else '#000000'
         self.canvas1.create_rectangle(0, 0, la, lb, fill=fill, width=0)
         self.im1_id = self.canvas1.create_image(0, 0, anchor='nw', image=self.im1)
         self.canvas1.pack()
@@ -102,7 +103,7 @@ class Stack:
         image2 = np.append(image2[:,:,2::-1], image2[:,:,3:], axis=2)
         self.im2 = ImageTk.PhotoImage(Image.fromarray(image2))
         self.canvas2 = tk.Canvas(horiz_frame, width=la, height=lb)
-        fill = '#ffffff' if self.Hub.gui.white.get() else '#000000'
+        fill = '#ffffff' if gui.white.get() else '#000000'
         self.canvas2.create_rectangle(0, 0, la, lb, fill=fill, width=0)
         self.im2_id = self.canvas2.create_image(0, 0, anchor='nw', image=self.im2)
         self.canvas2.pack()
@@ -112,7 +113,7 @@ class Stack:
         self.s_var[0].set(0)
         self.s_var[1].set(0)
         self.s_var[2].set(180)
-        self.s_var[3].set(18)
+        self.s_var[3].set(15)
         
         frame1 = ttk.Frame(self.stack_win)
         ttk.Label(frame1, text='Start: ').grid(column=0, row=0, sticky=tk.E)
@@ -127,27 +128,31 @@ class Stack:
         scale.pack(side=tk.LEFT)
         ttk.Label(scale, text='Start: ').grid(column=0, row=0, sticky=tk.E)
         ttk.Label(scale, text='Stop: ').grid(column=0, row=1, sticky=tk.E)
-        ttk.Label(scale, text='Angle (°): ').grid(column=0, row=2, sticky=tk.E)
-        ttk.Label(scale, text='Frames: ').grid(column=0, row=3, sticky=tk.E)
-        
         tk.Scale(scale, length=330, variable=self.s_var[0], from_=from_, to=to,
                  orient='horizontal', command=self.st_start).grid(column=1, row=0, 
-                                                                  columnspan=3, sticky=tk.W)
+                                                                  columnspan=5, sticky=tk.W)
         tk.Scale(scale, length=330, variable=self.s_var[1], from_=from_, to=to,
                  orient='horizontal', command=self.st_stop).grid(column=1, row=1,
-                                                                 columnspan=3, sticky=tk.W)
-        tk.Scale(scale, length=270, variable=self.s_var[2], from_=1, to=180,
-                 orient='horizontal').grid(column=1, row=2, sticky=tk.W)
-        tk.Scale(scale, length=270, variable=self.s_var[3], from_=0, to=180,
-                 orient='horizontal').grid(column=1, row=3, sticky=tk.W)
+                                                                 columnspan=5, sticky=tk.W)
+                                                                 
+        ttk.Label(scale, text='Angle (°): ').grid(column=0, row=2, sticky=tk.E, pady=10)
+        angles = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+        self.angle = tk.StringVar(value='180')
+        self.angle.trace('w', lambda *args: self.s_var[2].set(int(self.angle.get())))
+        ttk.Combobox(scale, values=angles, width=5, state='readonly',
+                     textvariable=self.angle).grid(column=1, row=2, sticky=tk.W, pady=10)
+        ttk.Label(scale, text='Frames: ').grid(column=2, row=2, sticky=tk.E, pady=10)
+        fnms = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+        self.fnm = tk.StringVar(value='15')
+        self.fnm.trace('w', lambda *args: self.s_var[3].set(int(self.fnm.get())))
+        ttk.Combobox(scale, values=fnms, width=5, state='readonly',
+                     textvariable=self.fnm).grid(column=3, row=2, sticky=tk.W, pady=10)
         
         self.trans = tk.BooleanVar(value=False)
         tk.Radiobutton(scale, image=self.Hub.gui.ver_image, variable=self.trans, 
-                       value=False, indicatoron=False).grid(column=2, row=2, 
-                                                            rowspan=2, sticky=tk.E)
+                       value=False, indicatoron=False).grid(column=4, row=2, sticky=tk.E)
         tk.Radiobutton(scale, image=self.Hub.gui.hor_image, variable=self.trans, 
-                       value=True, indicatoron=False).grid(column=3, row=2, 
-                                                           rowspan=2, sticky=tk.W)
+                       value=True, indicatoron=False).grid(column=5, row=2, sticky=tk.W)
         
         self.buttons = []
         self.i_s = 1
@@ -159,11 +164,7 @@ class Stack:
                 if len(self.stacks) > 0:
                     return None
             except: pass
-            try:
-                self.stack_win.grab_release()
-                self.stack_win.destroy()
-            except: pass
-            self.Hub.put_points()
+            self.repair()
         def ok():
             self.buttons[0]['state'] = tk.DISABLED
             self.buttons[1]['state'] = tk.DISABLED
@@ -174,10 +175,10 @@ class Stack:
             for w in scale.grid_slaves():
                 w.configure(state='disabled')
             self.buttons[0].focus_set()
-            self.stack_win.unbind('<Left>')
-            self.stack_win.unbind('<Right>')
-            self.stack_win.unbind('<Up>')
-            self.stack_win.unbind('<Down>')
+            gui.master.unbind('<Left>')
+            gui.master.unbind('<Right>')
+            gui.master.unbind('<Up>')
+            gui.master.unbind('<Down>')
             if self.stack_mode.get() == 'S':
                 self.stack_single()
             elif self.stack_mode.get() == 'M':
@@ -259,16 +260,67 @@ class Stack:
                 self.i_s = 1
                 self.buttons[self.i_s].focus_set()
         
-        self.stack_win.protocol('WM_DELETE_WINDOW', cancel)
-        self.stack_win.bind('<Return>', lambda event: enter())
-        self.stack_win.bind('<Left>', lambda event: left())
-        self.stack_win.bind('<Right>', lambda event: right())
-        self.stack_win.bind('<Up>', lambda event: up())
-        self.stack_win.bind('<Down>', lambda event: down())
+        gui.master.protocol('WM_DELETE_WINDOW', cancel)
+        gui.menu_bar.entryconfig('File', state='disabled')
+        gui.menu_bar.entryconfig('Edit', state='disabled')
+        gui.menu_bar.entryconfig('Settings', state='disabled')
+        gui.menu_bar.entryconfig('Tools', state='disabled')
+        gui.bar_entry['state'] = tk.DISABLED
+        gui.combo_th['state'] = tk.DISABLED
+        gui.chk_a['state'] = tk.DISABLED
+        gui.chk_b['state'] = tk.DISABLED
+        gui.chk_d['state'] = tk.DISABLED
+        gui.chk_p['state'] = tk.DISABLED
+        gui.rad_b['state'] = tk.DISABLED
+        gui.rad_w['state'] = tk.DISABLED
+        gui.master.unbind('<Key>')
+        gui.scale.pack_forget()
+        gui.sec_canvas.unbind('<Motion>')
+        gui.sec_canvas.unbind('<Button-1>')
+        gui.sec_canvas.unbind('<ButtonRelease-1>')
+        if not gui.d_on.get():
+            gui.d_on.set(True)
+            gui.d_switch()
+            gui.d_on.set(False)
+        gui.master.bind('<Return>', lambda event: enter())
+        gui.master.bind('<Left>', lambda event: left())
+        gui.master.bind('<Right>', lambda event: right())
+        gui.master.bind('<Up>', lambda event: up())
+        gui.master.bind('<Down>', lambda event: down())
         
-        self.stack_win.deiconify()
         self.buttons[1].focus_set()
-        self.stack_win.grab_set()
+        
+        
+    def repair(self):
+        Hub = self.Hub
+        gui = Hub.gui
+        gui.dock_canvas.delete(self.stack_id)
+        gui.dock_canvas.moveto(gui.dock_id, 0, 0)
+        Hub.put_points()
+        gui.master.unbind('<Return>')
+        gui.master.unbind('<Left>')
+        gui.master.unbind('<Right>')
+        gui.master.unbind('<Up>')
+        gui.master.unbind('<Down>')
+        gui.master.protocol('WM_DELETE_WINDOW', gui.on_close)
+        gui.menu_bar.entryconfig('File', state='active')
+        gui.menu_bar.entryconfig('Edit', state='active')
+        gui.menu_bar.entryconfig('Settings', state='active')
+        gui.menu_bar.entryconfig('Tools', state='active')
+        gui.bar_entry['state'] = tk.ACTIVE
+        gui.combo_th['state'] = tk.ACTIVE
+        gui.chk_a['state'] = tk.ACTIVE
+        gui.chk_b['state'] = tk.ACTIVE
+        gui.chk_d['state'] = tk.ACTIVE
+        gui.chk_p['state'] = tk.ACTIVE
+        gui.rad_b['state'] = tk.ACTIVE
+        gui.rad_w['state'] = tk.ACTIVE
+        gui.d_switch()
+        gui.master.bind('<Key>', gui.key)
+        gui.scale.pack(side=tk.LEFT)
+        gui.sec_canvas.bind('<Motion>', gui.track_sec)
+        gui.sec_canvas.bind('<Button-1>', gui.click_sec)
+        gui.sec_canvas.bind('<ButtonRelease-1>', gui.release_sec)
         
         
     def stack_single(self):
@@ -276,7 +328,7 @@ class Stack:
         
         frame = ttk.Frame(self.stack_win)
         frame.pack(fill=tk.X, padx=10, pady=10)
-        Label = ttk.Label(frame, text='calculating...')
+        Label = ttk.Label(frame, text='Calculating...')
         Label.pack(anchor=tk.E, padx=10)
         
         Hub.put_points()
@@ -284,10 +336,7 @@ class Stack:
         
         self.calc_single()
         
-        try:
-            self.stack_win.grab_release()
-            self.stack_win.destroy()
-        except: pass
+        self.repair()
         
         chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
                 c[2], c[3]] for c in Hub.channels.chs]
@@ -296,9 +345,11 @@ class Stack:
         gui = self.Hub.gui
         
         master = tk.Toplevel(gui.SV.root)
-        master.withdraw()
+        w, h = gui.SV.screenwidth, gui.SV.screenheight
+        master.geometry('{0}x{1}+0+0'.format(w, h))
         if pf == 'Windows':
             master.iconbitmap('img/icon.ico')
+            master.state('zoomed')
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
         
@@ -309,7 +360,7 @@ class Stack:
         frame = ttk.Frame(self.stack_win)
         frame.pack(fill=tk.X, padx=10, pady=10)
         
-        Label = ttk.Label(frame, text='preparing...')
+        Label = ttk.Label(frame, text='Preparing...')
         Label.pack(anchor=tk.E, padx=10)
         
         Hub.put_points()
@@ -372,10 +423,7 @@ class Stack:
         if angle == 180 and not self.cancel:
             self.stacks = np.append(self.stacks, self.stacks[:1,:,:,::-1], axis=0)
         
-        try:
-            self.stack_win.grab_release()
-            self.stack_win.destroy()
-        except: pass
+        self.repair()
         
         if len(self.stacks) > 0:
             
@@ -394,9 +442,11 @@ class Stack:
             gui = Hub.gui
             
             master = tk.Toplevel(gui.SV.root)
-            master.withdraw()
+            w, h = gui.SV.screenwidth, gui.SV.screenheight
+            master.geometry('{0}x{1}+0+0'.format(w, h))
             if pf == 'Windows':
                 master.iconbitmap('img/icon.ico')
+                master.state('zoomed')
             gui.SV.wins += [master]
             STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -408,7 +458,7 @@ class Stack:
         
         frame = ttk.Frame(self.stack_win)
         frame.pack(fill=tk.X, padx=10, pady=10)
-        Label = ttk.Label(frame, text='calculating...')
+        Label = ttk.Label(frame, text='Calculating...')
         Label.pack(anchor=tk.E, padx=10)
         
         Hub.put_points()
@@ -427,14 +477,11 @@ class Stack:
         
         box = Hub.box
         
-        stacks = np.empty([len(Hub.frame), stop - start + 1, *Hub.frame[0].shape], dtype=np.uint16)
-        ut.fill_box(box, pos, nz, start, stop + 1, stacks, np.array(stacks[0,0].shape)//2)
-        stacks = stacks.transpose(1,0,2,3).copy()
+        stacks = np.empty([stop - start + 1, *Hub.frame.shape], dtype=np.uint16)
+        ut.span_section(box, pos, nz, start, stop + 1, stacks,
+                        np.array(stacks[0,0].shape)//2, np.arange(dc))
         
-        try:
-            self.stack_win.grab_release()
-            self.stack_win.destroy()
-        except: pass
+        self.repair()
             
         chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
                 c[2], c[3]] for c in Hub.channels.chs]
@@ -443,9 +490,11 @@ class Stack:
         gui = Hub.gui
         
         master = tk.Toplevel(gui.SV.root)
-        master.withdraw()
+        w, h = gui.SV.screenwidth, gui.SV.screenheight
+        master.geometry('{0}x{1}+0+0'.format(w, h))
         if pf == 'Windows':
             master.iconbitmap('img/icon.ico')
+            master.state('zoomed')
         gui.SV.wins += [master]
         STAC(gui.SV, master, gui.file_path, stac=stac)
                 
@@ -571,17 +620,17 @@ class Stack:
         m, M = np.fmax(np.amin(peaks, axis=0), 0), np.fmin(np.amax(peaks, axis=0), np.array([lb0,la0]))
         
         la, lb = int(M[1] - m[1]), int(M[0] - m[0])
-        if self.trans:
+        if self.trans.get():
             la, lb = lb, la
             la0, lb0 = lb0, la0
             pos = pos[[0,2,1]]
         c = (np.array([lb0//2, la0//2]) - m).astype(np.int)
         
-        box_trim = np.empty([len(Hub.frame), stop-start+1, lb, la], dtype=np.uint16)
+        box_trim = np.empty([stop-start+1, dc, lb, la], dtype=np.uint16)
         
-        ut.fill_box(Hub.box, pos, nz, start, stop, box_trim, c)
+        ut.span_section(Hub.box, pos, nz, start, stop, box_trim, c, np.arange(dc))
         
-        self.box_trim = box_trim
+        self.box_trim = box_trim.transpose(1,0,2,3)
         
         opz = self.s_var[1].get() - (stop-start+1)//2
         opy = c[0] - lb//2
@@ -655,13 +704,15 @@ class STAC(ttk.Frame):
         self.file_name = os.path.basename(file_path)
         
         resources = cv2.imread('img/resources.png')
-        c_image = resources[:35,:36]
-        self.c_image = ImageTk.PhotoImage(Image.fromarray(c_image[:,:,::-1]))
         e_image = resources[:14,174:188]
         self.e_image = ImageTk.PhotoImage(Image.fromarray(e_image[:,:,::-1]))
         
+        self.key_time = 0
+        self.event_time = -np.inf
         self.b_on = tk.BooleanVar()
         self.b_on.set(True)
+        self.d_on = tk.BooleanVar()
+        self.d_on.set(True)
         self.white = tk.BooleanVar()
         self.white.set(False)
         self.zoom = tk.StringVar()
@@ -673,25 +724,27 @@ class STAC(ttk.Frame):
         super().__init__(master)
         self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         
-        # Palette
-        self.palette = tk.Toplevel(self.master)
-        self.palette.withdraw()
-        if pf == 'Windows':
-            self.palette.iconbitmap('img/icon.ico')
-        self.palette.resizable(height=False, width=False)
-        def hide():
-            self.palette.grab_release()
-            self.palette.withdraw()
-        self.palette.protocol('WM_DELETE_WINDOW', hide)
+        self.create_widgets()
+        self.master.update()
         
+        def close():
+            if self.master.winfo_exists: 
+                self.master.destroy()
+            close = True
+            for w in self.SV.wins:
+                close = close and not bool(w.winfo_exists())
+            if close:
+                self.SV.root.destroy()
         try:
             self.Hub = Hub_stack(self, file_path, stac=stac)
         except Exception as e:
             messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
-                                 parent=master)
-            self.Hub.load_success = False
+                                 parent=self.master)
+            close()
+            return
         if not self.Hub.load_success:
-            return None
+            close()
+            return
         
         if stac != None:
             self.file_path = None
@@ -703,9 +756,7 @@ class STAC(ttk.Frame):
             self.title = self.file_name
             self.master.title(self.title)
         
-        self.create_widgets()
-        
-        self.master.deiconify()
+        self.create_commands()
         self.stack_cf.focus_set()
         
         if pf == 'Windows':
@@ -714,58 +765,39 @@ class STAC(ttk.Frame):
             self.flags = np.array([1,4,16,8,256])
         elif pf == 'Linux':
             self.flags = np.array([1,4,8,4,256])
-        
-        self.first = True
-        
+            
         
     def create_widgets(self):
+        
         self.menu_bar = tk.Menu(self.master)
-        
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.file_menu.add_command(label='Open', 
-                                   command=lambda: self.SV.open_new(self.master), 
-                                   accelerator='Ctrl+O')
-        self.file_menu.add_command(label='Save', 
-                                   command=lambda: self.save(self.file_path), 
-                                   accelerator='Ctrl+S')
-        self.file_menu.add_command(label='Save As', 
-                                   command=self.save, 
-                                   accelerator='Ctrl+Shift+S')
-        self.file_menu.add_command(label='Export', 
-                                   command=self.export, 
-                                   accelerator='Ctrl+E')
-        
         self.edit_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.edit_menu.add_command(label='Undo', 
-                                   command=self.Hub.undo, 
-                                   accelerator='Ctrl+Z')
-        self.edit_menu.add_command(label='Redo', 
-                                   command=self.Hub.redo, 
-                                   accelerator='Ctrl+Y, Ctrl+Shift+Z')
-        
         self.menu_bar.add_cascade(label='File', menu=self.file_menu)
         self.menu_bar.add_cascade(label='Edit', menu=self.edit_menu)
-        
         self.master.config(menu=self.menu_bar)
         
-        self.edit_menu.entryconfig('Undo', state='disable')
-        self.edit_menu.entryconfig('Redo', state='disable')
-        self.edit_menu.entryconfig('Redo', state='disable')
+        # Dock
+        self.dock_frame = tk.Frame(self.master)
+        self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT, anchor=tk.N)
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=420, height=610)
+        self.dock_canvas.pack(side=tk.LEFT)
+        self.dock_note = ttk.Notebook(self.master)
+        self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
+        bary = tk.Scrollbar(self.dock_frame, orient=tk.VERTICAL)
+        bary.pack(side=tk.RIGHT, fill=tk.Y)
+        bary.config(command=self.dock_canvas.yview)
+        self.dock_canvas.config(yscrollcommand=bary.set)
+        self.dock_canvas.config(scrollregion=(0,0,420,610))
         
+        # Main
         self.main_frame = ttk.Frame(self.master)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
         
         self.top = ttk.Frame(self.main_frame)
         self.top.pack(side=tk.TOP, anchor=tk.N, fill=tk.X, expand=True)
         
-        self.buttons = ttk.Frame(self.top)
-        self.buttons.pack(side=tk.LEFT, padx=10)
-        self.buttons.bind('<Button-1>', lambda event: self.master.focus_set())
-        self.c_button = ttk.Button(self.buttons, image=self.c_image, command=self.Hub.channels.settings)
-        self.c_button.grid(column=0, row=0)
-        
         self.display = ttk.LabelFrame(self.top, text='Display')
-        self.display.pack(side=tk.RIGHT, padx=10)
+        self.display.pack(side=tk.LEFT, padx=10)
         
         ttk.Label(self.display, text='Zoom (%)').grid(column=0, row=0, padx=5, sticky=tk.W)
         ttk.Button(self.display, width=4, image=self.e_image, command=self.fit_frame).grid(column=1, row=0, sticky=tk.W)
@@ -780,6 +812,9 @@ class STAC(ttk.Frame):
         self.chk_b = ttk.Checkbutton(self.display, variable=self.b_on, text='Scale bar (B)',
                                      command=self.b_switch)
         self.chk_b.grid(column=2, row=0, padx=5, sticky=tk.W)
+        self.chk_d = ttk.Checkbutton(self.display, variable=self.d_on, text='Dock (D)',
+                                     command=self.d_switch)
+        self.chk_d.grid(column=2, row=1, padx=5, sticky=tk.W)
         self.rad_b = ttk.Radiobutton(self.display, text='Black', value=False, 
                                      variable=self.white, command=self.wb_switch)
         self.rad_b.grid(column=3, row=0, padx=5, sticky=tk.W)
@@ -787,21 +822,21 @@ class STAC(ttk.Frame):
                                      variable=self.white, command=self.wb_switch)
         self.rad_w.grid(column=3, row=1, padx=5, sticky=tk.W)
         
-        if len(self.Hub.stacks) > 1:
-            self.mlt_frm = tk.IntVar(value=0)
-            tk.Scale(self.top, variable=self.mlt_frm, from_=0, to=self.to, 
-                     command=self.Hub.mlt_update, orient='horizontal').pack(fill=tk.X, padx=10, pady=5)
-        
         self.bottom = ttk.Frame(self.main_frame)
-        self.bottom.pack(side=tk.BOTTOM, anchor=tk.S,  fill=tk.X, expand=True)
+        self.bottom.pack(side=tk.BOTTOM, anchor=tk.S, fill=tk.X, expand=True)
+        
+        self.saving = tk.StringVar(value='')
+        ttk.Label(self.bottom, textvariable=self.saving).pack(side=tk.LEFT, padx=5, pady=5)
         
         self.bar_frame = ttk.Frame(self.bottom)
         self.bar_frame.pack(side=tk.RIGHT)
+        ttk.Label(self.bar_frame, text='µm').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         self.bar_text = tk.StringVar()
-        self.bar_text.set('Scale bar: {0} μm'.format(self.Hub.geometry['bar_len']))
-        self.bar_button = ttk.Button(self.bar_frame, textvariable=self.bar_text, 
-                                     command=self.Hub.geometry.set_bar_length)
-        self.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=10, pady=10)
+        self.bar_text.set('0')
+        self.bar_entry = ttk.Entry(self.bar_frame, textvariable=self.bar_text,
+                                   width=10, justify=tk.RIGHT)
+        self.bar_entry.pack(side=tk.RIGHT, anchor=tk.N, pady=5)
+        ttk.Label(self.bar_frame, text='Scale bar:').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         
         self.stack_frame = ttk.Frame(self.main_frame)
         self.stack_frame.pack(padx=2, pady=3)
@@ -809,9 +844,65 @@ class STAC(ttk.Frame):
         self.stack_canvas = tk.Canvas(self.stack_cf, width=2000, height=2000)
         self.barx = tk.Scrollbar(self.stack_frame, orient=tk.HORIZONTAL)
         self.barx.pack(side=tk.BOTTOM, fill=tk.X)
-        self.barx.config(command=self.stack_canvas.xview)
         self.bary = tk.Scrollbar(self.stack_frame, orient=tk.VERTICAL)
         self.bary.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.stack_canvas.pack(side=tk.LEFT, anchor=tk.NW)
+        self.stack_cf.pack(side=tk.LEFT)
+        
+        fill ='#ffffff' if self.white.get() else '#000000'
+        self.im_back = self.stack_canvas.create_rectangle(0, 0, 0, 0, fill=fill, width=0)
+        self.im_id = self.stack_canvas.create_image(0, 0, anchor='nw')
+        
+        if self.d_on.get():
+            self.master.minsize(850, 400)
+        else:
+            self.master.minsize(400, 400)
+        
+    
+    def create_commands(self):
+        Hub = self.Hub
+        
+        self.file_menu.add_command(label='Open', 
+                                   command=lambda: self.SV.open_new(self.master), 
+                                   accelerator='Ctrl+O')
+        self.file_menu.add_command(label='Save', 
+                                   command=lambda: self.save(self.file_path), 
+                                   accelerator='Ctrl+S')
+        self.file_menu.add_command(label='Save As', 
+                                   command=self.save, 
+                                   accelerator='Ctrl+Shift+S')
+        self.file_menu.add_command(label='Export', 
+                                   command=self.export, 
+                                   accelerator='Ctrl+E')
+        
+        self.edit_menu.add_command(label='Undo', 
+                                   command=Hub.undo, 
+                                   accelerator='Ctrl+Z')
+        self.edit_menu.add_command(label='Redo', 
+                                   command=Hub.redo, 
+                                   accelerator='Ctrl+Y')
+        
+        self.edit_menu.entryconfig('Undo', state='disable')
+        self.edit_menu.entryconfig('Redo', state='disable')
+        
+        if len(Hub.stacks) > 1:
+            self.mlt_frm = tk.IntVar(value=0)
+            tk.Scale(self.top, variable=self.mlt_frm, from_=0, to=self.to, 
+                     command=Hub.mlt_update, orient='horizontal').pack(fill=tk.X, padx=10, pady=5)
+        
+        def set_bar(new):
+            self.bar_text.trace_vdelete('w', self.bar_text.trace_id)
+            self.bar_text.set(new)
+            self.bar_text.trace_id = self.bar_text.trace('w', Hub.geometry.set_bar_length)
+        self.bar_text.trace_id = self.bar_text.trace('w', Hub.geometry.set_bar_length)
+        self.bar_text.set_bar = set_bar
+        self.bar_text.set_bar(Hub.geometry['bar_len'])
+        if Hub.geometry['bar_len'] == None:
+            self.bar_entry.configure(state=tk.DISABLED)
+        self.bar_entry.bind('<FocusOut>', Hub.geometry.bar_entry_out)
+        
+        self.barx.config(command=self.stack_canvas.xview)
         self.bary.config(command=self.stack_canvas.yview)
         self.stack_canvas.config(yscrollcommand=self.bary_set)
         self.stack_canvas.config(xscrollcommand=self.barx_set)
@@ -839,56 +930,63 @@ class STAC(ttk.Frame):
             self.stack_canvas.bind('<Control-Button-5>', 
                                    lambda event: self.zm_scroll(event, 1))
         
-        self.stack_canvas.pack(side=tk.LEFT, anchor=tk.NW)
-        self.stack_cf.pack(side=tk.LEFT)
-        
         self.stack_cf.bind('<Configure>', self.stack_configure)
         
-        fill ='#ffffff' if self.white.get() else '#000000'
-        self.im_back = self.stack_canvas.create_rectangle(0,0,2000,2000, fill=fill, width=0)
-        self.im_id = self.stack_canvas.create_image(0, 0, anchor='nw')
-        
         self.master.bind('<Key>', self.key)
-        self.master.bind('<KeyRelease>', lambda event: self.key_bind())
         
     
     def key(self, event):
-        self.master.unbind('<Key>')
-        self.master.after(1, self._key, event)
-    
-    def _key(self, event):
+        t = time.time()
+        if event.time - self.key_time < 40:
+            return
+        self.event_time = max(self.event_time, event.time - t*1000)
         
+        done = True
         key = event.keysym
-        if self.master.focus_get()==self.combo_zm:
-            return None
         if event.state//self.flags[3]%2 == 1:
             if key == 'o':
                 self.SV.open_new(self.master)
             elif key == 's':
-                self.save(self.file_path)
+                self.saving.set('Saving...')
+                self.master.update()
+                self.master.after(10, self.save, self.file_path)
             elif key == 'S':
-                self.save()
+                self.saving.set('Saving...')
+                self.master.update()
+                self.master.after(10, self.save)
             elif key == 'e':
                 self.export()
             elif key == 'z':
                 self.Hub.undo()
-            elif key in ('Z', 'y'):
+            elif key == 'y':
                 self.Hub.redo()
+            else:
+                done = False
         else:
-            if key in ['b']:
+            focus = str(self.master.focus_get()).rsplit('!', 1)[-1]
+            if 'entry' in focus:
+                return
+            elif 'combo' in focus:
+                return
+            if key in ['b', 'd']:
                 getattr(self, 'chk_{0}'.format(key)).invoke()
             elif key in ['c']:
-                getattr(self, '{0}_button'.format(key)).invoke()
+                if self.d_on.get():
+                    return
+                self.d_on.set(True)
+                self.d_switch()
             elif key == 'Left':
                 if hasattr(self, 'mlt_frm'):
                     self.Hub.mlt_scale(-1)
+                else:
+                    done = False
             elif key == 'Right':
                 if hasattr(self, 'mlt_frm'):
                     self.Hub.mlt_scale(1)
-        self.master.after(1, self.key_bind)
-    
-    def key_bind(self):
-        self.master.bind('<Key>', self.key)
+                else:
+                    done = False
+        if done:
+            self.key_time = time.time()*1000 + self.event_time
         
         
     def on_close(self):
@@ -901,26 +999,13 @@ class STAC(ttk.Frame):
             if close:
                 self.SV.root.destroy()
         else:
-            self.close_win = tk.Toplevel(self.master)
-            self.close_win.withdraw()
-            if pf == 'Windows':
-                self.close_win.iconbitmap('img/icon.ico')
-            self.close_win.title('Closing')
-            self.close_win.resizable(width=False, height=False)
-            
-            frame0 = ttk.Frame(self.close_win)
-            frame0.pack(ipadx=10, ipady=10)
-            
-            label = ttk.Label(frame0, text='Will you save changes before you quit?')
-            label.pack(padx=10, pady=20)
-            
-            frame = ttk.Frame(frame0)
-            frame.pack(padx=10)
-            
-            def cancel():
-                self.close_win.grab_release()
-                self.close_win.destroy()
-            def save():
+            ans = messagebox.askyesnocancel(title='Closing', 
+                                            message='Do you want to save '
+                                                    'changes before you quit?',
+                                            parent=self.master)
+            if ans == None:
+                return
+            if ans:
                 if self.save(self.file_path):
                     self.master.destroy()
                     del self.Hub
@@ -929,7 +1014,7 @@ class STAC(ttk.Frame):
                         close = close and not bool(w.winfo_exists())
                     if close:
                         self.SV.root.destroy()
-            def discard():
+            else:
                 self.master.destroy()
                 del self.Hub
                 close = True
@@ -938,38 +1023,22 @@ class STAC(ttk.Frame):
                 if close:
                     self.SV.root.destroy()
             
-            button0 = ttk.Button(frame, text='Cancel', command=cancel)
-            button0.grid(column=0, row=1)
-            button1 = ttk.Button(frame, text='Discard', command=discard)
-            button1.grid(column=1, row=1)
-            button2 = ttk.Button(frame, text='Save', command=save)
-            button2.grid(column=2, row=1)
-            
-            self.close_win.deiconify()
-            self.close_win.grab_set()
-            
-            buttons = [button0, button1, button2]
-            self.idx = 2
-            button2.focus_set()
-            def left():
-                self.idx -= 1
-                self.idx %= 3
-                buttons[self.idx].focus_set()
-            def right():
-                self.idx += 1
-                self.idx %= 3
-                buttons[self.idx].focus_set()
-                
-            self.close_win.bind('<Left>', lambda event: left())
-            self.close_win.bind('<Right>', lambda event: right())
-            self.close_win.bind('<Return>', lambda event: self.close_win.focus_get().invoke())
-            
             
     def b_switch(self):
-        self.Hub.put_bar()
+        self.Hub.put_axes_bar()
+        
+    def d_switch(self):
+        if self.d_on.get():
+            self.main_frame.pack_forget()
+            self.dock_frame.pack(pady=10, padx=10, side=tk.RIGHT)
+            self.main_frame.pack(fill=tk.BOTH, expand=True)
+            self.master.minsize(850, 400)
+        else:
+            self.dock_frame.pack_forget()
+            self.master.minsize(400, 400)
         
     def wb_switch(self):
-        self.Hub.put_bar()
+        self.Hub.calc_image()
         
     def zm_enter(self):
         if not self.lock:
@@ -1044,7 +1113,7 @@ class STAC(ttk.Frame):
         u1 = int(vx[0]*(sr[2]-sr[0]) + sr[0] - x)
         u2 = int(vy[0]*(sr[3]-sr[1]) + sr[1] - y)
         self.upperleft = (u1, u2)
-        x, y, iw, ih, w, h = self.Hub.put_bar()
+        x, y, iw, ih, w, h = self.Hub.put_axes_bar()
         self.Hub.scroll_config(x, y, iw, ih, w, h, vx0=vx[0], vy0=vy[0])
         self.master.after(10, unlock)
         
@@ -1058,7 +1127,7 @@ class STAC(ttk.Frame):
             self.Hub.zoom = float(self.zoom.get())/100
         if self.first:
             self.first = False        
-            self.Hub.put_bar()
+            self.Hub.put_axes_bar()
         
         zoom = self.Hub.zoom
         iw, ih = int(iw*zoom), int(ih*zoom)
@@ -1085,7 +1154,7 @@ class STAC(ttk.Frame):
             self.zoom.set('100')
             self.Hub.zoom = 1.0
             self.upperleft = (int(iw//2-w//2), int(ih//2-h//2))
-        x, y, iw, ih, w, h = self.Hub.put_bar()
+        x, y, iw, ih, w, h = self.Hub.put_axes_bar()
         self.Hub.scroll_config(x, y, iw, ih, w, h)
         
         
@@ -1111,7 +1180,7 @@ class STAC(ttk.Frame):
         upperleft = (u1, u2)
         if upperleft != self.upperleft:
             self.upperleft = upperleft
-            self.Hub.put_bar()
+            self.Hub.put_axes_bar()
         
         
     def save(self, path=None):
@@ -1130,7 +1199,7 @@ class STAC(ttk.Frame):
                                                 filetypes=filetypes,
                                                 initialdir=initialdir,
                                                 initialfile=initialfile,
-                                                title='Save project',
+                                                title='Save',
                                                 defaultextension='.stac')
         
         if len(path) > 0:
@@ -1138,11 +1207,17 @@ class STAC(ttk.Frame):
             meta = {'scale bar': self.b_on.get(), 'white back': self.white.get(), 
                     'zoom':self.Hub.zoom, 'upperleft': self.upperleft,
                     'mode':self.mode, 'trans':self.trans}
-            byt = pickle.dumps([self.Hub.stacks, self.Hub.channels.chs, 
-                                self.Hub.geometry.geo, meta], protocol=4)
-            byt = gzip.compress(byt, compresslevel=1)
-            with open(path, 'wb') as f:
-                f.write(byt)
+            try:
+                byt = pickle.dumps([self.Hub.stacks, self.Hub.channels.chs, 
+                                    self.Hub.geometry.geo, meta], protocol=4)
+                byt = gzip.compress(byt, compresslevel=1)
+                with open(path, 'wb') as f:
+                    f.write(byt)
+            except Exception as e:
+                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                     parent=self.master)
+                return False
+            self.saving.set('')
             with open('init_dir.txt', 'w') as f:
                 f.write(os.path.dirname(path))
             self.title = os.path.basename(path)
@@ -1420,6 +1495,7 @@ class Hub_stack:
             self.stacks, self.channels, self.geometry, *args = pickle.loads(byt)
         else:
             self.stacks, self.channels, self.geometry, *args = stac
+        
         self.channels = Channels(self)
         self.geometry = Geometry(self)
         
@@ -1452,6 +1528,17 @@ class Hub_stack:
                         gui.trans = 1
             gui.to = len(self.stacks) - 1 if gui.trans==0 else len(self.stacks)*2 - 3
         
+        if not hasattr(self, 'zoom'):
+            w, h = gui.stack_cf.winfo_width()-4, gui.stack_cf.winfo_height()-4
+            iw, ih = self.geometry['im_size']
+            zoom = min((w-10)/iw, (h-10)/ih)
+            iw1, ih1 = int(iw*zoom), int(ih*zoom)
+            ul = (int(iw1//2-w//2), int(ih1//2-h//2))
+            zs = str(int(zoom*100))
+            gui.zoom.set(zs)
+            self.zoom = float(gui.zoom.get())/100
+            gui.upperleft = ul
+        
         self.ch_show = np.ones(len(self.channels), np.bool)
         self.frame = self.stacks[0]
         
@@ -1467,14 +1554,18 @@ class Hub_stack:
     def calc_image(self, x=None):
         if not hasattr(self.gui, 'image'):
             self.gui.image = np.empty([*self.frame.shape[1:], 4], np.uint8)
-        ut.calc_bgr(self.frame, self.lut, self.colors,
-                     np.arange(len(self.lut))[self.ch_show], self.gui.image)
+        if self.gui.white.get():
+            ut.calc_bgr_w(self.frame, self.lut, self.colors,
+                          np.arange(len(self.lut))[self.ch_show], self.gui.image)
+        else:
+            ut.calc_bgr(self.frame, self.lut, self.colors,
+                        np.arange(len(self.lut))[self.ch_show], self.gui.image)
         if hasattr(self.gui, 'stack_canvas'):
-            x, y, iw, ih, w, h = self.put_bar()
+            x, y, iw, ih, w, h = self.put_axes_bar()
             self.scroll_config(x, y, iw, ih, w, h)
     
     
-    def put_bar(self):
+    def put_axes_bar(self):
         im = self.gui.image.copy()
         if self.gui.b_on.get():
             im[-25:-20, -20-self.lpx:-20,:3] = 0 if self.gui.white.get() else 255

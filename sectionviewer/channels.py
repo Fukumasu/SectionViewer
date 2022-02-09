@@ -47,7 +47,12 @@ class Channels:
                        'ls': tk.StringVar(),
                        'sh': tk.IntVar()}
         
-        self.variables['nm'].trace('w', self.ch_name)
+        def set_nm(new):
+            self.variables['nm'].trace_vdelete('w', self.variables['nm'].trace_id)
+            self.variables['nm'].set(new)
+            self.variables['nm'].trace_id = self.variables['nm'].trace('w', self.ch_name)
+        self.variables['nm'].trace_id = self.variables['nm'].trace('w', self.ch_name)
+        self.variables['nm'].set_nm = set_nm
         self.variables['r'].trace('w', lambda *args: self.variables['rs'].set(str(self.variables['r'].get())))
         self.variables['g'].trace('w', lambda *args: self.variables['gs'].set(str(self.variables['g'].get())))
         self.variables['b'].trace('w', lambda *args: self.variables['bs'].set(str(self.variables['b'].get())))
@@ -63,11 +68,12 @@ class Channels:
         
         # settings
         
-        frame0 = ttk.Frame(Hub.gui.palette)
+        frame0 = ttk.Frame(Hub.gui.dock_note)
         self.set_frame = frame0
+        Hub.gui.dock_note.add(frame0, text='Channels')
         
         frame1 = ttk.Frame(frame0)
-        frame1.pack(side=tk.LEFT)
+        frame1.pack(pady=10)
         
         if hasattr(self.Hub, 'data'):
             frameb = ttk.Frame(frame1)
@@ -78,8 +84,8 @@ class Channels:
             button2.pack(side=tk.LEFT)
             self.button_dl = button2
     
-        self.treeview = ttk.Treeview(frame1, height=15)
-        self.treeview.column('#0', width=200, stretch=False)
+        self.treeview = ttk.Treeview(frame1, height=6)
+        self.treeview.column('#0', width=330, stretch=False)
         self.treeview.heading('#0', text='Channels', anchor=tk.W)
         
         bary = tk.Scrollbar(frame1, orient=tk.VERTICAL)
@@ -89,8 +95,11 @@ class Channels:
         self.treeview.pack(padx=10, pady=5)
         
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
-                          if e.state//4%2!=1 else None)
+                          if e.state//Hub.gui.flags[3]%2!=1 else None)
         self.treeview.bind('<<TreeviewSelect>>', self.ch_select)
+        self.treeview.bind('<Control-a>', lambda event:
+                           self.treeview.selection_set(self.treeview.get_children()))
+        self.selected = []
         
         names = self.getnames()
         colors = np.array(self.getcolors())
@@ -103,13 +112,12 @@ class Channels:
             self.icons[i] = ImageTk.PhotoImage(Image.fromarray(im[:,:,::-1]))
             self.treeview.insert('', 'end', str(i), text=' '+names[i], image=self.icons[i])
         
-        frame2 = ttk.Frame(frame0)
-        frame2.pack(side=tk.LEFT, pady=10)
+        frame2 = ttk.Frame(frame0, relief='groove')
         self.frame2 = frame2
         
         frame3 = ttk.Frame(frame2)
-        frame3.pack(padx=10, pady=5, ipadx=5, ipady=5)
-        self.entry_nm = ttk.Entry(frame3, textvariable=self.variables['nm'])
+        frame3.pack(padx=20, pady=10, ipadx=5, ipady=5, fill=tk.X)
+        self.entry_nm = ttk.Entry(frame3, textvariable=self.variables['nm'], width=30)
         self.entry_nm.pack(side=tk.LEFT)
         self.checkbutton = ttk.Checkbutton(frame3, variable=self.variables['sh'], 
                                         onvalue=1, offvalue=0,
@@ -175,11 +183,11 @@ class Channels:
         ttk.Label(rgb_frame, text='  R:  ').grid(column=0, row=1)
         ttk.Label(rgb_frame, text='  G:  ').grid(column=0, row=2)
         ttk.Label(rgb_frame, text='  B:  ').grid(column=0, row=3)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['r'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['r'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=1, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['g'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['g'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=2, pady=7)
-        ttk.Scale(rgb_frame, length=190, variable=self.variables['b'], from_=0, to=255,
+        ttk.Scale(rgb_frame, length=210, variable=self.variables['b'], from_=0, to=255,
                  orient='horizontal', command=self.rgb).grid(column=1, row=3, pady=7)
         self.entry_r = ttk.Entry(rgb_frame, textvariable=self.variables['rs'], width=5)
         self.entry_r.grid(column=2, row=1, padx=3)
@@ -206,11 +214,11 @@ class Channels:
         ttk.Label(hsl_frame, text=' H:  ').grid(column=0, row=1)
         ttk.Label(hsl_frame, text=' S:  ').grid(column=0, row=2)
         ttk.Label(hsl_frame, text=' L:  ').grid(column=0, row=3)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['h'], from_=0, to=3599,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['h'], from_=0, to=3599,
                  orient='horizontal', command=self.hsl).grid(column=1, row=1, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['s'], from_=0, to=1000,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['s'], from_=0, to=1000,
                  orient='horizontal', command=self.hsl).grid(column=1, row=2, pady=7)
-        ttk.Scale(hsl_frame, length=190, variable=self.variables['l'], from_=0, to=1000,
+        ttk.Scale(hsl_frame, length=210, variable=self.variables['l'], from_=0, to=1000,
                  orient='horizontal', command=self.hsl).grid(column=1, row=3, pady=7)
         self.entry_h = ttk.Entry(hsl_frame, textvariable=self.variables['hs'], width=5)
         self.entry_h.grid(column=2, row=1, padx=3)
@@ -240,10 +248,10 @@ class Channels:
                 break
         ttk.Label(vnx_frame, text=' vmin: ').grid(column=0, row=0)
         ttk.Label(vnx_frame, text=' vmax: ').grid(column=0, row=1)
-        self.vmin_scale = ttk.Scale(vnx_frame, length=190, variable=self.variables['vn'], from_=0, to=to,
+        self.vmin_scale = ttk.Scale(vnx_frame, length=210, variable=self.variables['vn'], from_=0, to=to,
                                     orient='horizontal', command=self.vmin)
         self.vmin_scale.grid(column=1, row=0, pady=7)
-        self.vmax_scale=ttk.Scale(vnx_frame, length=190, variable=self.variables['vx'], from_=0, to=to,
+        self.vmax_scale=ttk.Scale(vnx_frame, length=210, variable=self.variables['vx'], from_=0, to=to,
                                   orient='horizontal', command=self.vmax)
         self.vmax_scale.grid(column=1, row=1, pady=7)
         def press():
@@ -307,19 +315,15 @@ class Channels:
     
     def settings(self):
         gui = self.Hub.gui
-        gui.palette.title('Channels')
-        for w in gui.palette.pack_slaves():
-            w.pack_forget()
-        self.set_frame.pack(pady=10, padx=5)
-        gui.palette.unbind('<Control-a>')
-        gui.palette.bind('<Control-a>', lambda event: self.treeview.selection_set(self.treeview.get_children()))
+        if len(gui.dock_note.tabs()) < 2:
+            return
+        gui.dock_note.select(gui.dock_note.tabs()[1])
         self.refresh_tree()
-    
-        gui.palette.deiconify()
-        gui.palette.grab_set()
-        x = self.treeview.get_children()
-        self.treeview.focus(x[0])
-        self.treeview.selection_set(x[0])
+        self.treeview.selection_set(self.selected)
+        
+        if not gui.d_on.get():
+            gui.d_on.set(True)
+            gui.d_switch()
         
     
     def refresh_tree(self):
@@ -338,12 +342,15 @@ class Channels:
     
     def ch_select(self, event):
         selection = self.treeview.selection()
+        self.selected = selection
         
         if len(selection) == 0:
             self.frame2.pack_forget()
+            if hasattr(self, 'button_dl'):
+                self.button_dl['state'] = tk.DISABLED
             return
         else:
-            self.frame2.pack()
+            self.frame2.pack(padx=10, pady=10, fill=tk.X)
         
         if hasattr(self, 'button_dl'):
             if len(selection) < len(self.treeview.get_children()):
@@ -356,7 +363,7 @@ class Channels:
         bgr = self.chs[i][1]
         hsl = self.bgr2hsl(bgr)
         
-        self.variables['nm'].set(self.chs[i][0])
+        self.variables['nm'].set_nm(self.chs[i][0])
         self.variables['r'].set(bgr[2])
         self.variables['g'].set(bgr[1])
         self.variables['b'].set(bgr[0])
@@ -460,13 +467,15 @@ class Channels:
                     w['state'] = tk.ACTIVE
             if (self.Hub.frame[x[0]] == 0).all():
                 self.Hub.calc_frame(x=x)
-                if hasattr(self.Hub.gui, 'g_on'):
-                    if self.Hub.gui.g_on.get():
+                if hasattr(self.Hub.gui, 'guide_mode'):
+                    if self.Hub.gui.d_on.get() and \
+                        self.Hub.gui.guide_mode == 'sideview':
                         self.Hub.calc_sideview(x=x)
             else:
                 self.Hub.calc_image()
-                if hasattr(self.Hub.gui, 'g_on'):
-                    if self.Hub.gui.g_on.get():
+                if hasattr(self.Hub.gui, 'guide_mode'):
+                    if self.Hub.gui.d_on.get() and \
+                        self.Hub.gui.guide_mode == 'sideview':
                         self.Hub.calc_sideimage()
         else:
             self.entry_nm['state'] = tk.DISABLED
@@ -480,22 +489,23 @@ class Channels:
                 if not 'scale' in str(w)[-6:]:
                     w['state'] = tk.DISABLED
             self.Hub.calc_image()
-            if hasattr(self.Hub.gui, 'g_on'):
-                if self.Hub.gui.g_on.get():
+            if hasattr(self.Hub.gui, 'guide_mode'):
+                if self.Hub.gui.d_on.get() and \
+                    self.Hub.gui.guide_mode == 'sideview':
                     self.Hub.calc_sideimage()
     
               
     def ch_name(self, *args):
         x = self.treeview.selection()
         if len(x) > 1:
-            return None
+            return
         
         i = int(x[0])
         old = self.chs[i][0]
         new = self.variables['nm'].get()
         
         if old == new:
-            return None
+            return
         
         Hub = self.Hub
         idx, hist = Hub.hidx, Hub.history
@@ -525,7 +535,7 @@ class Channels:
         if x != self.treeview.selection():
             self.treeview.selection_set(x)
         else:
-            self.variables['nm'].set(new)
+            self.variables['nm'].set_nm(new)
             
         i = int(x[0])
         self.chs[i][0] = new
@@ -623,8 +633,9 @@ class Channels:
             
         self.chs = self.chs
         self.Hub.calc_image()
-        if hasattr(self.Hub.gui, 'g_on'):
-            if self.Hub.gui.g_on.get():
+        if hasattr(self.Hub.gui, 'guide_mode'):
+            if self.Hub.gui.d_on.get() and \
+                self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
                 
     
@@ -701,8 +712,9 @@ class Channels:
             
         self.chs = self.chs
         self.Hub.calc_image()
-        if hasattr(self.Hub.gui, 'g_on'):
-            if self.Hub.gui.g_on.get():
+        if hasattr(self.Hub.gui, 'guide_mode'):
+            if self.Hub.gui.d_on.get() and \
+                self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
         
     
@@ -712,7 +724,7 @@ class Channels:
         filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                      ('All files', '*')]
         initialdir = Hub.gui.file_dir
-        data_files = filedialog.askopenfilenames(parent=Hub.gui.palette, 
+        data_files = filedialog.askopenfilenames(parent=Hub.gui.master, 
                                                  filetypes=filetypes, 
                                                  initialdir=initialdir, 
                                                  title='Add channels')
@@ -834,12 +846,14 @@ class Channels:
             n += l
         
         self.Hub.calc_geometry()
-        if hasattr(self.Hub.gui, 'g_on'):
-            if self.Hub.gui.g_on.get():
+        if hasattr(self.Hub.gui, 'guide_mode'):
+            if self.Hub.gui.d_on.get() and \
+                self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
         
         self.refresh_tree()
         x=self.Hub.data.getchnum(x).tolist()
+        self.selected = x
         self.treeview.selection_set(x)
         
     
@@ -910,8 +924,9 @@ class Channels:
             n += l
             
         self.Hub.calc_geometry()
-        if hasattr(self.Hub.gui, 'g_on'):
-            if self.Hub.gui.g_on.get():
+        if hasattr(self.Hub.gui, 'guide_mode'):
+            if self.Hub.gui.d_on.get() and \
+                self.Hub.gui.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
             
         select = np.array([int(s) for s in self.treeview.selection()])
@@ -926,6 +941,7 @@ class Channels:
                 n += 1
         self.refresh_tree()
         x=list(select)
+        self.selected = x
         self.treeview.selection_set(x)
         
     
