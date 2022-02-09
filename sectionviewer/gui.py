@@ -143,8 +143,8 @@ class GUI(ttk.Frame):
         # Dock
         self.dock_frame = tk.Frame(self.master)
         if self.d_on.get():
-            self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT)
-        self.dock_canvas = tk.Canvas(self.dock_frame, width=410, height=590)
+            self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=470, height=590)
         self.dock_canvas.pack(side=tk.LEFT)
         self.dock_note = ttk.Notebook(self.master)
         self.dock_id = self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
@@ -152,7 +152,7 @@ class GUI(ttk.Frame):
         bary.pack(side=tk.RIGHT, fill=tk.Y)
         bary.config(command=self.dock_canvas.yview)
         self.dock_canvas.config(yscrollcommand=bary.set)
-        self.dock_canvas.config(scrollregion=(0,0,410,590))
+        self.dock_canvas.config(scrollregion=(0,0,0,590))
         
         self.guide_frame = ttk.Frame(self.dock_note)
         self.guide_upper = ttk.Frame(self.guide_frame)
@@ -369,6 +369,15 @@ class GUI(ttk.Frame):
                                          xview_scroll(int(-event.delta/120), 'units'))
             self.sec_canvas.bind('<Control-MouseWheel>', 
                                  lambda event: self.zm_scroll(event, int(event.delta/120)))
+        elif pf == 'Darwin':
+            self.sec_canvas.bind('<MouseWheel>', lambda event: 
+                                     self.sec_canvas.\
+                                         yview_scroll(int(-event.delta), 'units'))
+            self.sec_canvas.bind('<Shift-MouseWheel>', lambda event: 
+                                     self.sec_canvas.\
+                                         xview_scroll(int(-event.delta), 'units'))
+            self.sec_canvas.bind('<Command-MouseWheel>', 
+                                 lambda event: self.zm_scroll(event, int(event.delta)))
         elif pf == 'Linux':
             self.sec_canvas.bind('<Button-4>', lambda event: 
                                      self.sec_canvas.yview_scroll(1, 'units'))
@@ -604,12 +613,10 @@ class GUI(ttk.Frame):
                 self.Hub.calc_guide()
             elif self.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
-            self.main_frame.pack_forget()
-            self.dock_frame.pack(pady=10, padx=10, side=tk.RIGHT)
-            self.main_frame.pack(fill=tk.BOTH, expand=True)
+            self.dock_canvas.configure(width=470)
             self.master.minsize(850, 400)
         else:
-            self.dock_frame.pack_forget()
+            self.dock_canvas.configure(width=0)
             self.master.minsize(400, 400)
             
     def wb_switch(self):

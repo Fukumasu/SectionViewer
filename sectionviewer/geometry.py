@@ -71,7 +71,7 @@ class Geometry:
         gui.dock_canvas.moveto(gui.dock_id, 500, 0)
         
         self.details_win = tk.LabelFrame(gui.master, text='Details', relief='raised',
-                                       fg='blue', font=('arial', 12, 'bold'))
+                                       fg='blue', font=('arial', 13, 'bold'))
         self.details_id = gui.dock_canvas.create_window(0, 0, anchor='nw', window=self.details_win)
         
         note = ttk.Notebook(self.details_win)
@@ -119,7 +119,7 @@ class Geometry:
             self.res_xy.set(str(self.geo['xy_oib']))
             self.res_z.set(str(self.geo['z_oib']))
         ttk.Label(resol_title, text='Resolution').grid(row=0, column=0, sticky=tk.NW)
-        oib_button = ttk.Button(resol_title, text=' Use data values ', command=oib_res)
+        oib_button = ttk.Button(resol_title, text='Data values', command=oib_res)
         oib_button.grid(row=1, column=0, sticky=tk.NW)
         if not 'xy_oib' in self.geo:
             oib_button['state'] = tk.DISABLED
@@ -277,7 +277,7 @@ class Geometry:
         for i in range(3):
             for j in range(3):
                 self.pos_v[j][2-i] = tk.StringVar(value=str(pos[j,2-i]))
-                self.d_widgets[(i,j)] = ttk.Entry(frame, textvariable=self.pos_v[j][2-i], width=12)
+                self.d_widgets[(i,j)] = ttk.Entry(frame, textvariable=self.pos_v[j][2-i], width=8)
                 self.d_widgets[(i,j)].grid(row=i+1, column=j+2, padx=5, pady=5)
         
         def initialize():

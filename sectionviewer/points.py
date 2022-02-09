@@ -518,6 +518,29 @@ class Points:
         
         self.pts = pts_org[:int(i)] + pts_org[int(i)+1:]
         Hub.put_points()
+
+        def repair():
+            frame.pack_forget()
+            
+            gui.master.protocol('WM_DELETE_WINDOW', gui.on_close)
+            
+            gui.menu_bar.entryconfig('File', state='active')
+            gui.menu_bar.entryconfig('Settings', state='active')
+            gui.menu_bar.entryconfig('Tools', state='active')
+            gui.bar_entry['state'] = tk.ACTIVE
+            
+            gui.master.unbind('<Return>')
+            
+            gui.sec_canvas.unbind('<ButtonRelease-1>')
+            gui.sec_canvas.bind('<ButtonRelease-1>', gui.release_sec)
+            
+            gui.guide_canvas.bind('<Motion>', gui.track_guide)
+            gui.guide_canvas.bind('<Button-1>', lambda event: self.settings(select=gui.p_num))
+            
+            gui.dock_note.add(self.Hub.channels.set_frame, text='Channels')
+            gui.dock_note.add(self.set_frame, text='Points')
+            gui.dock_note.add(self.Hub.snapshots.set_frame, text='Snapshots')
+            gui.dock_note.select(gui.dock_note.tabs()[2])
         
         def ok():
             gui.master.protocol('WM_DELETE_WINDOW', gui.on_close)
@@ -617,7 +640,9 @@ class Points:
         ttk.Label(frame, text="Put point '{0}' with Ctrl+Click or 'OK' button.".format(name),
                   font=('', 11, 'bold')).pack(side=tk.RIGHT, anchor=tk.N, padx=5)
         
-        gui.bar_button.pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
+        ttk.Label(gui.bottom, text='µm').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
+        gui.bar_entry.pack(side=tk.RIGHT, anchor=tk.N, pady=5)
+        ttk.Label(gui.bottom, text='Scale bar:').pack(side=tk.RIGHT, anchor=tk.N, padx=5, pady=5)
         gui.coor_info.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
         gui.scale_frame.pack(side=tk.TOP, fill=tk.X)
         
@@ -635,29 +660,6 @@ class Points:
         
         gui.guide_canvas.unbind('<Motion>')
         gui.guide_canvas.unbind('<Button-1>')
-        
-        def repair():
-            frame.pack_forget()
-            
-            gui.master.protocol('WM_DELETE_WINDOW', gui.on_close)
-            
-            gui.menu_bar.entryconfig('File', state='active')
-            gui.menu_bar.entryconfig('Settings', state='active')
-            gui.menu_bar.entryconfig('Tools', state='active')
-            gui.bar_entry['state'] = tk.ACTIVE
-            
-            gui.master.unbind('<Return>')
-            
-            gui.sec_canvas.unbind('<ButtonRelease-1>')
-            gui.sec_canvas.bind('<ButtonRelease-1>', gui.release_sec)
-            
-            gui.guide_canvas.bind('<Motion>', gui.track_guide)
-            gui.guide_canvas.bind('<Button-1>', lambda event: self.settings(select=gui.p_num))
-            
-            gui.dock_note.add(self.Hub.channels.set_frame, text='Channels')
-            gui.dock_note.add(self.set_frame, text='Points')
-            gui.dock_note.add(self.Hub.snapshots.set_frame, text='Snapshots')
-            gui.dock_note.select(gui.dock_note.tabs()[2])
         
             
     def move_to(self):

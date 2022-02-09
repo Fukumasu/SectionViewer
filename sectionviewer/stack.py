@@ -33,7 +33,7 @@ class Stack:
         gui.dock_canvas.moveto(gui.dock_id, 500, 0)
         
         self.stack_win = tk.LabelFrame(gui.master, text='Stack', relief='raised',
-                                       fg='blue', font=('arial', 12, 'bold'))
+                                       fg='blue', font=('arial', 13, 'bold'))
         self.stack_id = gui.dock_canvas.create_window(0, 0, anchor='nw', window=self.stack_win)
         
         op, ny, nx = Hub.position.asarray()
@@ -779,7 +779,7 @@ class STAC(ttk.Frame):
         # Dock
         self.dock_frame = tk.Frame(self.master)
         self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT, anchor=tk.N)
-        self.dock_canvas = tk.Canvas(self.dock_frame, width=420, height=610)
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=470, height=590)
         self.dock_canvas.pack(side=tk.LEFT)
         self.dock_note = ttk.Notebook(self.master)
         self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
@@ -787,7 +787,7 @@ class STAC(ttk.Frame):
         bary.pack(side=tk.RIGHT, fill=tk.Y)
         bary.config(command=self.dock_canvas.yview)
         self.dock_canvas.config(yscrollcommand=bary.set)
-        self.dock_canvas.config(scrollregion=(0,0,420,610))
+        self.dock_canvas.config(scrollregion=(0,0,0,590))
         
         # Main
         self.main_frame = ttk.Frame(self.master)
@@ -916,15 +916,24 @@ class STAC(ttk.Frame):
                                          xview_scroll(int(-event.delta/120), 'units'))
             self.stack_canvas.bind('<Control-MouseWheel>', 
                                    lambda event: self.zm_scroll(event, int(event.delta/120)))
+        elif pf == 'Darwin':
+            self.stack_canvas.bind('<MouseWheel>', lambda event: 
+                                     self.stack_canvas.\
+                                         yview_scroll(int(-event.delta), 'units'))
+            self.stack_canvas.bind('<Shift-MouseWheel>', lambda event: 
+                                     self.stack_canvas.\
+                                         xview_scroll(int(-event.delta), 'units'))
+            self.stack_canvas.bind('<Command-MouseWheel>', 
+                                 lambda event: self.zm_scroll(event, int(event.delta)))
         elif pf == 'Linux':
             self.stack_canvas.bind('<Button-4>', lambda event: 
-                                       self.sec_canvas.yview_scroll(1, 'units'))
+                                       self.stack_canvas.yview_scroll(1, 'units'))
             self.stack_canvas.bind('<Button-5>', lambda event: 
-                                       self.sec_canvas.yview_scroll(-1, 'units'))
+                                       self.stack_canvas.yview_scroll(-1, 'units'))
             self.stack_canvas.bind('<Shift-Button-4>', lambda event: 
-                                       self.sec_canvas.xview_scroll(1, 'units'))
+                                       self.stack_canvas.xview_scroll(1, 'units'))
             self.stack_canvas.bind('<Shift-Button-5>', lambda event: 
-                                       self.sec_canvas.xview_scroll(-1, 'units'))
+                                       self.stack_canvas.xview_scroll(-1, 'units'))
             self.stack_canvas.bind('<Control-Button-4>', 
                                    lambda event: self.zm_scroll(event, -1))
             self.stack_canvas.bind('<Control-Button-5>', 
@@ -1029,12 +1038,10 @@ class STAC(ttk.Frame):
         
     def d_switch(self):
         if self.d_on.get():
-            self.main_frame.pack_forget()
-            self.dock_frame.pack(pady=10, padx=10, side=tk.RIGHT)
-            self.main_frame.pack(fill=tk.BOTH, expand=True)
+            self.dock_canvas.configure(width=470)
             self.master.minsize(850, 400)
         else:
-            self.dock_frame.pack_forget()
+            self.dock_canvas.configure(width=0)
             self.master.minsize(400, 400)
         
     def wb_switch(self):
