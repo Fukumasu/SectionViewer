@@ -68,11 +68,10 @@ class Geometry:
     def details(self):
         Hub = self.Hub
         gui = Hub.gui
-        gui.dock_canvas.moveto(gui.dock_id, 500, 0)
         
         self.details_win = tk.LabelFrame(gui.master, text='Details', relief='raised',
                                        fg='blue', font=('arial', 13, 'bold'))
-        self.details_id = gui.dock_canvas.create_window(0, 0, anchor='nw', window=self.details_win)
+        self.details_id = gui.dock_canvas.create_window(500, 0, anchor='nw', window=self.details_win)
         
         note = ttk.Notebook(self.details_win)
         note.grid(row=0, column=0, columnspan=2, padx=15, pady=10)
@@ -477,6 +476,8 @@ class Geometry:
             gui.d_on.set(True)
             gui.d_switch()
             gui.d_on.set(False)
+        gui.dock_canvas.moveto(gui.dock_id, 500, 0)
+        gui.dock_canvas.moveto(self.details_id, 0, 0)
         gui.master.bind('<Return>', lambda event: enter())
         gui.master.bind('<Left>', lambda event: left())
         gui.master.bind('<Right>', lambda event: right())

@@ -144,7 +144,8 @@ class GUI(ttk.Frame):
         self.dock_frame = tk.Frame(self.master)
         if self.d_on.get():
             self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
-        self.dock_canvas = tk.Canvas(self.dock_frame, width=470, height=590)
+        width = 470 if pf == 'Darwin' else 420
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=590)
         self.dock_canvas.pack(side=tk.LEFT)
         self.dock_note = ttk.Notebook(self.master)
         self.dock_id = self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
@@ -613,10 +614,13 @@ class GUI(ttk.Frame):
                 self.Hub.calc_guide()
             elif self.guide_mode == 'sideview':
                 self.Hub.calc_sideview()
-            self.dock_canvas.configure(width=470)
+            width = 470 if pf == 'Darwin' else 420
+            self.dock_canvas.configure(width=width)
+            self.dock_canvas.moveto(self.dock_id, 0, 0)
             self.master.minsize(850, 400)
         else:
             self.dock_canvas.configure(width=0)
+            self.dock_canvas.moveto(self.dock_id, 500, 0)
             self.master.minsize(400, 400)
             
     def wb_switch(self):
