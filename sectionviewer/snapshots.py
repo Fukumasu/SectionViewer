@@ -61,13 +61,13 @@ class Snapshots:
             self.treeview.insert('', 'end', str(i), text=' '+self.snapshots[i]['name'])
             
         frame3 = ttk.Frame(frame0)
-        frame3.pack(padx=10, pady=5, fill=tk.X)
+        frame3.pack(padx=5, pady=5, fill=tk.X)
         
         button1 = ttk.Button(frame3, text='Delete', command=self.del_ss)
-        button1.pack(side=tk.RIGHT, padx=5)
+        button1.pack(side=tk.RIGHT)
         self.button_dl = button1
         button2 = ttk.Button(frame3, text='Snap', command=self.add_ss)
-        button2.pack(side=tk.RIGHT, padx=5)
+        button2.pack(side=tk.RIGHT)
         
         self.pos_on.set(self.use_pos)
         self.chs_on.set(self.use_chs)
@@ -87,13 +87,13 @@ class Snapshots:
         
         self.pts_chk = ttk.Checkbutton(frame3, variable=self.pts_on, text='Points',
                                        command=chk)
-        self.pts_chk.pack(side=tk.RIGHT, padx=5)
+        self.pts_chk.pack(side=tk.RIGHT, padx=3)
         self.chs_chk = ttk.Checkbutton(frame3, variable=self.chs_on, text='Channels',
                                        command=chk)
-        self.chs_chk.pack(side=tk.RIGHT, padx=5)
+        self.chs_chk.pack(side=tk.RIGHT, padx=3)
         self.pos_chk = ttk.Checkbutton(frame3, variable=self.pos_on, text='Position',
                                        command=chk)
-        self.pos_chk.pack(side=tk.RIGHT, padx=5)
+        self.pos_chk.pack(side=tk.RIGHT, padx=3)
         
         
         
@@ -103,19 +103,19 @@ class Snapshots:
         frame4 = ttk.Frame(frame2)
         frame4.pack(padx=10, pady=10, fill=tk.X)
         button3 = ttk.Button(frame4, text='Override', command=self.override_ss)
-        button3.pack(side=tk.RIGHT, padx=5)
+        button3.pack(side=tk.RIGHT)
         self.button_ov = button3
         button4 = ttk.Button(frame4, text='Restore', command=self.restore_ss)
-        button4.pack(side=tk.RIGHT, padx=5)
+        button4.pack(side=tk.RIGHT)
         self.button_rs = button4
         
-        self.entry_nm = ttk.Entry(frame4, textvariable=self.name_var, width=30)
+        self.entry_nm = ttk.Entry(frame4, textvariable=self.name_var, width=15)
         self.entry_nm.pack(side=tk.LEFT, padx=5)
         
         note = ttk.Notebook(frame2)
         note.pack(padx=10, pady=5, ipadx=5, ipady=5)
         
-        self.im_size = (250, 350)
+        self.im_size = (250, 300)
         
         prev_frame = ttk.Frame(note)
         self.canvas1 = tk.Canvas(prev_frame, width=self.im_size[1], height=self.im_size[0])
@@ -788,7 +788,7 @@ class Snapshots:
         points[:,1:] *= eye/(points[:,:1] + eye)
         peaks[:,1:] *= eye/(peaks[:,:1] + eye)
         
-        h, w = 280, 400
+        h, w = int(self.im_size[0]*4/3), int(self.im_size[1]*4/3)
         e = min(w/Hub.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
         peaks = (peaks[:,2:0:-1]*e).astype(np.int) + np.array([w,h])//2
         points = (points[:,::-1]*e).astype(np.int)
