@@ -843,8 +843,8 @@ class Snapshots:
         n_order = order[(points[order,2]<=0)*within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            cv2.circle(im, tuple(p[:2]), 7, (255,255,255), -1, cv2.LINE_AA)
-            cv2.circle(im, tuple(p[:2]), 5, color, -1, cv2.LINE_AA)
+            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
         for i in range(len(sec)):
             eg =int(edges[tuple(pn[:,i])])
