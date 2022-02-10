@@ -454,9 +454,10 @@ class Hub:
         cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA)
         transparent = 0.5
         section = self.g_section
-        section[:] = 255
-        section -= im0[0]
-        section /= 15/transparent
+        section[:] = 0
+        section[square] = 255
+        section[square] -= im0[0][square]
+        section[square] /= 15/transparent
         
         im = self.g_im
         im[:,:,0] = im0[0]

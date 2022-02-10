@@ -794,6 +794,9 @@ class Snapshots:
         points = (points[:,::-1]*e).astype(np.int)
         points[:,:2] +=  np.array([w,h])//2
         sec = ((sec - c)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
+        uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
+        uls = np.fmax(uls, 0)
+        square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))
         c = (np.array([w,h])//2 - c[::-1]*e).astype(np.int)
         
         im_size = (e*im_size/exp_rate/2).astype(np.int)
@@ -801,15 +804,17 @@ class Snapshots:
         im0 = np.empty([h, w], np.uint8)
         im0[:] = 240
         cv2.fillConvexPoly(im0, sec[sort], 220, lineType=cv2.LINE_AA)
+        im0 = im0[square]
         transparent = 0.7
         section = (240 - im0)/(20/transparent)
         section = section[:,:,None]
         
         im = np.empty([h, w, 3], np.uint8)
-        im[:,:,::2] = (section*15 + 240).astype(np.uint8)
-        im[:,:,1] = im0
+        im[:] = 240
+        im[:,:,::2][square] = (section*15 + 240).astype(np.uint8)
+        im[:,:,1][square] = im0
         
-        im0 = im.copy()
+        im0 = im[square].copy()
         
         order = np.argsort(points[:,2])
         within = within[order]
@@ -835,7 +840,7 @@ class Snapshots:
             im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
             im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
-        im = (section*im0 + (1 - section)*im).astype(np.uint8)
+        im[square] = (section*im0 + (1 - section)*im[square]).astype(np.uint8)
         
         im[c[1],:] = 255
         im[:,c[0]] = 255
