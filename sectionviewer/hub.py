@@ -368,7 +368,6 @@ class Hub:
         gui.sec_canvas.yview_moveto(vy0)
         
     
-    
     def calc_guide(self, rect=True):
         pos = self.position.asarray()
         op, ny, nx = pos
@@ -465,6 +464,7 @@ class Hub:
         im[ul0[1]:br0[1], ul0[0]:br0[0], 0] += 15
         im[:,:,1:] = im[:,:,:1]
         
+        ul2, br2 = ul0, br0
         if rect:
             if hasattr(self, 'zoom') and hasattr(self.gui, 'sec_cf'):
                 iw, ih = self.geometry['im_size']
@@ -477,15 +477,14 @@ class Hub:
                 self.br1 = (int(ul[0] + (br[0]-ul[0])*x1), int(ul[1] + (br[1]-ul[1])*y1))
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
-                window = (slice(ul2[1], br2[1]), slice(ul2[0], br2[0]))
         else:
             if hasattr(self, 'ul1'):
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
-                window = (slice(ul2[1], br2[1]), slice(ul2[0], br2[0]))
                 
-        im[(*window,1)] = (255 - section[window]*(35/transparent)).astype(np.uint8)
-        im[(*window,slice(None,None,2))] = 255
+        im[ul2[1]:br2[1],ul2[0]:br2[0],1] = \
+            (255 - section[ul2[1]:br2[1],ul2[0]:br2[0]]*(35/transparent)).astype(np.uint8)
+        im[ul2[1]:br2[1],ul2[0]:br2[0],::2] = 255
         section = section[:,:,None][square]
         
         im0 = im0.transpose(1,2,0)[square]
