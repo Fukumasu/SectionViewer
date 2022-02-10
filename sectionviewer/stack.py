@@ -779,7 +779,7 @@ class STAC(ttk.Frame):
         
         # Dock
         self.dock_frame = tk.Frame(self.master)
-        self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT, anchor=tk.N)
+        self.dock_frame.pack(padx=10, pady=2, side=tk.RIGHT)
         width = 470 if pf == 'Darwin' else 420
         self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=590)
         self.dock_canvas.pack(side=tk.LEFT)
