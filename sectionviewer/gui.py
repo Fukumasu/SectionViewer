@@ -46,24 +46,26 @@ class GUI(ttk.Frame):
             with open(file_path, 'rb') as sv:
                 secv = pickle.load(sv)
                 
-        if 'display' in secv:
-            display = secv['display']
-            if 'thickness' in display:
-                self.thickness.set(str(int(display['thickness'])))
-            if 'axis' in display:
-                self.a_on.set(display['axis'])
-            if 'scale bar' in display:
-                self.b_on.set(display['scale bar'])
-            if 'points' in display:
-                self.p_on.set(display['points'])
-            if 'dock' in display:
-                self.d_on.set(display['dock'])
-            if 'white back' in display:
-                self.white.set(display['white back'])
-            if 'zoom' in display:
-                self.zoom = tk.StringVar(value=str(int(display['zoom']*100)))
-            if 'upperleft' in display:
-                self.upperleft = display['upperleft']
+            if 'display' in secv:
+                display = secv['display']
+                if 'thickness' in display:
+                    self.thickness.set(str(int(display['thickness'])))
+                if 'axis' in display:
+                    self.a_on.set(display['axis'])
+                if 'scale bar' in display:
+                    self.b_on.set(display['scale bar'])
+                if 'points' in display:
+                    self.p_on.set(display['points'])
+                if 'dock' in display:
+                    self.d_on.set(display['dock'])
+                if 'white back' in display:
+                    self.white.set(display['white back'])
+                if 'zoom' in display:
+                    self.zoom = tk.StringVar(value=str(int(display['zoom']*100)))
+                if 'upperleft' in display:
+                    self.upperleft = display['upperleft']
+        else:
+            secv = None
         
         self.lock = False
         
