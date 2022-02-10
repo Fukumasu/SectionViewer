@@ -40,6 +40,7 @@ class GUI(ttk.Frame):
         self.d_on = tk.BooleanVar(value=True)
         self.white = tk.BooleanVar(value=False)
         self.depth = tk.IntVar()
+        self.zoom = tk.StringVar()
         self.upperleft = (0,0)
         
         if file_path[-5:] == '.secv':
@@ -61,7 +62,7 @@ class GUI(ttk.Frame):
                 if 'white back' in display:
                     self.white.set(display['white back'])
                 if 'zoom' in display:
-                    self.zoom = tk.StringVar(value=str(int(display['zoom']*100)))
+                    self.zoom.set(value=str(int(display['zoom']*100)))
                 if 'upperleft' in display:
                     self.upperleft = display['upperleft']
         else:
