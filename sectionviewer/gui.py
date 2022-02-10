@@ -168,7 +168,7 @@ class GUI(ttk.Frame):
         y, x = self.g_anchor
         self.guide_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
         self.guide_id = self.guide_canvas.create_image(x, y, anchor='nw')
-        self.guide_canvas.create_image(5, 380, anchor='nw', image=self.k_image)
+        self.guide_canvas.create_image(0, 400, anchor='nw', image=self.k_image)
         self.guide_canvas.pack()
         self.dock_note.add(self.guide_frame, text='Guide')
         
