@@ -34,6 +34,8 @@ class Hub:
         self.thickness = int(gui.thickness.get())
         if hasattr(gui, 'zoom'):
             self.zoom = int(gui.zoom.get())/100
+        else:
+            gui.zoom = tk.StringVar()
         
         if secv != None:
             self.data = secv['data']
