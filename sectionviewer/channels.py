@@ -84,7 +84,7 @@ class Channels:
             button2.pack(side=tk.LEFT)
             self.button_dl = button2
     
-        self.treeview = ttk.Treeview(frame1, height=6)
+        self.treeview = ttk.Treeview(frame1, height=7)
         self.treeview.column('#0', width=330, stretch=False)
         self.treeview.heading('#0', text='Channels', anchor=tk.W)
         

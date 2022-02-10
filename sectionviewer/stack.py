@@ -117,46 +117,39 @@ class Stack:
         frame1 = ttk.Frame(self.stack_win)
         ttk.Label(frame1, text='Start: ').grid(column=0, row=0, sticky=tk.E)
         ttk.Label(frame1, text='Stop: ').grid(column=0, row=1, sticky=tk.E)
-        tk.Scale(frame1, length=350, variable=self.s_var[0], from_=from_, to=to,
-                 orient='horizontal', command=self.st_start).grid(column=1, row=0)
-        tk.Scale(frame1, length=350, variable=self.s_var[1], from_=from_, to=to,
-                 orient='horizontal', command=self.st_stop).grid(column=1, row=1)
-        
-        frame2 = ttk.Frame(self.stack_win)
-        scale = ttk.Frame(frame2)
-        scale.pack(side=tk.LEFT)
-        ttk.Label(scale, text='Start: ').grid(column=0, row=0, sticky=tk.E)
-        ttk.Label(scale, text='Stop: ').grid(column=0, row=1, sticky=tk.E)
-        tk.Scale(scale, length=330, variable=self.s_var[0], from_=from_, to=to,
+        tk.Scale(frame1, length=330, variable=self.s_var[0], from_=from_, to=to,
                  orient='horizontal', command=self.st_start).grid(column=1, row=0, 
-                                                                  columnspan=5, sticky=tk.W)
-        tk.Scale(scale, length=330, variable=self.s_var[1], from_=from_, to=to,
+                                                                  columnspan=6, sticky=tk.W)
+        tk.Scale(frame1, length=330, variable=self.s_var[1], from_=from_, to=to,
                  orient='horizontal', command=self.st_stop).grid(column=1, row=1,
-                                                                 columnspan=5, sticky=tk.W)
+                                                                 columnspan=6, sticky=tk.W)
                                                                  
-        ttk.Label(scale, text='Angle (°): ').grid(column=0, row=2, sticky=tk.E, pady=10)
+        ttk.Label(frame1, text='Angle (°): ').grid(column=1, row=2, sticky=tk.E, pady=10)
         angles = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
         self.angle = tk.StringVar(value='180')
         self.angle.trace('w', lambda *args: self.s_var[2].set(int(self.angle.get())))
-        ttk.Combobox(scale, values=angles, width=5, state='readonly',
-                     textvariable=self.angle).grid(column=1, row=2, sticky=tk.W, pady=10)
-        ttk.Label(scale, text='Frames: ').grid(column=2, row=2, sticky=tk.E, pady=10)
+        ttk.Combobox(frame1, values=angles, width=5, state='readonly',
+                     textvariable=self.angle).grid(column=2, row=2, sticky=tk.W, pady=10)
+        ttk.Label(frame1, text='Frames: ').grid(column=3, row=2, sticky=tk.E, pady=10)
         fnms = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
         self.fnm = tk.StringVar(value='15')
         self.fnm.trace('w', lambda *args: self.s_var[3].set(int(self.fnm.get())))
-        ttk.Combobox(scale, values=fnms, width=5, state='readonly',
-                     textvariable=self.fnm).grid(column=3, row=2, sticky=tk.W, pady=10)
+        ttk.Combobox(frame1, values=fnms, width=5, state='readonly',
+                     textvariable=self.fnm).grid(column=4, row=2, sticky=tk.W, pady=10)
         
         self.trans = tk.BooleanVar(value=False)
-        tk.Radiobutton(scale, image=self.Hub.gui.ver_image, variable=self.trans, 
-                       value=False, indicatoron=False).grid(column=4, row=2, sticky=tk.E)
-        tk.Radiobutton(scale, image=self.Hub.gui.hor_image, variable=self.trans, 
-                       value=True, indicatoron=False).grid(column=5, row=2, sticky=tk.W)
+        tk.Radiobutton(frame1, image=self.Hub.gui.ver_image, variable=self.trans, 
+                       value=False, indicatoron=False).grid(column=5, row=2, sticky=tk.E)
+        tk.Radiobutton(frame1, image=self.Hub.gui.hor_image, variable=self.trans, 
+                       value=True, indicatoron=False).grid(column=6, row=2, sticky=tk.W)
+        
+        for w in frame1.grid_slaves()[:-4]:
+            w['state'] = tk.DISABLED
         
         self.buttons = []
         self.i_s = 1
         
-        frame3 = ttk.Frame(self.stack_win)
+        frame2 = ttk.Frame(self.stack_win)
         def cancel():
             self.cancel = True
             try: 
@@ -171,8 +164,6 @@ class Stack:
                 w.state(['disabled'])
             for w in frame1.grid_slaves():
                 w.configure(state='disabled')
-            for w in scale.grid_slaves():
-                w.configure(state='disabled')
             self.buttons[0].focus_set()
             gui.master.unbind('<Left>')
             gui.master.unbind('<Right>')
@@ -184,9 +175,9 @@ class Stack:
                 self.stack_multi()
             elif self.stack_mode.get() == 'A':
                 self.stack_span()
-        self.buttons += [ttk.Button(frame3, text='Cancel', command=cancel)]
+        self.buttons += [ttk.Button(frame2, text='Cancel', command=cancel)]
         self.buttons[-1].pack(side=tk.LEFT)
-        self.buttons += [ttk.Button(frame3, text='OK', command=ok)]
+        self.buttons += [ttk.Button(frame2, text='OK', command=ok)]
         self.buttons[-1].pack(side=tk.LEFT)
         
         frame0 = ttk.Frame(self.stack_win)
@@ -194,27 +185,23 @@ class Stack:
         self.stack_mode = tk.StringVar()
         self.stack_mode.set('S')
         def S():
-            frame2.pack_forget()
-            frame3.pack_forget()
-            frame1.pack(fill=tk.X, padx=10, pady=10)
-            frame3.pack(pady=10)
+            for w in frame1.grid_slaves()[:-4]:
+                w['state'] = tk.DISABLED
         def M():
-            frame1.pack_forget()
-            frame3.pack_forget()
-            frame2.pack(fill=tk.X, padx=10)
-            frame3.pack(pady=10)
+            for w in frame1.grid_slaves()[:-4]:
+                w['state'] = tk.ACTIVE
         self.buttons += [ttk.Radiobutton(frame0, text='Single projection', value='S', 
                                variable=self.stack_mode, command=S)]
         self.buttons[-1].pack(side=tk.LEFT, padx=5)
-        self.buttons += [ttk.Radiobutton(frame0, text='Rotation', value='M',
-                               variable=self.stack_mode, command=M)]
-        self.buttons[-1].pack(side=tk.LEFT)
         self.buttons += [ttk.Radiobutton(frame0, text='Span', value='A',
                                variable=self.stack_mode, command=S)]
         self.buttons[-1].pack(side=tk.LEFT)
+        self.buttons += [ttk.Radiobutton(frame0, text='Rotation', value='M',
+                               variable=self.stack_mode, command=M)]
+        self.buttons[-1].pack(side=tk.LEFT)
         
         frame1.pack(fill=tk.X, padx=10, pady=10)
-        frame3.pack(pady=10)
+        frame2.pack(pady=10)
         
         self.cancel = True
         
@@ -226,32 +213,28 @@ class Stack:
                 self.i_s = 0
             elif self.i_s == 3:
                 self.i_s = 2
-                self.stack_mode.set('S')
-                S()
+                self.buttons[self.i_s].invoke()
             elif self.i_s == 4:
                 self.i_s = 3
-                self.stack_mode.set('M')
-                M()
+                self.buttons[self.i_s].invoke()
             self.buttons[self.i_s].focus_set()
         def right():
             if self.i_s == 0:
                 self.i_s = 1
             elif self.i_s == 2:
                 self.i_s = 3
-                self.stack_mode.set('M')
-                M()
+                self.buttons[self.i_s].invoke()
             elif self.i_s == 3:
                 self.i_s = 4
-                self.stack_mode.set('A')
-                S()
+                self.buttons[self.i_s].invoke()
             self.buttons[self.i_s].focus_set()
         def up():
             if self.i_s in [0,1]:
                 if self.stack_mode.get() == 'S':
                     self.i_s = 2
-                elif self.stack_mode.get() == 'M':
-                    self.i_s = 3
                 elif self.stack_mode.get() == 'A':
+                    self.i_s = 3
+                elif self.stack_mode.get() == 'M':
                     self.i_s = 4
                 self.buttons[self.i_s].focus_set()
         def down():

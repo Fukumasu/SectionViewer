@@ -40,7 +40,7 @@ class Snapshots:
         frame1 = ttk.Frame(frame0)
         frame1.pack(pady=10)
         
-        self.treeview = ttk.Treeview(frame1, height=6)
+        self.treeview = ttk.Treeview(frame1, height=7)
         self.treeview.column('#0', width=330, stretch=False)
         self.treeview.heading('#0', text='Saved configurations', anchor=tk.W)
     
