@@ -68,7 +68,6 @@ class GUI(ttk.Frame):
         self.lock = False
         
         self.g_shape = (400, 400)
-        self.g_anchor = (0, 0)
         
         self.shift = np.array([0.,0.])
         self.angle = 0.
@@ -145,7 +144,7 @@ class GUI(ttk.Frame):
         if self.d_on.get():
             self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
         width = 470 if pf == 'Darwin' else 420
-        self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=590)
+        self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=615)
         self.dock_canvas.pack(side=tk.LEFT)
         self.dock_note = ttk.Notebook(self.master)
         self.dock_id = self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
@@ -153,11 +152,11 @@ class GUI(ttk.Frame):
         bary.pack(side=tk.RIGHT, fill=tk.Y)
         bary.config(command=self.dock_canvas.yview)
         self.dock_canvas.config(yscrollcommand=bary.set)
-        self.dock_canvas.config(scrollregion=(0,0,0,590))
+        self.dock_canvas.config(scrollregion=(0,0,0,615))
         
         self.guide_frame = ttk.Frame(self.dock_note)
         self.guide_upper = ttk.Frame(self.guide_frame)
-        self.guide_upper.pack(anchor=tk.W, padx=10, pady=3)
+        self.guide_upper.pack(anchor=tk.W, padx=10)
         self.g_mode = tk.StringVar(value='guide')
         self.rad_g = ttk.Radiobutton(self.guide_upper, text='Skeleton', value='guide', 
                                      variable=self.g_mode)
@@ -165,9 +164,8 @@ class GUI(ttk.Frame):
         self.rad_s = ttk.Radiobutton(self.guide_upper, text='Side view', value='sideview', 
                                      variable=self.g_mode)
         self.rad_s.pack(side=tk.LEFT)
-        y, x = self.g_anchor
         self.guide_canvas = tk.Canvas(self.guide_frame, width=400, height=569)
-        self.guide_id = self.guide_canvas.create_image(x, y, anchor='nw')
+        self.guide_id = self.guide_canvas.create_image(0, 0, anchor='nw')
         self.guide_canvas.create_image(0, 400, anchor='nw', image=self.k_image)
         self.guide_canvas.pack()
         self.dock_note.add(self.guide_frame, text='Guide')
@@ -965,7 +963,7 @@ class GUI(ttk.Frame):
                 name = self.Hub.points.getnames()[nearest]
                 color = color//1.5
                 color = (int(color[0]), int(color[1]), int(color[2]))
-                p = points[nearest][:2] - np.array(self.g_anchor[::-1])
+                p = points[nearest][:2]
                 guide = cv2.circle(guide, tuple(p), 4, (255,255,255), -1, lineType=cv2.LINE_AA)
                 guide = cv2.circle(guide, tuple(p), 3, color, -1, lineType=cv2.LINE_AA)
                 

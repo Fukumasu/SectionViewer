@@ -438,7 +438,6 @@ class Hub:
         points = (points[:,::-1]*e).astype(np.int)
         points[:,:2] += np.array([w,h])//2
         self.guide_points = points.astype(np.int)
-        self.guide_points[:,:2] += np.array(self.gui.g_anchor[::-1])
         sec = ((sec - c)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
         uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
         uls = np.fmax(uls, 0)
