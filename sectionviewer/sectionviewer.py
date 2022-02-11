@@ -2,14 +2,17 @@ import os
 import platform
 import subprocess
 import sys
+import urllib.request as req
 
 import cv2
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
 from tkinter import ttk
 
 from .gui import GUI
+from .info import version, url
 from .stack import STAC
 
 pf = platform.system()
@@ -40,6 +43,17 @@ class SectionViewer(ttk.Frame):
         self.wins = []
         
         self.root.deiconify()
+        
+        with req.urlopen(url + '/blob/master/info.txt') as f:
+            new = str(f.read())
+        new = new.replace(' ', '').split('version=&#39;')[1].split('&#39;')[0]
+        if new > version:
+            title = 'SectionViewer-{0}'.format(version)
+            message = 'SectionViewer-{0} is available. '.format(new)
+            message += 'For installation:\n'
+            message += "'pip install sectionviewer --upgrade'"
+            messagebox.showinfo(title, message, parent=root)
+        
         if len(arg) == 0:
             self.open_new(self.root)
         else:
@@ -115,40 +129,12 @@ def launch(file_path=None):
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
     if file_path == None:
-        root = tk.Tk()
-        if pf == 'Windows':
-            root.iconbitmap('img/icon.ico')
-        icon = cv2.imread('img/resources.png')[-128:,:128]
-        icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
-        canvas = tk.Canvas(root, width=240, height=150)
-        canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
-        canvas.create_image(56, 11, image=icon, anchor='nw')
-        canvas.pack()
-        root.title('SectionViewer')
-        root.geometry('+0+0')
-        
-        filetypes = [('SectionViewer files', '*.secv'), 
-                     ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
-                     ('SV multi-stack files', '*.stac'),
-                     ('All files', '*')]
-        if not os.path.isfile('init_dir.txt'):
-            with open('init_dir.txt', 'w') as f:
-                f.write(os.path.expanduser('~/Desktop'))
-        with open('init_dir.txt', 'r') as f:
-            initialdir = f.read()
-        if not os.path.isdir(initialdir):
-            initialdir = os.path.expanduser('~/Desktop')
-            
-        file_path = filedialog.askopenfilename(parent=root, filetypes=filetypes, 
-                                               initialdir=initialdir, title='Open')
-        root.destroy()
-    if len(file_path) == 0:
-        return
+        file_path = ''
     if pf == 'Windows':
         subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
     else:
         subprocess.Popen('sectionviewer ' + file_path, shell=True)
-    return file_path
+    return
 
 
 if pf == 'Windows':
