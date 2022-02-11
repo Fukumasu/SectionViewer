@@ -22,6 +22,10 @@ class GUI(ttk.Frame):
         self.file_dir = os.path.dirname(file_path)
         self.file_name = os.path.basename(file_path)
         
+        super().__init__(master)
+        self.title = self.file_name
+        self.master.title(self.title)
+        
         resources = cv2.imread('img/resources.png')
         k_image = resources[204:373] if pf == 'Darwin' else resources[35:204]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
@@ -43,28 +47,43 @@ class GUI(ttk.Frame):
         self.zoom = tk.StringVar()
         self.upperleft = (0,0)
         
+        def close():
+            if self.master.winfo_exists: 
+                self.master.destroy()
+            close = True
+            for w in self.SV.wins:
+                close = close and not bool(w.winfo_exists())
+            if close:
+                self.SV.root.destroy()
+        
         if file_path[-5:] == '.secv':
-            with open(file_path, 'rb') as sv:
-                secv = pickle.load(sv)
-                
-            if 'display' in secv:
-                display = secv['display']
-                if 'thickness' in display:
-                    self.thickness.set(str(int(display['thickness'])))
-                if 'axis' in display:
-                    self.a_on.set(display['axis'])
-                if 'scale bar' in display:
-                    self.b_on.set(display['scale bar'])
-                if 'points' in display:
-                    self.p_on.set(display['points'])
-                if 'dock' in display:
-                    self.d_on.set(display['dock'])
-                if 'white back' in display:
-                    self.white.set(display['white back'])
-                if 'zoom' in display:
-                    self.zoom.set(value=str(int(display['zoom']*100)))
-                if 'upperleft' in display:
-                    self.upperleft = display['upperleft']
+            try:
+                with open(file_path, 'rb') as sv:
+                    secv = pickle.load(sv)
+
+                if 'display' in secv:
+                    display = secv['display']
+                    if 'thickness' in display:
+                        self.thickness.set(str(int(display['thickness'])))
+                    if 'axis' in display:
+                        self.a_on.set(display['axis'])
+                    if 'scale bar' in display:
+                        self.b_on.set(display['scale bar'])
+                    if 'points' in display:
+                        self.p_on.set(display['points'])
+                    if 'dock' in display:
+                        self.d_on.set(display['dock'])
+                    if 'white back' in display:
+                        self.white.set(display['white back'])
+                    if 'zoom' in display:
+                        self.zoom.set(value=str(int(display['zoom']*100)))
+                    if 'upperleft' in display:
+                        self.upperleft = display['upperleft']
+            except Exception as e:
+                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+                                     parent=self.master)
+                close()
+                return
         else:
             secv = None
         
@@ -84,22 +103,10 @@ class GUI(ttk.Frame):
         self.p_num = -1
         self.mode = 0
         
-        super().__init__(master)
-        self.title = self.file_name
-        self.master.title(self.title)
-        
         self.SV.root.withdraw()
         self.create_widgets()
         self.master.update()
         
-        def close():
-            if self.master.winfo_exists: 
-                self.master.destroy()
-            close = True
-            for w in self.SV.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.SV.root.destroy()
         try:
             self.Hub = Hub(self, file_path, secv=secv)
         except Exception as e:
