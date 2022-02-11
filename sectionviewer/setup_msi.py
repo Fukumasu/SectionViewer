@@ -23,6 +23,7 @@ def main():
     if epath != epath0:
         with open(os.path.join(svdir, 'exe_path.txt'), 'w') as f:
             f.write(epath0)
+    if 'from_msi' in sys.argv[1:]:
         return
     
     command = os.path.split(svdir)[0]
@@ -59,7 +60,7 @@ build_exe_options = {'packages': ['os'],
                                   'urllib',
                                   'xml']}
 
-msi_data = {'CustomAction': [('EXECUTE_EXE', 18, info.name + '.exe', None)],
+msi_data = {'CustomAction': [('EXECUTE_EXE', 18, info.name + '.exe', 'from_msi')],
             'InstallUISequence': [('EXECUTE_EXE', None, 10000)]}
 
 bdist_msi_options = {'add_to_path': False,
