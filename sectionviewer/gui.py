@@ -79,8 +79,8 @@ class GUI(ttk.Frame):
                         self.zoom.set(value=str(int(display['zoom']*100)))
                     if 'upperleft' in display:
                         self.upperleft = display['upperleft']
-            except Exception as e:
-                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+            except:
+                messagebox.showerror('Error', traceback.format_exc(),
                                      parent=self.master)
                 close()
                 return
@@ -109,8 +109,8 @@ class GUI(ttk.Frame):
         
         try:
             self.Hub = Hub(self, file_path, secv=secv)
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
             close()
             return

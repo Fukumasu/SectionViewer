@@ -467,9 +467,9 @@ class Snapshots:
                         c[2], c[3]] for c in secv['channels']]
                 pts = [[p[0], [p[1][0], p[1][1], p[1][2]], 
                        [p[2][0], p[2][1], p[2][2]]] for p in secv['points']]
-            except Exception as e:
-                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
-                                     parent=Hub.gui.palette)
+            except:
+                messagebox.showerror('Error', traceback.format_exc(),
+                                     parent=Hub.gui.master)
                 return
         else:
             pts = []
@@ -499,9 +499,9 @@ class Snapshots:
                     new += [m.val]
                     typ += [m]
                 else: del old[-1]
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
-                                 parent=Hub.gui.palette)
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
+                                 parent=Hub.gui.master)
             return None
         
         if len(new) > 0:

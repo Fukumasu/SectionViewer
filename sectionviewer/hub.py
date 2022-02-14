@@ -723,8 +723,8 @@ class Hub:
         try:
             with open(path, 'wb') as f:
                 pickle.dump(secv, f, protocol=4)
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.gui.master)
             return False
             
@@ -748,8 +748,8 @@ class Hub:
                 return True
             else:
                 return False
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.gui.master)
             return False
     
@@ -804,9 +804,9 @@ class Hub:
                     sort = np.argsort(self.channels.getnames())
                     try:
                         tif.imwrite(path, self.frame[sort])
-                    except Exception as e:
-                        messagebox.showerror('Error', 'Failed to export TIFF file :\n'\
-                                             + traceback.format_exception_only(type(e), e)[0],
+                    except:
+                        messagebox.showerror('Error', traceback.format_exc() + 
+                                             '\nFailed to export TIFF file',
                                              parent=self.gui.master)
                         return
                     with open('init_dir.txt', 'w') as f:
@@ -886,7 +886,7 @@ class Reload:
         Hub = self.Hub
         path = Hub.secv_name
         if path == None:
-            messagebox.showerror('Error', 'Only SECV files can be reloaded.',
+            messagebox.showerror('Error', 'SECV files to be reloaded is unknown.',
                                  parent=self.Hub.gui.master)
             return
         try:
@@ -897,8 +897,8 @@ class Reload:
             pos = secv['position']
             chs = secv['channels']
             pts = secv['points']
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.Hub.gui.master)
             return None
         
@@ -922,9 +922,9 @@ class Reload:
                     new += [m.val]
                     typ += [m]
                 else: del old[-1]
-        except Exception as e:
-            messagebox.showerror('Error', 'Failed to reload {0} :\n'.format(path)\
-                                  + traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc() + 
+                                  '\nFailed to reload {0}'.format(path),
                                   parent=self.Hub.gui.master)
             return None
             

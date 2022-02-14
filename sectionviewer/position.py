@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 
 from . import utils as ut

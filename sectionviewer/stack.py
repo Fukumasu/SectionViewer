@@ -721,8 +721,8 @@ class STAC(ttk.Frame):
                 self.SV.root.destroy()
         try:
             self.Hub = Hub_stack(self, file_path, stac=stac)
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
             close()
             return
@@ -1208,8 +1208,8 @@ class STAC(ttk.Frame):
                 byt = gzip.compress(byt, compresslevel=1)
                 with open(path, 'wb') as f:
                     f.write(byt)
-            except Exception as e:
-                messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+            except:
+                messagebox.showerror('Error', traceback.format_exc(),
                                      parent=self.master)
                 return False
             self.saving.set('')
@@ -1241,8 +1241,8 @@ class STAC(ttk.Frame):
                 return True
             else:
                 return False
-        except Exception as e:
-            messagebox.showerror('Error', traceback.format_exception_only(type(e), e)[0],
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
             return False
         
@@ -1304,9 +1304,9 @@ class STAC(ttk.Frame):
                     sort = np.argsort(Hub.channels.getnames())
                     try:
                         tif.imwrite(path, Hub.frame[sort])
-                    except Exception as e:
-                        messagebox.showerror('Error', 'Failed to export TIFF file :\n'\
-                                             + traceback.format_exception_only(type(e), e)[0],
+                    except:
+                        messagebox.showerror('Error', traceback.format_exc() + 
+                                             '\nFailed to export TIFF file',
                                              parent=self.master)
                         return
                     with open('init_dir.txt', 'w') as f:
