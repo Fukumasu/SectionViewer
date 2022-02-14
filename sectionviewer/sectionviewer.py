@@ -2,7 +2,6 @@ import os
 import platform
 import subprocess
 import sys
-import urllib.request as req
 
 import cv2
 from PIL import Image, ImageTk
@@ -43,19 +42,6 @@ class SectionViewer(ttk.Frame):
         self.wins = []
         
         self.root.deiconify()
-        
-        try:
-            with req.urlopen(url + '/blob/master/info.txt') as f:
-                new = str(f.read())
-            new = new.replace(' ', '').split('version=&#39;')[1].split('&#39;')[0]
-            if new > version:
-                title = 'SectionViewer-{0}'.format(version)
-                message = 'SectionViewer-{0} is available. '.format(new)
-                message += 'For installation:\n'
-                message += "'pip install git+{0} --upgrade'".format(url)
-                messagebox.showinfo(title, message, parent=root)
-        except:
-            pass
         
         if len(arg) == 0:
             self.open_new(self.root)
