@@ -52,7 +52,7 @@ class SectionViewer(ttk.Frame):
                 title = 'SectionViewer-{0}'.format(version)
                 message = 'SectionViewer-{0} is available. '.format(new)
                 message += 'For installation:\n'
-                message += "'pip install sectionviewer --upgrade'"
+                message += "'pip install git+{0} --upgrade'".format(url)
                 messagebox.showinfo(title, message, parent=root)
         except:
             pass
