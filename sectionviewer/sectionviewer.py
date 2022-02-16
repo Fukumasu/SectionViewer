@@ -7,11 +7,9 @@ import cv2
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog
-from tkinter import messagebox
 from tkinter import ttk
 
 from .gui import GUI
-from .info import version, url
 from .stack import STAC
 
 pf = platform.system()
@@ -39,14 +37,51 @@ class SectionViewer(ttk.Frame):
         
         if len(arg) == 0:
             arg = sys.argv[1:]
-        self.wins = []
-        
-        self.root.deiconify()
         
         if len(arg) == 0:
-            self.open_new(self.root)
+            file_path = None
         else:
-            self.open_new(self.root, file_path=arg[0])
+            file_path = arg[0]
+        
+        if file_path == None:
+            self.root.deiconify()
+            filetypes = [('SectionViewer files', '*.secv'), 
+                         ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
+                         ('SV multi-stack files', '*.stac'),
+                         ('All files', '*')]
+            if not os.path.isfile('init_dir.txt'):
+                with open('init_dir.txt', 'w') as f:
+                    f.write(os.path.expanduser('~/Desktop'))
+            with open('init_dir.txt', 'r') as f:
+                initialdir = f.read()
+            if not os.path.isdir(initialdir):
+                initialdir = os.path.expanduser('~/Desktop')
+            file_path = filedialog.askopenfilename(parent=self.root, filetypes=filetypes, 
+                                                   initialdir=initialdir, title='Open')
+        
+        if len(file_path) > 0:
+            file_path = file_path.replace('\\', '/')
+                
+            master = tk.Toplevel(self.root)
+            w, h = self.screenwidth, self.screenheight
+            master.geometry('{0}x{1}+0+0'.format(w, h))
+            if pf == 'Windows':
+                master.iconbitmap('img/icon.ico')
+                master.state('zoomed')
+            
+            pop = True if 'pop' in arg else False
+            
+            if file_path[-5:] == '.stac':
+                gui = STAC(self, master, file_path, pop=pop)
+            else:
+                gui = GUI(self, master, file_path)
+            
+            if hasattr(gui, 'Hub') and not pop:
+                with open('init_dir.txt', 'w') as f:
+                    f.write(os.path.dirname(file_path))
+        else:
+            self.root.destroy()
+                
     
     def open_new(self, master, file_path=None):
         
@@ -67,28 +102,12 @@ class SectionViewer(ttk.Frame):
         
         if len(file_path) > 0:
             file_path = file_path.replace('\\', '/')
-                
-            master = tk.Toplevel(self.root)
-            w, h = self.screenwidth, self.screenheight
-            master.geometry('{0}x{1}+0+0'.format(w, h))
             if pf == 'Windows':
-                master.iconbitmap('img/icon.ico')
-                master.state('zoomed')
-            self.wins += [master]
-            if file_path[-5:] == '.stac':
-                gui = STAC(self, master, file_path)
+                with open('exe_path.txt', 'r') as f:
+                    exe_path = f.read()
+                subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
             else:
-                gui = GUI(self, master, file_path)
-            
-            if hasattr(gui, 'Hub'):
-                with open('init_dir.txt', 'w') as f:
-                    f.write(os.path.dirname(file_path))
-        else:
-            close = True
-            for w in self.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.root.destroy()
+                subprocess.Popen('sectionviewer ' + file_path, shell=True)
 
     
 def launch(file_path=None):

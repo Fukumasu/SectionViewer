@@ -31,7 +31,7 @@ def main():
         command = os.path.split(command)[0]
     command += '/python ' + svdir + '/subdir/launcher.py'
     if len(sys.argv) > 1:
-        command += ' ' + sys.argv[1]
+        command += ' ' + ' '.join(sys.argv[1:])
     subprocess.run(command, shell=True)
     
 if __name__ == '__main__':

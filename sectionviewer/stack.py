@@ -324,18 +324,21 @@ class Stack:
         
         chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
                 c[2], c[3]] for c in Hub.channels.chs]
+        
         stac = [self.stacked[None], chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'single', 'trans': 0}]
+        path = str(time.time()) + '.stac'
+        try:
+            byt = pickle.dumps(stac, protocol=4)
+            byt = gzip.compress(byt, compresslevel=1)
+            with open(path, 'wb') as f:
+                f.write(byt)
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
+                                 parent=self.master)
+            return
         gui = self.Hub.gui
-        
-        master = tk.Toplevel(gui.SV.root)
-        w, h = gui.SV.screenwidth, gui.SV.screenheight
-        master.geometry('{0}x{1}+0+0'.format(w, h))
-        if pf == 'Windows':
-            master.iconbitmap('img/icon.ico')
-            master.state('zoomed')
-        gui.SV.wins += [master]
-        STAC(gui.SV, master, gui.file_path, stac=stac)
+        gui.SV.open_new(gui.master, file_path=path+' pop')
         
         
     def stack_multi(self):
@@ -420,19 +423,22 @@ class Stack:
             trans = int(angle == 180 and not self.cancel)
             if trans:
                 trans += int(self.trans.get())
+                
             stac = [self.stacks, chs, Hub.geometry.geo,
                     {'white back': Hub.gui.white.get(), 'mode':'rotation', 
                      'trans': trans}]
-            gui = Hub.gui
-            
-            master = tk.Toplevel(gui.SV.root)
-            w, h = gui.SV.screenwidth, gui.SV.screenheight
-            master.geometry('{0}x{1}+0+0'.format(w, h))
-            if pf == 'Windows':
-                master.iconbitmap('img/icon.ico')
-                master.state('zoomed')
-            gui.SV.wins += [master]
-            STAC(gui.SV, master, gui.file_path, stac=stac)
+            path = str(time.time()) + '.stac'
+            try:
+                byt = pickle.dumps(stac, protocol=4)
+                byt = gzip.compress(byt, compresslevel=1)
+                with open(path, 'wb') as f:
+                    f.write(byt)
+            except:
+                messagebox.showerror('Error', traceback.format_exc(),
+                                     parent=self.master)
+                return
+            gui = self.Hub.gui
+            gui.SV.open_new(gui.master, file_path=path+' pop')
                 
         Hub.put_points()
         
@@ -469,18 +475,21 @@ class Stack:
             
         chs = [[c[0], [c[1][0], c[1][1], c[1][2]],
                 c[2], c[3]] for c in Hub.channels.chs]
+        
         stac = [stacks, chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'span', 'trans': 0}]
-        gui = Hub.gui
-        
-        master = tk.Toplevel(gui.SV.root)
-        w, h = gui.SV.screenwidth, gui.SV.screenheight
-        master.geometry('{0}x{1}+0+0'.format(w, h))
-        if pf == 'Windows':
-            master.iconbitmap('img/icon.ico')
-            master.state('zoomed')
-        gui.SV.wins += [master]
-        STAC(gui.SV, master, gui.file_path, stac=stac)
+        path = str(time.time()) + '.stac'
+        try:
+            byt = pickle.dumps(stac, protocol=4)
+            byt = gzip.compress(byt, compresslevel=1)
+            with open(path, 'wb') as f:
+                f.write(byt)
+        except:
+            messagebox.showerror('Error', traceback.format_exc(),
+                                 parent=self.master)
+            return
+        gui = self.Hub.gui
+        gui.SV.open_new(gui.master, file_path=path+' pop')
                 
         Hub.put_points()
         
@@ -680,7 +689,7 @@ class Stack:
     
     
 class STAC(ttk.Frame):
-    def __init__(self, SV, master, file_path, stac=None):
+    def __init__(self, SV, master, file_path, pop=False):
         
         self.SV = SV
         
@@ -714,13 +723,9 @@ class STAC(ttk.Frame):
         def close():
             if self.master.winfo_exists: 
                 self.master.destroy()
-            close = True
-            for w in self.SV.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.SV.root.destroy()
+            self.SV.root.destroy()
         try:
-            self.Hub = Hub_stack(self, file_path, stac=stac)
+            self.Hub = Hub_stack(self, file_path, pop=pop)
         except:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
@@ -730,7 +735,7 @@ class STAC(ttk.Frame):
             close()
             return
         
-        if stac != None:
+        if pop:
             self.file_path = None
             self.title = 'stack'
             self.master.title('*' + self.title)
@@ -987,11 +992,7 @@ class STAC(ttk.Frame):
         if self.Hub.hidx == self.Hub.hidx_saved:
             self.master.destroy()
             del self.Hub
-            close = True
-            for w in self.SV.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.SV.root.destroy()
+            self.SV.root.destroy()
         else:
             ans = messagebox.askyesnocancel(title='Closing', 
                                             message='Do you want to save '
@@ -1003,19 +1004,11 @@ class STAC(ttk.Frame):
                 if self.save(self.file_path):
                     self.master.destroy()
                     del self.Hub
-                    close = True
-                    for w in self.SV.wins:
-                        close = close and not bool(w.winfo_exists())
-                    if close:
-                        self.SV.root.destroy()
+                    self.SV.root.destroy()
             else:
                 self.master.destroy()
                 del self.Hub
-                close = True
-                for w in self.SV.wins:
-                    close = close and not bool(w.winfo_exists())
-                if close:
-                    self.SV.root.destroy()
+                self.SV.root.destroy()
             
             
     def b_switch(self):
@@ -1481,15 +1474,19 @@ class STAC(ttk.Frame):
             
         
 class Hub_stack:
-    def __init__(self, gui, path, stac=None):
+    def __init__(self, gui, path, pop=False):
         self.gui = gui
-        if stac == None:
+        if pop:
             with open(path, 'rb') as f:
                 byt = f.read()
             byt = gzip.decompress(byt)
             self.stacks, self.channels, self.geometry, *args = pickle.loads(byt)
+            os.remove(path)
         else:
-            self.stacks, self.channels, self.geometry, *args = stac
+            with open(path, 'rb') as f:
+                byt = f.read()
+            byt = gzip.decompress(byt)
+            self.stacks, self.channels, self.geometry, *args = pickle.loads(byt)
         
         self.channels = Channels(self)
         self.geometry = Geometry(self)

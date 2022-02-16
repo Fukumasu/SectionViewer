@@ -50,11 +50,7 @@ class GUI(ttk.Frame):
         def close():
             if self.master.winfo_exists: 
                 self.master.destroy()
-            close = True
-            for w in self.SV.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.SV.root.destroy()
+            self.SV.root.destroy()
         
         if file_path[-5:] == '.secv':
             try:
@@ -463,14 +459,10 @@ class GUI(ttk.Frame):
         secv_name = self.Hub.secv_name
         if self.Hub.hidx == self.Hub.hidx_saved:
             self.master.destroy()
-            del self.Hub
-            close = False if reboot else True
-            for w in self.SV.wins:
-                close = close and not bool(w.winfo_exists())
-            if close:
-                self.SV.root.destroy()
             if reboot:
                 self.SV.open_new(self.SV.root, secv_name)
+            else:
+                self.SV.root.destroy()
         else:
             ans = messagebox.askyesnocancel(title='Closing', 
                                             message='Do you want to save '
@@ -482,23 +474,17 @@ class GUI(ttk.Frame):
                 if self.Hub.save(secv_name):
                     self.master.destroy()
                     del self.Hub
-                    close = False if reboot else True
-                    for w in self.SV.wins:
-                        close = close and not bool(w.winfo_exists())
-                    if close:
-                        self.SV.root.destroy()
                     if reboot:
                         self.SV.open_new(self.SV.root, secv_name)
+                    else:
+                        self.SV.root.destroy()
             else:
                 self.master.destroy()
                 del self.Hub
-                close = False if reboot else True
-                for w in self.SV.wins:
-                    close = close and not bool(w.winfo_exists())
-                if close:
-                    self.SV.root.destroy()
                 if reboot:
                     self.SV.open_new(self.SV.root, secv_name)
+                else:
+                    self.SV.root.destroy()
                     
     
     def zm_enter(self):
