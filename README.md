@@ -26,4 +26,4 @@ Coming soon
 
 ## License
 
-Preparing
+This software is distributed under [MIT license](https://github.com/Fukumasu/SectionViewer/blob/master/LICENSE.md)
