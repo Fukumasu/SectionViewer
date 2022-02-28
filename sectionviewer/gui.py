@@ -147,12 +147,15 @@ class GUI(ttk.Frame):
         
         # Dock
         self.dock_frame = tk.Frame(self.master)
-        self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
         width = 470 if pf == 'Darwin' else 420
         self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=615)
         self.dock_canvas.pack(side=tk.LEFT)
         self.dock_note = ttk.Notebook(self.master)
         self.dock_id = self.dock_canvas.create_window(0, 0, anchor='nw', window=self.dock_note)
+        if not self.d_on.get():
+            self.dock_canvas.configure(width=0)
+            self.dock_canvas.moveto(self.dock_id, 500, 0)
+        self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
         bary = tk.Scrollbar(self.dock_frame, orient=tk.VERTICAL)
         bary.pack(side=tk.RIGHT, fill=tk.Y)
         bary.config(command=self.dock_canvas.yview)
