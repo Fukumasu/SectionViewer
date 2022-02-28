@@ -186,14 +186,15 @@ class Position(list):
 
 class Channels:
     def __init__(self, hub, val):
-        if type(val) != SuperList:
-            _val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
-                     max(0, min(65534, int(c[2]))), 
-                     max(1, min(65535, max(int(c[2])+1, int(c[3]))))] for c in val]
-            _val = SuperList(_val)
-        object.__setattr__(self, "_val" , val)
         object.__setattr__(self, "_hub" , hub)
-        self._refresh()
+        if type(val) == SuperList:
+            object.__setattr__(self, '_val', val)
+            self._refresh()
+        else:
+            val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
+                    max(0, min(65534, int(c[2]))), 
+                    max(1, min(65535, max(int(c[2])+1, int(c[3]))))] for c in val]
+            object.__setattr__(self, "_val" , SuperList(val))
     def __str__(self):
         ch_nm = self.getnames()
         m = max([len(nm) for nm in ch_nm])
@@ -294,16 +295,16 @@ class Channel:
         
 class Points:
     def __init__(self, hub, val):
+        object.__setattr__(self, "_hub" , hub)
         if type(val) == SuperList:
             object.__setattr__(self, "_val" , val)
             self._refresh()
         else:
             dc, dz, dy, dx = hub.geometry["shape"]
             d = [dz, dy, dx]
-            _val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
-                    [float(max(-d[i]//2, min(d[i]+d[i]//2, float(c[2][i])))) for i in range(3)]] for c in val]
-            object.__setattr__(self, "_val" , SuperList(_val))
-        object.__setattr__(self, "_hub" , hub)
+            val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
+                   [float(max(-d[i]//2, min(d[i]+d[i]//2, float(c[2][i])))) for i in range(3)]] for c in val]
+            object.__setattr__(self, "_val" , SuperList(val))
     def __str__(self):
         if len(self) == 0:
             return "[]"
