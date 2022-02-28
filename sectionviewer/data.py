@@ -245,7 +245,7 @@ Please tell where is the file.'''.format(os.path.basename(path)), parent=Hub.gui
     
     def reload(self, dat):
         data = self.dat
-        files = [os.path.apspath(str(d[0])).replace('\\', '/') for d in data]
+        files = [os.path.abspath(str(d[0])).replace('\\', '/') for d in data]
         ch_load = [d[1] for d in data]
         data = []
         for f, c in zip(files, ch_load):
@@ -253,7 +253,7 @@ Please tell where is the file.'''.format(os.path.basename(path)), parent=Hub.gui
                 data += [[f, c]]
         data = tuple(data)
         
-        files = [os.path.apspath(str(d[0])).replace('\\', '/') for d in dat]
+        files = [os.path.abspath(str(d[0])).replace('\\', '/') for d in dat]
         ch_load = [d[1] for d in dat]
         dat0 = []
         for f, c in zip(files, ch_load):
