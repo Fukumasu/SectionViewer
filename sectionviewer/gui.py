@@ -147,8 +147,7 @@ class GUI(ttk.Frame):
         
         # Dock
         self.dock_frame = tk.Frame(self.master)
-        if self.d_on.get():
-            self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
+        self.dock_frame.pack(padx=5, pady=5, side=tk.RIGHT)
         width = 470 if pf == 'Darwin' else 420
         self.dock_canvas = tk.Canvas(self.dock_frame, width=width, height=615)
         self.dock_canvas.pack(side=tk.LEFT)
