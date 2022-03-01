@@ -220,7 +220,7 @@ class Channels:
         if type(x) == str:
             w = np.where(np.array(self.getnames())==x)[0].tolist()
             if len(w) == 0:
-                raise NameError("Channel name '{0}' does not exist".format(x))
+                raise KeyError("Channel name '{0}' does not exist".format(x))
             x = w
         return Channels(self._hub, self._val[x])
     def __setitem__(self, x, v):
@@ -357,7 +357,7 @@ class Points:
         if type(x) == str:
             w = np.where(np.array(self.getnames())==x)[0].tolist()
             if len(w) == 0:
-                raise NameError("Point name '{0}' does not exist".format(x))
+                raise KeyError("Point name '{0}' does not exist".format(x))
             x = w
         return Points(self._hub, self._val[x])
     def __setitem__(self, x, v):
@@ -491,7 +491,7 @@ class Snapshots:
         if type(x) == str:
             w = np.where(np.array(self.getnames())==x)[0].tolist()
             if len(w) == 0:
-                raise NameError("Snapshot name '{0}' does not exist".format(x))
+                raise KeyError("Snapshot name '{0}' does not exist".format(x))
             x = w
         return Snapshots(self._hub, self._val[x])
     def getnames(self):
