@@ -10,11 +10,7 @@ class Channels:
         self.Hub = Hub
         chs = Hub.channels
         
-        if hasattr(Hub, 'geometry'):
-            dc = Hub.geometry['shape'][0]
-        elif hasattr(Hub, 'stacks'):
-            data = Hub.stacks
-            dc = len(data[0])
+        dc = Hub.geometry['shape'][0]
             
         if len(chs) != dc:
             c = self.auto_color([], dc) if dc > 1 else [[255]*3]
@@ -740,6 +736,7 @@ class Channels:
         dc = Hub.data.load(dat, add=True)
         if dc == 0:
             return
+        print(self.Hub.geometry['shape'], self.Hub.geometry.geo['shape'])
         
         fix = [list(c[1]) for c in self.chs]
         c = self.auto_color(fix, dc)

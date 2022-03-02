@@ -143,6 +143,13 @@ class Hub:
         
         self.load_success = True
         
+        
+    def __setattr__(self, name, value):
+        object.__setattr__(self, name, value)
+        if name == 'box':
+            if hasattr(value, 'shape'):
+                self.geometry['shape'] = value.shape
+        
     
     def calc_geometry(self):
         geo = self.geometry

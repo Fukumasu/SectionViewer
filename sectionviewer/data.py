@@ -191,8 +191,6 @@ Please tell where is the file.'''.format(os.path.basename(f)), parent=self.Hub.g
         if add: object.__setattr__(self, 'dat', tuple(list(self.dat) + dat))
         else: object.__setattr__(self, 'dat', tuple(dat))
         
-        Hub.geometry['shape'] = box.shape
-        
         return len(box)
     
     
