@@ -134,6 +134,14 @@ def launch(file_path=None):
                     f.write(exe_path)
                 print('canceled')
                 return
+            
+            import shutil
+            lib = os.path.dirname(exe_path) + '/lib'
+            zlib = os.path.dirname(exe_path) + '/zlib.dll'
+            try:
+                shutil.copy(zlib, lib)
+            except:
+                pass
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
     if file_path == None:
