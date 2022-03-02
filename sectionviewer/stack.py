@@ -327,7 +327,8 @@ class Stack:
         
         stac = [self.stacked[None], chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'single', 'trans': 0}]
-        path = str(time.time()) + '.stac'
+        gui = self.Hub.gui
+        path = os.path.splitext(gui.title)[0] + '.stac'
         try:
             byt = pickle.dumps(stac, protocol=4)
             byt = gzip.compress(byt, compresslevel=1)
@@ -337,7 +338,6 @@ class Stack:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
             return
-        gui = self.Hub.gui
         gui.SV.open_new(gui.master, file_path=path+' pop')
         
         
@@ -427,7 +427,8 @@ class Stack:
             stac = [self.stacks, chs, Hub.geometry.geo,
                     {'white back': Hub.gui.white.get(), 'mode':'rotation', 
                      'trans': trans}]
-            path = str(time.time()) + '.stac'
+            gui = self.Hub.gui
+            path = os.path.splitext(gui.title)[0] + '.stac'
             try:
                 byt = pickle.dumps(stac, protocol=4)
                 byt = gzip.compress(byt, compresslevel=1)
@@ -437,7 +438,6 @@ class Stack:
                 messagebox.showerror('Error', traceback.format_exc(),
                                      parent=self.master)
                 return
-            gui = self.Hub.gui
             gui.SV.open_new(gui.master, file_path=path+' pop')
                 
         Hub.put_points()
@@ -478,7 +478,8 @@ class Stack:
         
         stac = [stacks, chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'span', 'trans': 0}]
-        path = str(time.time()) + '.stac'
+        gui = self.Hub.gui
+        path = os.path.splitext(gui.title)[0] + '.stac'
         try:
             byt = pickle.dumps(stac, protocol=4)
             byt = gzip.compress(byt, compresslevel=1)
@@ -488,7 +489,6 @@ class Stack:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent=self.master)
             return
-        gui = self.Hub.gui
         gui.SV.open_new(gui.master, file_path=path+' pop')
                 
         Hub.put_points()
