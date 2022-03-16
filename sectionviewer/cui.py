@@ -1,11 +1,14 @@
 import os
 import pickle
+import platform
 
 import numpy as np
 import oiffile as oif
 import tifffile as tif
 
 from . import utils as ut
+
+pf = platform.system()
 
 def load(path):
     return SectionViewer(path)
@@ -650,6 +653,46 @@ class SectionViewer(dict):
         channels = self.data.channels_to_load()
         boxes = []    
         for i, f in enumerate(files):
+            if not os.path.isfile(f):
+                import platform
+                import cv2
+                from PIL import Image, ImageTk
+                import tkinter as tk
+                from tkinter import messagebox
+                from tkinter import filedialog
+                
+                pf = platform.system()
+                
+                root = tk.Tk()
+                cd = os.path.dirname(os.path.abspath(__file__))
+                if pf == 'Windows':
+                    root.iconbitmap(cd + '/img/icon.ico')
+                icon = cv2.imread(cd + '/img/resources.png')[-128:,:128]
+                icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
+                canvas = tk.Canvas(root, width=240, height=150)
+                canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
+                canvas.create_image(56, 11, image=icon, anchor='nw')
+                canvas.pack()
+                root.geometry('+0+0')
+                root.title('SectionViewer')
+                
+                messagebox.showinfo('Information',
+                                    '''The following file path seems to have been changed:
+{0}
+Please specify the file again.'''.format(f), parent=root)
+                filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                             ('All files', '*')]
+                initialdir = os.path.dirname(f)
+                initialfile = os.path.splitext(os.path.basename(f))[0]
+                f = filedialog.askopenfilename(parent=root, 
+                                               filetypes=filetypes, 
+                                               initialdir=initialdir, 
+                                               initialfile=initialfile,
+                                               title='Find {0}'.format(os.path.basename(f)))
+                root.destroy()
+                if len(f) == 0:
+                    return
+                f = f.replace('\\', '/')
                 
             if os.path.splitext(f)[1] == ".oib":
                 boxes += [oif.imread(f)]

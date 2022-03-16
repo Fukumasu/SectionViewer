@@ -87,9 +87,9 @@ class Data:
                 if self.Hub.secv_name == None:
                     raise FileNotFoundError('[Errno 2] No such file or directory: ' + f)
                 messagebox.showinfo('Information',
-                                    '''The SECV file failed to specify a file:
+                                    '''The following file path seems to have been changed:
 {0}
-Please tell where is the file.'''.format(os.path.basename(f)), parent=self.Hub.gui.master)
+Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                 filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                              ('All files', '*')]
                 initialdir = Hub.gui.file_dir
@@ -199,9 +199,9 @@ Please tell where is the file.'''.format(os.path.basename(f)), parent=self.Hub.g
         
         if not os.path.isfile(path):
             messagebox.showinfo('Information',
-                                '''Couldn't find the following data file:
+                                    '''The following file path seems to have been changed:
 {0}
-Please tell where is the file.'''.format(os.path.basename(path)), parent=Hub.gui.master)
+Please specify the file again.'''.format(path), parent=self.Hub.gui.master)
             filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             initialdir = Hub.gui.file_dir
@@ -210,7 +210,7 @@ Please tell where is the file.'''.format(os.path.basename(path)), parent=Hub.gui
                                               filetypes=filetypes, 
                                               initialdir=initialdir, 
                                               initialfile=initialfile,
-                                              title='Specify {0}'.format(os.path.basename(path)))
+                                              title='Find {0}'.format(os.path.basename(path)))
             if len(path) == 0:
                 return
             path = path.replace('\\', '/')
