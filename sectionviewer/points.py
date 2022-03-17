@@ -161,7 +161,7 @@ class Points:
         self.entry_b.bind('<Return>', lambda event: color_entry('b'))
         self.entry_b.bind('<FocusIn>', lambda event: select_entry())
         self.entry_b.bind('<FocusOut>', lambda event: color_entry('b'))
-        ttk.Button(rgb_frame, text='Auto', command=self.pt_auto).grid(column=1, row=4, 
+        ttk.Button(rgb_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
         note.add(rgb_frame, text='RGB')
         
@@ -192,7 +192,7 @@ class Points:
         self.entry_l.bind('<Return>', lambda event: color_entry('l'))
         self.entry_l.bind('<FocusIn>', lambda event: select_entry())
         self.entry_l.bind('<FocusOut>', lambda event: color_entry('l'))
-        ttk.Button(hsl_frame, text='Auto', command=self.pt_auto).grid(column=1, row=4, 
+        ttk.Button(hsl_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
         note.add(hsl_frame, text='HSL')
         
@@ -308,7 +308,7 @@ class Points:
             self.button_cg['state'] = tk.DISABLED
                 
                 
-    def pt_auto(self):
+    def set_auto(self):
         x = self.treeview.selection()
         old = [self.pts[int(i)][1] for i in x]
         

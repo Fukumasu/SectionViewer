@@ -418,25 +418,12 @@ class Hub:
         pn = np.array(np.where((pn + pn.T)*(edges>=0)))
         sec = np.average(peaks[pn,1:], axis=0, weights=np.tile(np.abs(peaks[pn[::-1],:1]), (1,2)))
         
-        sort = [0]
-        remain = list(range(1,len(sec)))
-        v0 = sec[1] - sec[0]
-        v0 /= np.linalg.norm(v0)
-        for _ in range(len(sec)-1):
-            v1 = sec[remain] - sec[sort[-1]][None]
-            v1 /= np.linalg.norm(v1, axis=1)[:,None]
-            n = remain[np.argmin(np.inner(v1, v0))]
-            sort += [n]
-            remain.remove(n)
-            v0 = sec[sort[-2]] - sec[sort[-1]]
-            v0 /= np.linalg.norm(v0)
-        
         eye = 2.5*self.L
-        c = np.average(peaks[:,1:], axis=0)
+        center = np.average(peaks[:,1:], axis=0)
         points[:,1:] *= eye/(points[:,:1] + eye)
         peaks[:,1:] *= eye/(peaks[:,:1] + eye)
-        points[:,1:] -= c
-        peaks[:,1:] -= c
+        points[:,1:] -= center
+        peaks[:,1:] -= center
         
         h, w = self.g_im.shape[:2]
         e = min(w/self.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
@@ -444,32 +431,12 @@ class Hub:
         points = (points[:,::-1]*e).astype(np.int)
         points[:,:2] += np.array([w,h])//2
         self.guide_points = points.astype(np.int)
-        sec = ((sec - c)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
-        uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
-        uls = np.fmax(uls, 0)
-        square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))
-        c = (np.array([w,h])//2 - c[::-1]*e).astype(np.int)
+        c = (np.array([w,h])//2 - center[::-1]*e).astype(np.int)
         
         im_size = (e*im_size/exp_rate/2).astype(np.int)
         ul, br = (c[0] - im_size[0], c[1] - im_size[1]), (c[0] + im_size[0], c[1] + im_size[1])
         ul0 = (max(0, ul[0]), max(0, ul[1]))
         br0 = (max(0, br[0]), max(0, br[1]))
-        
-        im0 = self.g_im2
-        im0[0] = 255
-        cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA)
-        transparent = 0.5
-        section = self.g_section
-        section[:] = 0
-        section[square] = 255
-        section[square] -= im0[0][square]
-        section[square] /= 15/transparent
-        
-        im = self.g_im
-        im[:,:,0] = im0[0]
-        im[:,:,0] -= 15
-        im[ul0[1]:br0[1], ul0[0]:br0[0], 0] += 15
-        im[:,:,1:] = im[:,:,:1]
         
         ul2, br2 = ul0, br0
         if rect:
@@ -489,13 +456,51 @@ class Hub:
                 ul2 = (max(0,self.ul1[0],ul0[0]), max(0,self.ul1[1],ul0[1]))
                 br2 = (min(max(0,self.br1[0]),br0[0]), min(max(0,self.br1[1]),br0[1]))
                 
-        im[ul2[1]:br2[1],ul2[0]:br2[0],1] = \
-            (255 - section[ul2[1]:br2[1],ul2[0]:br2[0]]*(35/transparent)).astype(np.uint8)
-        im[ul2[1]:br2[1],ul2[0]:br2[0],::2] = 255
-        section = section[:,:,None][square]
+        im0 = self.g_im2
+        im0[0] = 255
         
-        im0 = im0.transpose(1,2,0)[square]
-        im0[:] = im[square]
+        im = self.g_im
+        im[:,:,0] = im0[0]
+        im[:,:,0] -= 15
+        im[ul0[1]:br0[1], ul0[0]:br0[0], 0] += 15
+        im[:,:,1:] = im[:,:,:1]
+        
+        if len(sec) > 1:
+            transparent = 0.5
+            section = self.g_section
+            section[:] = 0
+            
+            sort = [0]
+            remain = list(range(1,len(sec)))
+            v0 = sec[1] - sec[0]
+            v0 /= np.linalg.norm(v0)
+            for _ in range(len(sec)-1):
+                v1 = sec[remain] - sec[sort[-1]][None]
+                v1 /= np.linalg.norm(v1, axis=1)[:,None]
+                n = remain[np.argmin(np.inner(v1, v0))]
+                sort += [n]
+                remain.remove(n)
+                v0 = sec[sort[-2]] - sec[sort[-1]]
+                v0 /= np.linalg.norm(v0)
+            sec = ((sec - center)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
+            uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
+            uls = np.fmax(uls, 0)
+            square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))
+            
+            cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA)
+            section[square] = 255
+            section[square] -= im0[0][square]
+            section[square] /= 15/transparent
+        
+            im[ul2[1]:br2[1],ul2[0]:br2[0],1] = \
+                (255 - section[ul2[1]:br2[1],ul2[0]:br2[0]]*(35/transparent)).astype(np.uint8)
+            im[ul2[1]:br2[1],ul2[0]:br2[0],::2] = 255
+            section = section[:,:,None][square]
+            
+            im0 = im0.transpose(1,2,0)[square]
+            im0[:] = im[square]
+        else:
+            im[ul2[1]:br2[1],ul2[0]:br2[0]] = 255
         
         order = np.argsort(points[:,2])
         within = within[order]
@@ -520,8 +525,9 @@ class Hub:
             color = (int(color[0]), int(color[1]), int(color[2]))
             im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
             im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
-            
-        im[square] = (section*im0 + (1 - section)*im[square]).astype(np.uint8)
+          
+        if len(sec) > 1:
+            im[square] = (section*im0 + (1 - section)*im[square]).astype(np.uint8)
         
         im[c[1],:] = 255
         im[:,c[0]] = 255
