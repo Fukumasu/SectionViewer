@@ -411,7 +411,7 @@ class Channels:
     def set_auto(self):
         x = self.treeview.selection()
         nums = [int(i) for i in x]
-        old = [self.chs[i][1:] for i in nums]
+        old = [self.chs[i][1] for i in nums]
         
         fix = []
         for i in self.treeview.get_children():
@@ -419,10 +419,9 @@ class Channels:
                 fix += [list(self.chs[i][1])]
         new = len(x)
         new = self.auto_color(fix, new)
-        new = [[nw, *self.chs[n][2:]] for nw, n in zip(new, nums)]
         
         if old == new:
-            return None
+            return
         
         Hub = self.Hub
         idx, hist = Hub.hidx, Hub.history
