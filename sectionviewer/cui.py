@@ -35,8 +35,6 @@ class Data:
                             "(" + ch_load[i] + ")]"
         text += ")"
         return text
-    def __repr__(self):
-        return self.__str__()
     def __getitem__(self, x):
         if type(x) == int:
             item = self._val[x]
@@ -118,8 +116,6 @@ class Geometry(dict):
          text += "exp_rate:  {0}\n".format(strs[4])
          text += " bar_len:  {0}".format(strs[5]) + " "*m + "  # um"
          return text
-    def __repr__(self):
-         return str(self)
         
 class Position(list):
     def __init__(self, hub, val, mode="all"):
@@ -167,8 +163,6 @@ class Position(list):
             if self._mode == "center":
                 text += " (px)"
             return text
-    def __repr__(self):
-        return str(self)
     def __setitem__(self, x, v):
         val = np.float64(self._val)
         val[x] = v
@@ -192,12 +186,12 @@ class Channels:
         object.__setattr__(self, "_hub" , hub)
         if type(val) == SuperList:
             object.__setattr__(self, '_val', val)
-            self._refresh()
         else:
             val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
                     max(0, min(65534, int(c[2]))), 
                     max(1, min(65535, max(int(c[2])+1, int(c[3]))))] for c in val]
             object.__setattr__(self, "_val" , SuperList(val))
+        self._refresh()
     def __str__(self):
         ch_nm = self.getnames()
         m = max([len(nm) for nm in ch_nm])
@@ -215,8 +209,6 @@ class Channels:
             text += ", [{0:>5}, {1:>5}]]".format(ch_vr[i][0], ch_vr[i][1])
         text += "]"
         return text
-    def __repr__(self):
-        return str(self)
     def __getitem__(self, x):
         if type(x) == int:
             return Channel(self, self._val[x])
@@ -274,8 +266,6 @@ class Channel:
         object.__setattr__(self, "_sup" , sup)
     def __str__(self):
         return str(self._val)
-    def __repr__(self):
-        return str(self)
     def __getitem__(self, x):
         if type(self._val[x]) == list:
             return Channel(self._sup, self._val[x])
@@ -301,13 +291,13 @@ class Points:
         object.__setattr__(self, "_hub" , hub)
         if type(val) == SuperList:
             object.__setattr__(self, "_val" , val)
-            self._refresh()
         else:
             dc, dz, dy, dx = hub.geometry["shape"]
             d = [dz, dy, dx]
             val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
                    [float(max(-d[i]//2, min(d[i]+d[i]//2, float(c[2][i])))) for i in range(3)]] for c in val]
             object.__setattr__(self, "_val" , SuperList(val))
+        self._refresh()
     def __str__(self):
         if len(self) == 0:
             return "[]"
@@ -352,8 +342,6 @@ class Points:
                 text += ", {0}],".format(cr[i])
             text = text[:-1] + "]"
         return text
-    def __repr__(self):
-        return str(self)
     def __getitem__(self, x):
         if type(x) == int:
             return Point(self, self._val[x])
@@ -450,8 +438,6 @@ class Point:
         object.__setattr__(self, "_sup" , sup)
     def __str__(self):
         return str(self._val)
-    def __repr__(self):
-        return str(self)
     def __getitem__(self, x):
         if type(self._val[x]) == list:
             return Point(self._sup, self._val[x])
@@ -482,8 +468,6 @@ class Snapshots:
         object.__setattr__(self, "_hub" , hub)
     def __str__(self):
         return str(self.getnames())
-    def __repr__(self):
-        return str(self)
     def __setattr__(self, name, value):
         pass
     def __delattr__(self, name):
@@ -627,8 +611,6 @@ class SectionViewer(dict):
         ss = ss[1:-1].replace("'", "")
         text += "snapshots:  " + ss
         return text
-    def __repr__(self):
-        return str(self)
     def save(self, path=None):
         secv = self._secv
         if path == None:
@@ -718,9 +700,21 @@ Please specify the file again.'''.format(f), parent=root)
             del b, boxes[0]
             n += 1
         object.__setattr__(self, "image", box)
-    def calc_section_values(self):
+    def create_section(self, channels=None, thickness=1):
         if not hasattr(self, "image"):
             raise AttributeError("Attribute 'image' not found. Call 'imread' method beforehand.")
+        if channels is None:
+            channels = np.arange(len(self.image))
+        else:
+            if not hasattr(channels, '__iter__'):
+                channels = [channels]
+            if False in [type(c) == int for c in channels]:
+                raise TypeError('integers are required as channels')
+            channels = np.int32(channels)
+            channels = channels[channels>=0]
+            channels = channels[channels<len(self.image)]
+        if type(thickness) != int:
+            raise TypeError("an integer is required as thickness")
         geo = self.geometry
         xy_rs, z_rs = geo["res_xy"], geo["res_z"]
         if None in [xy_rs, z_rs]:
@@ -740,16 +734,23 @@ Please specify the file again.'''.format(f), parent=root)
         pos[0] += np.array([dz, dy, dx])//2
         pos[1:] /= self.geometry["exp_rate"]
         nz /= self.geometry["exp_rate"]
-        if not ut.calc_section(box, pos, res, np.array(res[0].shape)//2,
-                               np.arange(len(res))):
-            res[:] = 0
+        if thickness == 1:
+            if not ut.calc_section(box, pos, res, np.array(res[0].shape)//2,
+                                   channels):
+                res[:] = 0
+        else:
+            start = -(thickness//2)
+            stop = start + thickness
+            if not ut.stack_section(box, pos, nz, start, stop, res,
+                                    np.array(res[0].shape)//2, channels):
+                res[:] = 0
         exp_rate = geo["exp_rate"]
         resol = xy_rs/exp_rate if xy_rs != None else None
         print("resolution: {0} um/px".format(resol))
         return res
-    def calc_section_image(self, frame=None):
-        if type(frame) == type(None):
-            frame = self.calc_section_values()
+    def create_image(self, frame=None, channels=None, thickness=1):
+        if frame is None:
+            frame = self.create_section(channels=channels, thickness=thickness)
         res = np.empty([*frame[0].shape, 4], np.uint8)
         ut.calc_bgr(frame, self.lut, self.colors, np.arange(len(frame)), res)
         return res
@@ -757,7 +758,7 @@ Please specify the file again.'''.format(f), parent=root)
     
 class SuperList:
     def __init__(self, val, focus=None):
-        if type(focus) == type(None):
+        if focus is None:
             focus = [i for i in range(len(val))]
         object.__setattr__(self, '_val', val)
         object.__setattr__(self, '_focus', focus)
@@ -791,7 +792,7 @@ class SuperList:
         self._focus.extend([i for i in range(len(self._val), len(self._val)+len(val))])
         self._val.extend(val)
     def pop(self, x=None):
-        if x == None:
+        if x is None:
             x = len(self) - 1
         val = self._val.pop(self._focus[x])
         object.setattr(self, '_focus', self._focus[:x] + self._focus[x+1:])
