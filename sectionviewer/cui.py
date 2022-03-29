@@ -579,6 +579,12 @@ class SectionViewer(dict):
             except:
                 raise SecvError("an invalid SECV object")
         object.__setattr__(self, "_secv", secv)
+        geo = self.geometry
+        xy_rs, exp_rate = geo["res_xy"], geo["exp_rate"]
+        resol = xy_rs/exp_rate if xy_rs != None else None
+        resol = '{0} um/px'.format(resol)
+        object.__setattr__(self, 'resolution', resol)
+        
     def __setitem__(self, k, v):
         self.__getitem__(k)
         ins = self.classes[k](self, v)
@@ -717,6 +723,7 @@ Please specify the file again.'''.format(f), parent=root)
             raise TypeError("an integer is required as thickness")
         geo = self.geometry
         xy_rs, z_rs = geo["res_xy"], geo["res_z"]
+        exp_rate = geo["exp_rate"]
         if None in [xy_rs, z_rs]:
             ratio = 1.
         else:
@@ -732,8 +739,8 @@ Please specify the file again.'''.format(f), parent=root)
         pos[:,0] /= ratio
         nz[0] /= ratio
         pos[0] += np.array([dz, dy, dx])//2
-        pos[1:] /= self.geometry["exp_rate"]
-        nz /= self.geometry["exp_rate"]
+        pos[1:] /= exp_rate
+        nz /= exp_rate
         if thickness == 1:
             if not ut.calc_section(box, pos, res, np.array(res[0].shape)//2,
                                    channels):
@@ -744,22 +751,19 @@ Please specify the file again.'''.format(f), parent=root)
             if not ut.stack_section(box, pos, nz, start, stop, res,
                                     np.array(res[0].shape)//2, channels):
                 res[:] = 0
-        exp_rate = geo["exp_rate"]
-        resol = xy_rs/exp_rate if xy_rs != None else None
-        print("resolution: {0} um/px".format(resol))
         return res
-    def create_image(self, frame=None, channels=None, thickness=1, color='BGRA', background='#000000'):
+    def create_image(self, frame=None, channels=None, thickness=1, colormode='BGRA', background='#000000'):
         if frame is None:
             frame = self.create_section(channels=channels, thickness=thickness)
         res = np.empty([*frame[0].shape, 4], np.uint8)
         ut.calc_bgr(frame, self.lut, self.colors, np.arange(len(frame)), res)
-        color = color.lower()
-        if color != 'bgra':
-            if color not in ['rgb', 'rgba', 'bgr']:
-                TypeError("Color has to be chosen from 'RGB', 'RGBA', 'BGR', and 'BGRA'")
-            if color == 'rgba':
+        colormode = colormode.lower()
+        if colormode != 'bgra':
+            if colormode not in ['rgb', 'rgba', 'bgr']:
+                raise TypeError("Color mode has to be chosen from 'RGB', 'RGBA', 'BGR', and 'BGRA'")
+            if colormode == 'rgba':
                 res = np.append(res[:,:,2::-1], res[:,:,3:], axis=2)
-            elif color == 'rgb':
+            elif colormode == 'rgb':
                 background = np.array([int(background[1:3], 16),
                                        int(background[3:5], 16),
                                        int(background[5:], 16)])
@@ -770,7 +774,7 @@ Please specify the file again.'''.format(f), parent=root)
                                        int(background[3:5], 16),
                                        int(background[5:], 16)])
                 a = res[:,:,3:]/255
-                res = (res*a + background*(1-a)).astype(np.uint8)
+                res = (res[:,:,:3]*a + background*(1-a)).astype(np.uint8)
         return res
     
     
