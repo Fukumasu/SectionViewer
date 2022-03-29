@@ -548,7 +548,7 @@ class Snapshot:
         for k in keys:
             object.__setattr__(self, k, self._hub.classes[k](self, self._val[k]))
 
-class SectionViewer(dict):
+class SectionViewer:
     def __init__(self, x):
         classes = {    "data": Data    ,
                    "geometry": Geometry,
@@ -557,7 +557,6 @@ class SectionViewer(dict):
                      "points": Points  ,
                    "snapshots": Snapshots}
         object.__setattr__(self, "classes", classes)
-        dict.__init__(self, classes)
         if type(x) == str:
             with open(x, "rb") as st:
                 secv = pickle.load(st)
@@ -586,10 +585,11 @@ class SectionViewer(dict):
         object.__setattr__(self, 'resolution', resol)
         
     def __setitem__(self, k, v):
-        self.__getitem__(k)
         ins = self.classes[k](self, v)
         object.__setattr__(self, k, ins)
-        dict.__setitem__(self, k, ins)
+        self.classes[k] = ins
+    def __getitem__(self, k):
+        return self.classes[k]
     def __setattr__(self, name, value):
         self.__getattribute__(name)
         self.__setitem__(name, value)
@@ -714,8 +714,6 @@ Please specify the file again.'''.format(f), parent=root)
         else:
             if not hasattr(channels, '__iter__'):
                 channels = [channels]
-            if False in [type(c) == int for c in channels]:
-                raise TypeError('integers are required as channels')
             channels = np.int32(channels)
             channels = channels[channels>=0]
             channels = channels[channels<len(self.image)]
@@ -753,10 +751,18 @@ Please specify the file again.'''.format(f), parent=root)
                 res[:] = 0
         return res
     def create_image(self, frame=None, channels=None, thickness=1, colormode='BGRA', background='#000000'):
+        if channels is None:
+            channels = np.arange(len(self.image))
+        else:
+            if not hasattr(channels, '__iter__'):
+                channels = [channels]
+            channels = np.int32(channels)
+            channels = channels[channels>=0]
+            channels = channels[channels<len(self.image)]
         if frame is None:
             frame = self.create_section(channels=channels, thickness=thickness)
         res = np.empty([*frame[0].shape, 4], np.uint8)
-        ut.calc_bgr(frame, self.lut, self.colors, np.arange(len(frame)), res)
+        ut.calc_bgr(frame, self.lut, self.colors, channels, res)
         colormode = colormode.lower()
         if colormode != 'bgra':
             if colormode not in ['rgb', 'rgba', 'bgr']:

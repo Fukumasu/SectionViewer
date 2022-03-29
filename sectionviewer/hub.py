@@ -427,11 +427,14 @@ class Hub:
         
         h, w = self.g_im.shape[:2]
         e = min(w/self.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
-        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + np.array([w,h])//2
-        points = (points[:,::-1]*e).astype(np.int)
+        shift = 4
+        radius = int(2.5*2**shift)
+        peaks = ((peaks[:,2:0:-1]*e + np.array([w,h])//2)*2**shift).astype(int)
+        points = points[:,::-1]*e
         points[:,:2] += np.array([w,h])//2
-        self.guide_points = points.astype(np.int)
-        c = (np.array([w,h])//2 - center[::-1]*e).astype(np.int)
+        self.guide_points = points.astype(int)
+        points = (points*2**shift).astype(int)
+        c = (np.array([w,h])//2 - center[::-1]*e).astype(int)
         
         im_size = (e*im_size/exp_rate/2).astype(np.int)
         ul, br = (c[0] - im_size[0], c[1] - im_size[1]), (c[0] + im_size[0], c[1] + im_size[1])
@@ -482,12 +485,12 @@ class Hub:
                 remain.remove(n)
                 v0 = sec[sort[-2]] - sec[sort[-1]]
                 v0 /= np.linalg.norm(v0)
-            sec = ((sec - center)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
-            uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
+            sec = (((sec - center)[:,::-1]*e + np.array([w,h])//2)*2**shift).astype(int)
+            uls, brs = (np.amin(sec, axis=0)*2**(-shift)).astype(int) - 1, (np.amax(sec, axis=0)*2**(-shift)).astype(int) + 1
             uls = np.fmax(uls, 0)
             square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))
             
-            cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA)
+            cv2.fillConvexPoly(im0[0], sec[sort], 240, lineType=cv2.LINE_AA, shift=shift)
             section[square] = 255
             section[square] -= im0[0][square]
             section[square] /= 15/transparent
@@ -507,24 +510,26 @@ class Hub:
         p_order = order[(points[order,2]>0)*~within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
-            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
+            cv2.circle(im, (p[0], p[1]), radius, color, thickness=-1, lineType=cv2.LINE_AA, shift=shift)
+            # im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            # im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
         where = np.array(np.where((edges>=0)*~neg[None]*~neg[:,None])).T
         for pair in where:
             eg = int(edges[tuple(pair)])
             cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
-                     vivid[eg], thick[eg], cv2.LINE_AA)
+                     vivid[eg], thick[eg], cv2.LINE_AA, shift=shift)
         for i in range(len(sec)):
             eg = int(edges[tuple(pn[:,i])])
             cv2.line(im, tuple(sec[i]), tuple(peaks[pn[:,i][~neg[pn[:,i]]][0]]),\
-                     vivid[eg], thick[eg], cv2.LINE_AA)
+                     vivid[eg], thick[eg], cv2.LINE_AA, shift=shift)
                 
         p_order = order[(points[order,2]>0)*within][::-1]
         for p, color, n in zip(points[p_order], vivid_p[p_order], names[p_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
-            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
+            cv2.circle(im, (p[0], p[1]), radius, color, thickness=-1, lineType=cv2.LINE_AA, shift=shift)
+            # im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            # im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
           
         if len(sec) > 1:
             im[square] = (section*im0 + (1 - section)*im[square]).astype(np.uint8)
@@ -535,24 +540,26 @@ class Hub:
         n_order = order[(points[order,2]<=0)*within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
-            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
+            cv2.circle(im, (p[0], p[1]), radius, color, thickness=-1, lineType=cv2.LINE_AA, shift=shift)
+            # im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            # im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
             
         for i in range(len(sec)):
             eg = int(edges[tuple(pn[:,i])])
             cv2.line(im, tuple(sec[i]), tuple(peaks[pn[:,i][neg[pn[:,i]]][0]]),\
-                     vivid[eg], thick[eg], cv2.LINE_AA)
+                     vivid[eg], thick[eg], cv2.LINE_AA, shift=shift)
         where = np.array(np.where((edges>=0)*neg[None]*neg[:,None])).T
         for pair in where:
             eg = int(edges[tuple(pair)])
             cv2.line(im, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),\
-                     vivid[eg], thick[eg], cv2.LINE_AA)
+                     vivid[eg], thick[eg], cv2.LINE_AA, shift=shift)
                 
         n_order = order[(points[order,2]<=0)*~within][::-1]
         for p, color, n in zip(points[n_order], vivid_p[n_order], names[n_order]):
             color = (int(color[0]), int(color[1]), int(color[2]))
-            im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
-            im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
+            cv2.circle(im, (p[0], p[1]), radius, color, thickness=-1, lineType=cv2.LINE_AA, shift=shift)
+            # im[p[1]-1:p[1]+2,p[0]-2:p[0]+3] = color
+            # im[p[1]-2:p[1]+3:4,p[0]-1:p[0]+2] = color
         
         im[:22,-66:] -= np.fmin(255 - self.gui.xyz, im[:22,-66:])
         
