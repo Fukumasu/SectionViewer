@@ -748,11 +748,29 @@ Please specify the file again.'''.format(f), parent=root)
         resol = xy_rs/exp_rate if xy_rs != None else None
         print("resolution: {0} um/px".format(resol))
         return res
-    def create_image(self, frame=None, channels=None, thickness=1):
+    def create_image(self, frame=None, channels=None, thickness=1, color='BGRA', background='#000000'):
         if frame is None:
             frame = self.create_section(channels=channels, thickness=thickness)
         res = np.empty([*frame[0].shape, 4], np.uint8)
         ut.calc_bgr(frame, self.lut, self.colors, np.arange(len(frame)), res)
+        color = color.lower()
+        if color != 'bgra':
+            if color not in ['rgb', 'rgba', 'bgr']:
+                TypeError("Color has to be chosen from 'RGB', 'RGBA', 'BGR', and 'BGRA'")
+            if color == 'rgba':
+                res = np.append(res[:,:,2::-1], res[:,:,3:], axis=2)
+            elif color == 'rgb':
+                background = np.array([int(background[1:3], 16),
+                                       int(background[3:5], 16),
+                                       int(background[5:], 16)])
+                a = res[:,:,3:]/255
+                res = (res[:,:,2::-1]*a + background*(1-a)).astype(np.uint8)
+            else:
+                background = np.array([int(background[1:3], 16),
+                                       int(background[3:5], 16),
+                                       int(background[5:], 16)])
+                a = res[:,:,3:]/255
+                res = (res*a + background*(1-a)).astype(np.uint8)
         return res
     
     
