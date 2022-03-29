@@ -84,7 +84,7 @@ cpdef calc_exist(cnp.ndarray[DTYPE_t2, ndim=2] pos, cnp.ndarray[DTYPE_t3, ndim=1
                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
             if i0 == i1:
                 return False
-        elif pos[1,0] < 0:
+        elif pos[1,1] < 0:
             i0 = min(max(i0, int(c[0] + (dy - pos[0,1])/pos[1,1] + 1)), m)
             i1 = max(min(i1, int(c[0] - pos[0,1]/pos[1,1])), i0)
             y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -281,7 +281,7 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
-        elif pos[1,0] < 0:
+        elif pos[1,1] < 0:
             i0 = min(max(i0, int(c[0] + (dy - pos[0,1])/pos[1,1] + 1)), m)
             i1 = max(min(i1, int(c[0] - pos[0,1]/pos[1,1])), i0)
             y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
@@ -550,7 +550,7 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
-        elif pos[1,0] < 0:
+        elif pos[1,1] < 0:
             i0 = min(max(i0, int(c[0] + (dy - pos[0,1])/pos[1,1] + 1)), m)
             i1 = max(min(i1, int(c[0] - pos[0,1]/pos[1,1])), i0)
             y0 = pos[0,1] + (i0 - c[0])*pos[1,1]
