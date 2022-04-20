@@ -1,5 +1,5 @@
 name = 'SectionViewer'
-version = '1.1.5'
+version = '1.1.6'
 author = 'Kazushi Fukumasu'
 
 description = 'Viewer for 3-dimensional images with multi-planar reconstruction'
