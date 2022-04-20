@@ -430,6 +430,8 @@ class GUI(ttk.Frame):
                 Hub.undo()
             elif key == 'y':
                 Hub.redo()
+            elif self.flags[1] == self.flags[3]:
+                done = Hub.position.key_pressed(key, 2)
             else:
                 done = False
         elif event.state//self.flags[1]%2 == 1:
