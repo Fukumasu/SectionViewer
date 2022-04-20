@@ -155,6 +155,10 @@ class Snapshots:
         gui.dock_note.select(gui.dock_note.tabs()[3])
         self.refresh_tree()
         self.treeview.selection_set(self.selected)
+        
+        if not gui.d_on.get():
+            gui.d_on.set(True)
+            gui.d_switch()
             
             
     def refresh_tree(self):
