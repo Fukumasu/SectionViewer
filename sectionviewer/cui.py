@@ -184,13 +184,12 @@ class Position(list):
 class Channels:
     def __init__(self, hub, val):
         object.__setattr__(self, "_hub" , hub)
-        if type(val) == SuperList:
-            object.__setattr__(self, '_val', val)
-        else:
+        if type(val) != SuperList:
             val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
                     max(0, min(65534, int(c[2]))), 
                     max(1, min(65535, max(int(c[2])+1, int(c[3]))))] for c in val]
-            object.__setattr__(self, "_val" , SuperList(val))
+            val = SuperList(val)
+        object.__setattr__(self, '_val', val)
         self._refresh()
     def __str__(self):
         ch_nm = self.getnames()
@@ -217,6 +216,8 @@ class Channels:
             if len(w) == 0:
                 raise KeyError("Channel name '{0}' does not exist".format(x))
             x = w
+            if len(self._val[x]) == 1:
+                return Channel(self, self._val[x][0])
         return Channels(self._hub, self._val[x])
     def __setitem__(self, x, v):
         if type(x) != int:
@@ -289,14 +290,13 @@ class Channel:
 class Points:
     def __init__(self, hub, val):
         object.__setattr__(self, "_hub" , hub)
-        if type(val) == SuperList:
-            object.__setattr__(self, "_val" , val)
-        else:
+        if type(val) != SuperList:
             dc, dz, dy, dx = hub.geometry["shape"]
             d = [dz, dy, dx]
             val = [[str(c[0]), [max(0, min(255, int(c[1][i]))) for i in range(3)], 
                    [float(max(-d[i]//2, min(d[i]+d[i]//2, float(c[2][i])))) for i in range(3)]] for c in val]
-            object.__setattr__(self, "_val" , SuperList(val))
+            val = SuperList(val)
+        object.__setattr__(self, "_val" , val)
         self._refresh()
     def __str__(self):
         if len(self) == 0:
@@ -350,6 +350,8 @@ class Points:
             if len(w) == 0:
                 raise KeyError("Point name '{0}' does not exist".format(x))
             x = w
+            if len(self._val[x]) == 1:
+                return Point(self, self._val[x][0])
         return Points(self._hub, self._val[x])
     def __setitem__(self, x, v):
         if type(x) != int:
@@ -460,11 +462,10 @@ class Point:
         
 class Snapshots:
     def __init__(self, hub, val):
-        if type(val) == SuperList:
-            object.__setattr__(self, "_val" , val)
-        else:
+        if type(val) != SuperList:
             _val = list(val)
-            object.__setattr__(self, "_val" , SuperList(_val))
+            val = SuperList(_val)
+        object.__setattr__(self, "_val" , val)
         object.__setattr__(self, "_hub" , hub)
     def __str__(self):
         return str(self.getnames())
@@ -480,18 +481,25 @@ class Snapshots:
             if len(w) == 0:
                 raise KeyError("Snapshot name '{0}' does not exist".format(x))
             x = w
+            if len(self._val[x]) == 1:
+                return Snapshot(self._hub, self._val[x][0])
         return Snapshots(self._hub, self._val[x])
     def getnames(self):
         return [s['name'] for s in self._val]
 class Snapshot:
     def __init__(self, hub, val):
+        classes = {    "data": Data    ,
+                   "geometry": Geometry,
+                   "position": Position,
+                   "channels": Channels,
+                     "points": Points  }
         object.__setattr__(self, '_val', val)
         object.__setattr__(self, '_hub', hub)
         try:
             keys = list(hub.classes.keys())
             keys.remove("snapshots")
             for k in keys:
-                object.__setattr__(self, k, hub.classes[k](self, val[k]))
+                object.__setattr__(self, k, classes[k](self, val[k]))
         except:
             raise SnapshotError("an invalid Snapshot object")
     def __setitem__(self, k, v):
@@ -501,6 +509,8 @@ class Snapshot:
             raise SnapshotError("cannot change Snapshot object except name")
     def __setattr__(self, name, value):
         pass
+    def __getitem__(self, k):
+        return object.__getattr__(self, k)
     def __delattr__(self, name):
         pass
     def __str__(self):
