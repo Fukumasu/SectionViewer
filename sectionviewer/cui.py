@@ -82,8 +82,8 @@ class Geometry(dict):
     def __getitem__(self, k):
         return self._val[k]
     def __setitem__(self, k, v):
-        if k == "shape":
-            raise AttributeError("attribute 'shape' of 'secvfile.Geometry' objects is not writable")
+        if k in ['shape', 'xy_oib', 'z_oib']:
+            raise AttributeError("attribute '{0}' of 'secvfile.Geometry' objects is not writable".format(k))
         self.__getitem__(k)
         val = dict(self._val)
         val[k] = v
