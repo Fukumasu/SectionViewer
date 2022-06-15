@@ -14,12 +14,25 @@ pf = platform.system()
 class Geometry:
     def __init__(self, Hub):
         self.Hub = Hub
-        geo = Hub.geometry
+        geo0 = Hub.geometry
+        geo = {}
         
-        if not 'res_xy' in geo: geo['res_xy'] = None
-        if not 'res_z' in geo: geo['res_z'] = None
-        if geo['res_xy'] == None and 'xy_oib' in geo: geo['res_xy'] = geo['xy_oib']
-        if geo['res_z'] == None and 'z_oib' in geo: geo['res_z'] = geo['z_oib']
+        if not 'res_xy' in geo0:
+            geo['res_xy'] = None
+        else:
+            geo['res_xy'] = geo0['res_xy']
+        if not 'res_z' in geo0:
+            geo['res_z'] = None
+        else:
+            geo['res_z'] = geo0['res_z']
+        if 'xy_oib' in geo0:
+            geo['xy_oib'] = geo0['xy_oib']
+            if geo['res_xy'] == None: 
+                geo['res_xy'] = geo0['xy_oib']
+        if 'z_oib' in geo0:
+            geo['z_oib'] = geo0['z_oib']
+            if geo['res_z'] == None: 
+                geo['res_z'] = geo0['z_oib']
         
         if None in (geo['res_xy'], geo['res_z']):
             if geo['res_xy'] != None:
@@ -28,14 +41,24 @@ class Geometry:
                 geo['res_xy'] = geo['res_z']
         Hub.ratio = 1. if geo['res_xy'] == None else geo['res_z']/geo['res_xy']
         
+        geo['shape'] = geo0['shape']
         dc, dz, dy, dx = geo['shape']
         Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
                 
-        if not 'im_size' in geo: 
+        if not 'im_size' in geo0: 
             geo['im_size'] = (dx,dy)
-        if not 'exp_rate' in geo: geo['exp_rate'] = 1
-        elif geo['exp_rate'] == 0: geo['exp_rate'] = 1
-        if not 'bar_len' in geo: geo['bar_len'] = None
+        else:
+            geo['im_size'] = geo0['im_size']
+        if not 'exp_rate' in geo0: 
+            geo['exp_rate'] = 1
+        elif geo0['exp_rate'] == 0: 
+            geo['exp_rate'] = 1
+        else:
+            geo['exp_rate'] = geo0['exp_rate']
+        if not 'bar_len' in geo0:
+            geo['bar_len'] = None
+        else:
+            geo['bar_len'] = geo0['bar_len']
         
         if geo['res_xy'] != None:
             if geo['bar_len'] == None:
@@ -672,28 +695,53 @@ class Geometry:
                 elif self.Hub.gui.guide_mode == 'sideview':
                     self.Hub.calc_sideview()
                 
-    def reload(self, geo):
+    def reload(self, geo0):
         Hub = self.Hub
         
-        if not 'res_xy' in geo: geo['res_xy'] = None
-        if not 'res_z' in geo: geo['res_z'] = None
-        if geo['res_xy'] == None and 'xy_oib' in geo: geo['res_xy'] = geo['xy_oib']
-        if geo['res_z'] == None and 'z_oib' in geo: geo['res_z'] = geo['z_oib']
+        geo = {}
+        
+        if not 'res_xy' in geo0:
+            geo['res_xy'] = None
+        else:
+            geo['res_xy'] = geo0['res_xy']
+        if not 'res_z' in geo0:
+            geo['res_z'] = None
+        else:
+            geo['res_z'] = geo0['res_z']
+        if 'xy_oib' in geo0:
+            geo['xy_oib'] = geo0['xy_oib']
+            if geo['res_xy'] == None: 
+                geo['res_xy'] = geo0['xy_oib']
+        if 'z_oib' in geo0:
+            geo['z_oib'] = geo0['z_oib']
+            if geo['res_z'] == None: 
+                geo['res_z'] = geo0['z_oib']
         
         if None in (geo['res_xy'], geo['res_z']):
             if geo['res_xy'] != None:
                 geo['res_z'] = geo['res_xy']
             else:
                 geo['res_xy'] = geo['res_z']
-        Hub.ratio = 1. if None in (geo['res_xy'], geo['res_z']) else geo['res_z']/geo['res_xy']
-        if hasattr(Hub, 'box'):
-            dc, dz, dy, dx = Hub.box.shape
-            Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
+        Hub.ratio = 1. if geo['res_xy'] == None else geo['res_z']/geo['res_xy']
+        
+        geo['shape'] = geo0['shape']
+        dc, dz, dy, dx = geo['shape']
+        Hub.L = (dx**2 + dy**2 + (dz*Hub.ratio)**2)**0.5
                 
-        if not 'im_size' in geo: geo['im_size'] = (dx,dy)
-        if not 'exp_rate' in geo: geo['exp_rate'] = 1
-        elif geo['exp_rate'] == 0: geo['exp_rate'] = 1
-        if not 'bar_len' in geo: geo['bar_len'] = None
+        if not 'im_size' in geo0: 
+            geo['im_size'] = (dx,dy)
+        else:
+            geo['im_size'] = geo0['im_size']
+        if not 'exp_rate' in geo0: 
+            geo['exp_rate'] = 1
+        elif geo0['exp_rate'] == 0: 
+            geo['exp_rate'] = 1
+        else:
+            geo['exp_rate'] = geo0['exp_rate']
+        if not 'bar_len' in geo0:
+            geo['bar_len'] = None
+        else:
+            geo['bar_len'] = geo0['bar_len']
         
         if geo['res_xy'] != None:
             if geo['bar_len'] == None:

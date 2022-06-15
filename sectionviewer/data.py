@@ -82,6 +82,7 @@ class Data:
             ch_load = [d[1] for d in dat]
         except: ch_load = []
         
+        changed = False
         for i, f in enumerate(files):
             if not os.path.isfile(f):
                 if self.Hub.secv_name == None:
@@ -94,16 +95,21 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                              ('All files', '*')]
                 initialdir = Hub.gui.file_dir
                 initialfile = os.path.splitext(os.path.basename(f))[0]
-                f = filedialog.askopenfilename(parent=Hub.gui.master, 
+                f1 = filedialog.askopenfilename(parent=Hub.gui.master, 
                                                filetypes=filetypes, 
                                                initialdir=initialdir, 
                                                initialfile=initialfile,
                                                title='Find {0}'.format(os.path.basename(f)))
-                if len(f) == 0:
-                    return 0
-                f = f.replace('\\', '/')
+                if len(f1) == 0:
+                    raise FileNotFoundError('[Errno 2] No such file or directory: ' + f)
+                f = f1.replace('\\', '/')
                 files[i] = f
-            
+                changed = True
+        
+        dat = [[files[i], ch_load[i]] for i in range(len(files))]
+        if changed and not add:
+            if self.dat == tuple(dat):
+                return 0
         
         boxes = []    
         for i, f in enumerate(files):
@@ -263,5 +269,5 @@ Please specify the file again.'''.format(path), parent=self.Hub.gui.master)
             return False
         self.dat = dat0
         if self.dat == data:
-            raise
+            return False
         return True

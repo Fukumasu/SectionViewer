@@ -456,6 +456,63 @@ class Snapshots:
         self.pre_selection = []
         self.selected = [str(x[0])]
         self.treeview.selection_set(str(x[0]))
+    
+    
+    def synchronize_ss(self):
+        Hub = self.Hub
+        
+        select = self.treeview.selection()
+        x = []
+        old = []
+        new = []
+        for s in select:
+            i = int(s)
+            x += [i]
+            
+            old += [self.snapshots[i]]
+            new += [{}]
+            
+            new[-1]['name'] = old[-1]['name']
+            
+            if self.pos_on.get():
+                new[-1]['geometry'] = Hub.geometry.geo.copy()
+                pos = Hub.position.asarray()
+                pos[:,0] /= Hub.ratio
+                pos[0] += np.array(Hub.box.shape[1:])//2
+                new[-1]['position'] = pos.tolist()
+            else:
+                new[-1]['geometry'] = old[-1]['geometry'].copy()
+                new[-1]['position'] = np.array(old[-1]['position']).tolist()
+            
+            if self.chs_on.get():
+                data = Hub.data.dat
+                files = [d[0] for d in data]
+                ch_load = [d[1] for d in data]
+                data = []
+                for f, c in zip(files, ch_load):
+                    if np.array(c).any():
+                        data += [[f, c]]
+                data = tuple(data)
+                new[-1]['data'] = data
+                channels = [[c[0], [c[1][0], c[1][1], c[1][2]],
+                             c[2], c[3]] for c in Hub.channels.chs]
+                new[-1]['channels'] = channels
+            else:
+                new[-1]['data'] = old[-1]['data']
+                channels = [[c[0], [c[1][0], c[1][1], c[1][2]],
+                             c[2], c[3]] for c in old[-1]['channels']]
+                new[-1]['channels'] = channels
+                
+            if self.pts_on.get():
+                points = [[p[0], [p[1][0], p[1][1], p[1][2]], 
+                           [p[2][0], p[2][1], p[2][2]]] for p in Hub.points.pts]
+                new[-1]['points'] = points
+            else:
+                points = [[p[0], [p[1][0], p[1][1], p[1][2]], 
+                           [p[2][0], p[2][1], p[2][2]]] for p in old[-1]['points']]
+                new[-1]['points'] = points
+                
+        self.change_snapshot(x, new)
 
 
     def restore_ss(self):
@@ -503,6 +560,7 @@ class Snapshots:
                     new += [m.val]
                     typ += [m]
                 else: del old[-1]
+            self.synchronize_ss()
         except:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent=Hub.gui.master)

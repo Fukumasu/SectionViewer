@@ -80,8 +80,6 @@ class Geometry(dict):
         object.__setattr__(self, "_ratio", ratio)
         dict.__init__(self, _val)
     def __getitem__(self, k):
-        if k in ['xy_oib', 'z_oib']:
-            raise KeyError(k)
         return self._val[k]
     def __setitem__(self, k, v):
         if k == "shape":
@@ -91,8 +89,6 @@ class Geometry(dict):
         val[k] = v
         self.__init__(self._hub, val)
     def __getattr__(self, name):
-        if name in ['xy_oib', 'z_oib']:
-            raise AttributeError("attribute '{0}' doesn't exist".format(name))
         try:
             return self[name]
         except:
