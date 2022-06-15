@@ -505,8 +505,6 @@ class Snapshot:
             raise SnapshotError("cannot change Snapshot object except name")
     def __setattr__(self, name, value):
         pass
-    def __getitem__(self, k):
-        return object.__getattr__(self, k)
     def __delattr__(self, name):
         pass
     def __str__(self):
