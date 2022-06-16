@@ -106,8 +106,8 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                 files[i] = f
                 changed = True
         
-        dat = [[files[i], ch_load[i]] for i in range(len(files))]
         if changed and not add:
+            dat = [[files[i], ch_load[i]] for i in range(len(files))]
             if self.dat == tuple(dat):
                 return 0
         
