@@ -106,7 +106,7 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                 files[i] = f
                 changed = True
         
-        if changed and not add:
+        if changed and not add and hasattr(self, 'dat'):
             dat = [[files[i], ch_load[i]] for i in range(len(files))]
             if self.dat == tuple(dat):
                 return 0
