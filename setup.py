@@ -17,7 +17,7 @@ install_requires = open('requirements.txt').read().splitlines()
 
 pf = platform.system()
 if pf == 'Windows':
-    install_requires += ['cx-Freeze>=6.7']
+#     install_requires += ['cx-Freeze>=6.7']
     omp = '/openmp'
 elif pf == 'Darwin':
     omp = ''
