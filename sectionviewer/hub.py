@@ -710,29 +710,29 @@ class Hub:
         data = []
         for f, c in zip(files, ch_load):
             if np.array(c).any():
-                p = pathlib.Path(f)
+                r = pathlib.Path(f)
                 try:
-                    p = p.relative_to(path)
-                    p = str(p)
-                    p.replace('\\', '/')
+                    r = r.relative_to(path)
+                    r = str(r)
+                    r.replace('\\', '/')
                 except:
                     path1 = path
                     n = 1
                     while len(os.path.split(path1)[1]) != 0:
                         path1 = os.path.split(path1)[0]
                         try:
-                            p = p.relative_to(path1)
+                            r = r.relative_to(path1)
                             break
                         except:
                             n += 1
-                    if p.is_absolute():
-                        p = None
+                    if r.is_absolute():
+                        r = None
                     else:
-                        p = str(p)
+                        r = str(r)
                         for _ in range(n):
-                            p = os.path.join('..', p)
-                        p.replace('\\', '/')
-                data += [[f, c, p]]
+                            r = os.path.join('..', r)
+                        r.replace('\\', '/')
+                data += [[f, c, r]]
         data = tuple(data)
         secv['data'] = data
         

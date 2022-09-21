@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pickle
 
 import numpy as np
@@ -72,18 +73,36 @@ class Data:
         Hub = self.Hub
         
         files = [d[0] for d in dat]
+        try:
+            relat = [d[2] for d in dat]
+        except:
+            relat = [None]*len(files)
         try: 
             ch_load = [d[1] for d in dat]
             dat = []
-            for f, c in zip(files, ch_load):
+            for f, c, r in zip(files, ch_load, relat):
                 if np.array(c).any():
-                    dat += [[f, c]]
+                    dat += [[f, c, r]]
             files = [d[0] for d in dat]
             ch_load = [d[1] for d in dat]
+            relat = [d[2] for d in dat]
         except: ch_load = []
+        
+        if Hub.secv_name is not None:
+            for i, r in enumerate(relat):
+                if r is not None:
+                    p = pathlib.Path(os.path.join(Hub.secv_name, r))
+                    relat[i] = str(p.resolve()).replace('\\', '/')
+        for i in range(len(relat)):
+            if relat[i] is None:
+                relat[i] = ''
         
         changed = False
         for i, f in enumerate(files):
+            if not os.path.isfile(f):
+                files[i] = relat[i]
+                f = relat[i]
+                changed = True
             if not os.path.isfile(f):
                 if self.Hub.secv_name == None:
                     raise FileNotFoundError('[Errno 2] No such file or directory: ' + f)
