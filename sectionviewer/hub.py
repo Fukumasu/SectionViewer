@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pickle
 import traceback
 
@@ -709,7 +710,27 @@ class Hub:
         data = []
         for f, c in zip(files, ch_load):
             if np.array(c).any():
-                data += [[f, c]]
+                p = pathlib.Path(f)
+                try:
+                    p = p.relative_to(path)
+                    p = str(p)
+                except:
+                    path1 = path
+                    n = 1
+                    while len(os.path.split(path1)[1]) != 0:
+                        path1 = os.path.split(path1)[0]
+                        try:
+                            p = p.relative_to(path1)
+                            break
+                        except:
+                            n += 1
+                    if p.is_absolute():
+                        p = None
+                    else:
+                        p = str(p)
+                        for _ in range(n):
+                            p = os.path.join('..', p)
+                data += [[f, c, p]]
         data = tuple(data)
         secv['data'] = data
         
