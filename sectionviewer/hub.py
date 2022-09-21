@@ -714,6 +714,7 @@ class Hub:
                 try:
                     p = p.relative_to(path)
                     p = str(p)
+                    p.replace('\\', '/')
                 except:
                     path1 = path
                     n = 1
@@ -730,6 +731,7 @@ class Hub:
                         p = str(p)
                         for _ in range(n):
                             p = os.path.join('..', p)
+                        p.replace('\\', '/')
                 data += [[f, c, p]]
         data = tuple(data)
         secv['data'] = data
