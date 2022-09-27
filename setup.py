@@ -39,7 +39,7 @@ open('sectionviewer/info.py', 'w').write(info)
 setup(
     name = 'sectionviewer',
     version = version,
-    packages=['sectionviewer'],
+    packages=['sectionviewer', 'sectionviewer.img', 'sectionviewer.subdir'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
     install_requires=install_requires,
