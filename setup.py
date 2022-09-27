@@ -17,7 +17,6 @@ install_requires = open('requirements.txt').read().splitlines()
 
 pf = platform.system()
 if pf == 'Windows':
-#     install_requires += ['cx-Freeze>=6.7']
     omp = '/openmp'
 elif pf == 'Darwin':
     omp = ''
@@ -39,12 +38,12 @@ open('sectionviewer/info.py', 'w').write(info)
 setup(
     name = 'sectionviewer',
     version = version,
-    packages=['sectionviewer', 'sectionviewer.img', 'sectionviewer.subdir'],
+    packages=['sectionviewer', 'sectionviewer.img'],
     ext_modules=ext_modules,
     cmdclass=cmdclass,
     install_requires=install_requires,
     py_modules=[splitext(basename(path))[0] for path in glob('sectionviewer/*.py')],
-    package_data={'': ['*.txt', '*.pyx', 'img/resources.png', 'img/icon.ico', 'subdir/launcher.py']},
+    package_data={'': ['*.txt', '*.pyx', 'img/resources.png', 'img/icon.ico']},
     include_package_data=True,
     setup_requires=['numpy', 'cython'],
     entry_points = {
