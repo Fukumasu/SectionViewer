@@ -102,61 +102,19 @@ class SectionViewer(ttk.Frame):
         
         if len(file_path) > 0:
             file_path = file_path.replace('\\', '/')
-#             if pf == 'Windows':
-#                 with open('exe_path.txt', 'r') as f:
-#                     exe_path = f.read()
-#                 subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
-#             else:
             subprocess.Popen('sectionviewer ' + file_path, shell=True)
 
     
 def launch(file_path=None):
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    
-#     if pf == 'Windows':
-#         with open('exe_path.txt', 'r') as f:
-#             exe_path = f.read()
-#         if '--reinstall' in sys.argv[1:] or not os.path.isfile(exe_path):
-#             with open('exe_path.txt', 'w') as f:
-#                 f.write('')
-#             print('preparing installer...')
-#             subprocess.run('python ' + 'setup_msi.py bdist_msi',
-#                            stdout=subprocess.PIPE, shell=True)
-#             with open('exe_path.txt', 'r') as f:
-#                 exe_path0 = f.read()
-#             if os.path.isfile(exe_path0):
-#                 print('successfully installed')
-#                 exe_path = exe_path0
-#                 if sys.argv[1:2] == ['--reinstall']:
-#                     sys.argv = sys.argv[:1] + sys.argv[2:]
-#             else:
-#                 with open('exe_path.txt', 'w') as f:
-#                     f.write(exe_path)
-#                 print('canceled')
-#                 return
-            
-#             import shutil
-#             lib = os.path.dirname(exe_path) + '/lib'
-#             zlib = os.path.dirname(exe_path) + '/zlib.dll'
-#             try:
-#                 shutil.copy(zlib, lib)
-#             except:
-#                 pass
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
     if file_path == None:
         file_path = ''
-#     if pf == 'Windows':
-#         subprocess.Popen(exe_path + ' {0}'.format(file_path), shell=True)
-#     else:
     subprocess.Popen('sectionviewer ' + file_path, shell=True)
     return
 
 
-# if pf == 'Windows':
-#     def console_command():
-#         launch()
-# else:
 def console_command():
     main()
 
