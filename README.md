@@ -4,7 +4,7 @@
 
 ## Overview
 
-Viewer for 3-dimensional images (.oib, .tif) with cross sections (multi-planar reconstruction).
+Viewer for 3-dimensional images (.oib, .tif) on cross sections (multi-planar reconstruction).
 
 ## Requirements
 
