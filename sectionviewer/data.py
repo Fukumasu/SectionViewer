@@ -100,9 +100,10 @@ class Data:
         changed = False
         for i, f in enumerate(files):
             if not os.path.isfile(f):
-                files[i] = relat[i]
-                f = relat[i]
-                changed = True
+                if os.path.isfile(relat[i]):
+                    files[i] = relat[i]
+                    f = relat[i]
+                    changed = True
             if not os.path.isfile(f):
                 if self.Hub.secv_name == None:
                     raise FileNotFoundError('[Errno 2] No such file or directory: ' + f)
