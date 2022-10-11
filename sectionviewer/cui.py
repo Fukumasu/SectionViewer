@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pickle
 import platform
 
@@ -52,6 +53,20 @@ class Data:
         return [d[0] for d in self._val]
     def channels_to_load(self):
         return [list(np.where(d[1])[0]) for d in self._val]
+    def relat_to_load(self):
+        try:
+            relat = [d[2] for d in self._val]
+        except:
+            relat = [None]*len(self._val)
+        if hasattr(self._hub, '_path'):
+            for i, r in enumerate(relat):
+                if r is not None:
+                    p = pathlib.Path(os.path.join(self._hub._path, r))
+                    relat[i] = str(p.resolve()).replace('\\', '/')
+        for i in range(len(relat)):
+            if relat[i] is None:
+                relat[i] = ''
+        return relat
         
 class Geometry(dict):
     def __init__(self, hub, val):
@@ -642,9 +657,14 @@ class SectionViewer:
         self.__init__(self._path)
     def imread(self):
         files = self.data.files_to_load()
+        relat = self.data.relat_to_load()
         channels = self.data.channels_to_load()
-        boxes = []    
+        boxes = []
         for i, f in enumerate(files):
+            if not os.path.isfile(f):
+                if os.path.isfile(relat[i]):
+                    files[i] = relat[i]
+                    f = relat[i]
             if not os.path.isfile(f):
                 import platform
                 import cv2
