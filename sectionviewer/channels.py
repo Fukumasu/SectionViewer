@@ -735,7 +735,6 @@ class Channels:
         dc = Hub.data.load(dat, add=True)
         if dc == 0:
             return
-        print(self.Hub.geometry['shape'], self.Hub.geometry.geo['shape'])
         
         fix = [list(c[1]) for c in self.chs]
         c = self.auto_color(fix, dc)
