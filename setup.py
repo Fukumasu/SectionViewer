@@ -48,7 +48,7 @@ setup(
     setup_requires=['numpy', 'cython'],
     entry_points = {
         'console_scripts': [
-            'sectionviewer = sectionviewer.sectionviewer:console_command'
+            'sectionviewer = sectionviewer.main:console_command'
         ]
     }
 )
