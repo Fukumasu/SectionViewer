@@ -115,8 +115,8 @@ def launch(file_path=None):
     return
 
 
-def console_command():
-    main()
+# def console_command():
+#     main()
 
 
 def main(*args):
