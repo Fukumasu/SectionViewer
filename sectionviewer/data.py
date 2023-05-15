@@ -181,13 +181,13 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
             ch_load = [ch_load[i] if len(ch_load[i]) == len(boxes[i]) else tuple([1]*len(boxes[i]))
                        for i in range(len(ch_load))]
         
-        box = boxes[0][np.array(ch_load[0], dtype=np.bool)]
+        box = boxes[0][np.array(ch_load[0], dtype=bool)]
         del boxes[0]
         n = 1
         if box.dtype != np.uint16:
             box = box.astype(np.uint16)
         while len(boxes) > 0:
-            b = boxes[0][np.array(ch_load[n], dtype=np.bool)]
+            b = boxes[0][np.array(ch_load[n], dtype=bool)]
             if b.dtype != np.uint16:
                 b = b.astype(np.uint16)
             try: box = np.append(box, b, axis=0)
@@ -202,7 +202,7 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
         if add:
             try:
                 Hub.box = np.append(Hub.box, box, axis=0)
-                Hub.ch_show = np.append(Hub.ch_show, np.ones(len(box), np.bool))
+                Hub.ch_show = np.append(Hub.ch_show, np.ones(len(box), dtype=bool))
             except:
                 messagebox.showerror('Failed to load data',
                                      'Width, height and depth must be exactly the same.',
@@ -210,7 +210,7 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                 return 0
         else:
             Hub.box = box
-            Hub.ch_show = np.ones(len(box), np.bool)
+            Hub.ch_show = np.ones(len(box), dtype=bool)
         
         dat = [[files[i], ch_load[i]] for i in range(len(files))]
         

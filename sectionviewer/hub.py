@@ -223,7 +223,7 @@ class Hub:
         n = np.array([nz, ny, nx])
         dz *= self.ratio
         peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],
-                          [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
+                          [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], dtype=float)
         peaks -= op + np.array([dz//2,dy//2,dx//2])
         peaks = np.linalg.solve(n.T, peaks.T).T
         from_ = int(np.amin(peaks[:,0]))
@@ -277,7 +277,7 @@ class Hub:
             points[:,1:3] *= self.geometry['exp_rate']
             la, lb = self.geometry['im_size']
             points[:,1:3] += np.array([lb//2, la//2])
-            show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=np.bool)
+            show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=bool)
             colors = colors[show]
             colors = np.append(colors, np.zeros([len(colors), 1]) + 255, axis=1)
             names = names[show]
@@ -330,7 +330,7 @@ class Hub:
         
         x0, y0 = gui.upperleft
         w, h = gui.sec_cf.winfo_width()-4, gui.sec_cf.winfo_height()-4
-        im = cv2.warpAffine(im, np.array([[zoom,0,-x0],[0,zoom,-y0]], dtype=np.float),
+        im = cv2.warpAffine(im, np.array([[zoom,0,-x0],[0,zoom,-y0]], dtype=float),
                             (w, h))
         
         x = iw//2 - x0
@@ -651,7 +651,7 @@ class Hub:
                 points1 = points1[show]
                 points1[:,1:] *= exp_rate
                 points1[:,1:] += np.array([lb//2, la//2])
-                show = np.prod(points1[:,1:]//np.array([lb, la]) == 0, axis=1, dtype=np.bool)
+                show = np.prod(points1[:,1:]//np.array([lb, la]) == 0, axis=1, dtype=bool)
                 colors1 = colors1[show]
                 colors1 = np.append(colors1, np.zeros([len(colors1), 1]) + 255, axis=1)
                 names1 = names1[show]

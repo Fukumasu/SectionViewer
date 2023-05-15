@@ -407,7 +407,7 @@ class GUI(ttk.Frame):
     
     def key(self, event):
         t = time.time()
-        if event.time - self.key_time < 40:
+        if abs(event.time - self.key_time) < 40:
             return
         self.event_time = max(self.event_time, event.time - t*1000)
         
@@ -861,7 +861,7 @@ class GUI(ttk.Frame):
             
         elif self.mode == 2:
             v0 = self.click - np.array([la//2, lb//2])
-            v = np.array([x, y], np.float) - np.array([la//2, lb//2])
+            v = np.array([x, y], dtype=float) - np.array([la//2, lb//2])
             self.expand = np.linalg.norm(v)/np.linalg.norm(v0)
             
             exp_rate = self.Hub.geometry['exp_rate']

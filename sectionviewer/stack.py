@@ -40,7 +40,7 @@ class Stack:
         n = np.array([nz, ny, nx])
         dc, dz, dy, dx = Hub.box.shape
         peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],
-                          [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
+                          [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], dtype=float)
         peaks[4:,0] *= Hub.ratio
         peaks -= op + np.array([(dz*Hub.ratio)//2,dy//2,dx//2])
         peaks = np.linalg.solve(n.T, peaks.T).T
@@ -394,7 +394,7 @@ class Stack:
             n = np.array([nz, ny, nx])
             
             peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],
-                              [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
+                              [dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], dtype=float)
             peaks -= op + np.array([dz//2,dy//2,dx//2])
             peaks = np.linalg.solve(n.T, peaks.T).T
             start = int(np.amin(peaks[:,0]))
@@ -607,7 +607,7 @@ class Stack:
         n = np.array([nz, ny, nx])
         pos[1:] /= Hub.geometry['exp_rate']
             
-        peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],[dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], np.float)
+        peaks = np.array([[0,0,0],[0,0,dx],[0,dy,0],[0,dy,dx],[dz,0,0],[dz,0,dx],[dz,dy,0],[dz,dy,dx]], dtype=float)
         peaks -= op
         peaks = np.linalg.solve(n.T, peaks.T).T[:,1:] + np.array([lb0,la0])//2
         m, M = np.fmax(np.amin(peaks, axis=0), 0), np.fmin(np.amax(peaks, axis=0), np.array([lb0,la0]))
@@ -1531,7 +1531,7 @@ class Hub_stack:
             self.zoom = float(gui.zoom.get())/100
             gui.upperleft = ul
         
-        self.ch_show = np.ones(len(self.channels), np.bool)
+        self.ch_show = np.ones(len(self.channels), dtype=bool)
         self.frame = self.stacks[0]
         
         self.history = [[0,empty()]]
@@ -1569,7 +1569,7 @@ class Hub_stack:
         
         x0, y0 = self.gui.upperleft
         w, h = self.gui.stack_cf.winfo_width()-4, self.gui.stack_cf.winfo_height()-4
-        im = cv2.warpAffine(im, np.array([[zoom,0,-x0],[0,zoom,-y0]], dtype=np.float),
+        im = cv2.warpAffine(im, np.array([[zoom,0,-x0],[0,zoom,-y0]], dtype=float),
                             (w, h))
         x, y = w//2 - iw//2, h//2 - ih//2
         self.gui.stack_canvas.coords(self.gui.im_id, x+x0, y+y0)

@@ -817,7 +817,7 @@ class Channels:
                             l = False
                         new_box += [new[i-lens[f]:i+j-lens[f]]]
                         new_chs += self.chs_trash[h][m:m+j]
-                        new_show += [np.ones([j], np.bool)]
+                        new_show += [np.ones([j], dtype=bool)]
                         m += j
                         i += j
                     else:

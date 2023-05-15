@@ -735,7 +735,7 @@ class Snapshots:
             points = points[show]
             points[:,1:3] *= exp_rate
             points[:,1:3] += np.array([lb//2, la//2])
-            show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=np.bool)
+            show = np.prod(points[:,1:3]//np.array([lb, la]) == 0, axis=1, dtype=bool)
             colors = colors[show]
             colors = np.append(colors, np.zeros([len(colors), 1]) + 255, axis=1)
             names = names[show]
