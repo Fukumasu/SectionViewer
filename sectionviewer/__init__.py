@@ -1,4 +1,4 @@
-from .sectionviewer import launch, main
+from .main import launch, main
 from .cui import load
 from .info import version
 
