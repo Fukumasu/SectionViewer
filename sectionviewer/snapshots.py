@@ -750,7 +750,7 @@ class Snapshots:
     
             r, l, s = Hub.r, Hub.l, Hub.s
             for point, color, name in zip(points, colors, names):
-                a, b = point[1:3].astype(np.int)
+                a, b = point[1:3].astype(int)
                 square = im[max(a-2*r,0):a+2*r+1, max(b-2*r,0):b+2*r+1]
                 square1 = square.copy()
                 a0, b0 = a - max(a-2*r,0), b - max(b-2*r,0)
@@ -839,11 +839,11 @@ class Snapshots:
         
         h, w = int(self.im_size[0]*4/3), int(self.im_size[1]*4/3)
         e = min(w/Hub.L*0.8, w*exp_rate/im_size[0]*0.8, h*exp_rate/im_size[1]*0.8)
-        peaks = (peaks[:,2:0:-1]*e).astype(np.int) + np.array([w,h])//2
-        points = (points[:,::-1]*e).astype(np.int)
+        peaks = (peaks[:,2:0:-1]*e).astype(int) + np.array([w,h])//2
+        points = (points[:,::-1]*e).astype(int)
         points[:,:2] +=  np.array([w,h])//2
-        c = (np.array([w,h])//2 - center[::-1]*e).astype(np.int)
-        im_size = (e*im_size/exp_rate/2).astype(np.int)
+        c = (np.array([w,h])//2 - center[::-1]*e).astype(int)
+        im_size = (e*im_size/exp_rate/2).astype(int)
         
         im = np.empty([h, w, 3], np.uint8)
         im[:] = 240
@@ -861,7 +861,7 @@ class Snapshots:
                 remain.remove(n)
                 v0 = sec[sort[-2]] - sec[sort[-1]]
                 v0 /= np.linalg.norm(v0)
-            sec = ((sec - center)[:,::-1]*e).astype(np.int) + np.array([w,h])//2
+            sec = ((sec - center)[:,::-1]*e).astype(int) + np.array([w,h])//2
             uls, brs = np.amin(sec, axis=0) - 1, np.amax(sec, axis=0) + 1
             uls = np.fmax(uls, 0)
             square = (slice(uls[1],brs[1]), slice(uls[0],brs[0]))

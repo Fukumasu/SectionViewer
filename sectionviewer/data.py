@@ -63,10 +63,10 @@ class Data:
         ch_load = self.getchload()
         if isinstance(x, (tuple, list)):
             x = [int(i) for i in x]
-            ch_load = np.cumsum(ch_load, dtype=np.int)
+            ch_load = np.cumsum(ch_load, dtype=int)
             return ch_load[x] - 1
         x = int(x)
-        return np.sum(ch_load[:x], dtype=np.int)
+        return np.sum(ch_load[:x], dtype=int)
     
     
     def load(self, dat, add=False):

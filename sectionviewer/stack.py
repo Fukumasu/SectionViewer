@@ -59,7 +59,7 @@ class Stack:
         pos[1:] *= (to - from_)/la
         self.frame1 = np.empty([dc, lb, la], np.uint16)
         ut.calc_section(Hub.box, pos, self.frame1, 
-                        np.array([lb//2, self.center], np.int),
+                        np.array([lb//2, self.center], int),
                         np.arange(len(lut))[Hub.ch_show])
         image1 = np.empty([*self.frame1.shape[1:], 4], np.uint8)
         if gui.white.get():
@@ -75,7 +75,7 @@ class Stack:
         pos[1:] *= (to - from_)/la
         self.frame2 = np.empty([dc, lb, la], np.uint16)
         ut.calc_section(Hub.box, pos, self.frame2, 
-                        np.array([lb//2, self.center], np.int),
+                        np.array([lb//2, self.center], int),
                         np.arange(len(lut))[Hub.ch_show])
         image2 = np.empty([*self.frame2.shape[1:], 4], np.uint8)
         if gui.white.get():
@@ -617,7 +617,7 @@ class Stack:
             la, lb = lb, la
             la0, lb0 = lb0, la0
             pos = pos[[0,2,1]]
-        c = (np.array([lb0//2, la0//2]) - m).astype(np.int)
+        c = (np.array([lb0//2, la0//2]) - m).astype(int)
         
         box_trim = np.empty([stop-start+1, dc, lb, la], dtype=np.uint16)
         

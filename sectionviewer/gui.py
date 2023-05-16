@@ -701,7 +701,7 @@ class GUI(ttk.Frame):
         a, b = int(a*zoom), int(b*zoom)
         if x > a or y > b or x < 0 or y < 0:
             return None
-        self.click = np.array([x, y], np.float)/self.Hub.zoom
+        self.click = np.array([x, y], dtype=float)/self.Hub.zoom
         state = event.state//self.flags[:3]%2
         if state.any():
             self.mode = np.where(state)[0][0] + 1
@@ -763,7 +763,7 @@ class GUI(ttk.Frame):
         op, ny, nx = self.Hub.position.asarray()
         if (event.state//self.flags[4])%2 == 0:
             dc, dz, dy, dx = self.Hub.box.shape
-            v = np.array([x, y], np.float) - np.array([la//2, lb//2])
+            v = np.array([x, y], dtype=float) - np.array([la//2, lb//2])
             p = op + ny*v[1]/self.Hub.geometry['exp_rate'] + nx*v[0]/self.Hub.geometry['exp_rate']
             p[0] /= self.Hub.ratio
             p += np.array([dz//2, dy//2, dx//2])
@@ -773,8 +773,8 @@ class GUI(ttk.Frame):
                 vals = self.Hub.frame[:,yi,xi]
             else:
                 vals = np.zeros(len(self.Hub.frame))
-            vals = str(np.round(vals).astype(np.int)[sort][self.Hub.ch_show[sort]])
-            p = str(np.round(p).astype(np.int)[::-1])
+            vals = str(np.round(vals).astype(int)[sort][self.Hub.ch_show[sort]])
+            p = str(np.round(p).astype(int)[::-1])
             self.coor_text.set('[x,y,z] = {0}\n    vals = {1}'.format(p, vals))
             if len(self.Hub.sec_points) != 0:
         
@@ -797,7 +797,7 @@ class GUI(ttk.Frame):
                     l[l>1] = 1
                     s = 1 - s
                     
-                    a, b = point.astype(np.int)
+                    a, b = point.astype(int)
                     square = self.section[max(a-2*r,0):a+2*r+1, max(b-2*r,0):b+2*r+1]
                     square_ = square.copy()
                     a0, b0 = a - max(a-2*r,0), b - max(b-2*r,0)
@@ -816,7 +816,7 @@ class GUI(ttk.Frame):
         elif isinstance(self.click, type(None)):
             pass
         elif self.mode == 0:
-            self.shift = np.array([x, y], np.float)
+            self.shift = np.array([x, y], dtype=float)
             self.shift -= self.click
             if event.state//self.flags[1]%2 == 1:
                 self.shift[np.argmin(np.abs(self.shift))] = 0
@@ -838,7 +838,7 @@ class GUI(ttk.Frame):
             
         elif self.mode == 1:
             v0 = self.click - np.array([la//2, lb//2])
-            v = np.array([x, y], np.float) - np.array([la//2, lb//2])
+            v = np.array([x, y], dtype=float) - np.array([la//2, lb//2])
             self.angle = np.angle((v[0] + 1j*v[1])/(v0[0] + 1j*v0[1]))
             if event.state//self.flags[1]%2 == 1:
                 self.angle = round(self.angle/np.pi*12)*np.pi/12
@@ -890,14 +890,14 @@ class GUI(ttk.Frame):
                 elif fr[1]:
                     self.trim[1] *= (y - ih//2)/r[1]
                      
-                self.trim = self.trim.astype(np.int)
+                self.trim = self.trim.astype(int)
                 self.trim[self.trim < 50] = 50
                 
                 im_size = self.Hub.geometry['im_size']
                 self.Hub.geometry.geo['im_size'] = tuple(self.trim)
                 
                 zoom = self.Hub.zoom
-                t0, t1 = (self.trim*zoom).astype(np.int)
+                t0, t1 = (self.trim*zoom).astype(int)
                 
                 w, h = self.sec_cf.winfo_width()-4, self.sec_cf.winfo_height()-4
                 iw, ih = int(iw*zoom), int(ih*zoom)

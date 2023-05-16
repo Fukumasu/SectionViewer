@@ -294,7 +294,7 @@ class Hub:
     
             r, l, s = self.r, self.l, self.s
             for point, color, name in zip(points, colors, names):
-                a, b = point[1:3].astype(np.int)
+                a, b = point[1:3].astype(int)
                 square = im[max(a-2*r,0):max(a+2*r+1,0), max(b-2*r,0):max(b+2*r+1,0)]
                 square1 = square.copy()
                 a0, b0 = a - max(a-2*r,0), b - max(b-2*r,0)
@@ -437,7 +437,7 @@ class Hub:
         points = (points*2**shift).astype(int)
         c = (np.array([w,h])//2 - center[::-1]*e).astype(int)
         
-        im_size = (e*im_size/exp_rate/2).astype(np.int)
+        im_size = (e*im_size/exp_rate/2).astype(int)
         ul, br = (c[0] - im_size[0], c[1] - im_size[1]), (c[0] + im_size[0], c[1] + im_size[1])
         ul0 = (max(0, ul[0]), max(0, ul[1]))
         br0 = (max(0, br[0]), max(0, br[1]))
@@ -660,7 +660,7 @@ class Hub:
         
                 r, l, s = self.r, self.l, self.s
                 for point, color, name in zip(points1, colors1, names1):
-                    a, b = point[1:3].astype(np.int)
+                    a, b = point[1:3].astype(int)
                     square = im1[max(a-2*r,0):a+2*r+1, max(b-2*r,0):b+2*r+1]
                     square1 = square.copy()
                     a0, b0 = a - max(a-2*r,0), b - max(b-2*r,0)

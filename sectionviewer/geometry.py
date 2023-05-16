@@ -192,7 +192,7 @@ class Geometry:
                 data += [[f, c]]
         names = np.array(self.Hub.channels.getnames())
         colors = np.array(self.Hub.channels.getcolors())
-        colors = (colors/255*55 + 200).astype(np.int)
+        colors = (colors/255*55 + 200).astype(int)
         
         option = tk.IntVar(value=-1)
         def replace(self):

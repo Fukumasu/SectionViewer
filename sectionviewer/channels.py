@@ -977,10 +977,10 @@ class Channels:
         if len(a) == 0:
             b = np.linspace(offset, offset+360, new, endpoint=False)%360
         else:
-            a = np.sort(a).astype(np.int)
+            a = np.sort(a).astype(int)
             b = a[1:] - a[:-1]
             b = np.append(b, 360 - np.sum(b))
-            c = np.ones(len(b), np.int)
+            c = np.ones(len(b), int)
             d = b/c
             for _ in range(new):
                 m = np.argmax(d)
@@ -1045,7 +1045,7 @@ class Channels:
         res1[c,2] = M[c]
         res1[~c,1] = M[~c]
         res1[~c,2] = n[~c]
-        a = (colors[:,0]//120).astype(np.int)
+        a = (colors[:,0]//120).astype(int)
         c = np.arange(len(res1))
         res[b] = np.concatenate([res1[c,a%3][:,None], res1[c,(a+1)%3][:,None],
                                  res1[c,(a+2)%3][:,None]], axis=1)
