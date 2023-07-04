@@ -1,4 +1,5 @@
 @echo off
-call ~/Scripts/activate.bat
-call activate base
-~/Scripts/sectionviewer %1
+echo *
+echo *   Please launch SectionViewer once from your command prompt before using this entry point.
+echo *
+pause
