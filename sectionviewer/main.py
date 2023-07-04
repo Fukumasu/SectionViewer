@@ -34,6 +34,22 @@ class SectionViewer(ttk.Frame):
         self.root = root
         self.screenwidth = root.winfo_screenwidth()
         self.screenheight = root.winfo_screenheight()
+
+        if pf == 'Windows':
+            path = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
+            path = path.split('/')
+            if 'envs' in path:
+                ei = [i for i in range(len(path)-1) if path[i] == 'envs'][0]
+                envname = path[ei+1]
+            else:
+                ei = [i for i in range(len(path)) if path[i] == 'lib'][0]
+                envname = 'base'
+            activate = '/'.join(path[:ei]) + '/Scripts/activate.bat'
+            li = [i for i in range(len(path)) if path[i] == 'lib'][0]
+            execute = '/'.join(path[:li]) + '/Scripts/sectionviewer'
+            commands = '@echo off\ncall {0}\ncall activate {1}\ncall {2}'.format(activate, envname, execute)
+            with open('SectionViewer_entry.cmd', 'w') as f:
+                f.write(commands)
         
         if len(arg) == 0:
             arg = sys.argv[1:]
