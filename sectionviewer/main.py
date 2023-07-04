@@ -46,7 +46,7 @@ class SectionViewer(ttk.Frame):
                 envname = 'base'
             activate = '/'.join(path[:ei]) + '/Scripts/activate.bat'
             li = [i for i in range(len(path)) if path[i] == 'lib'][0]
-            execute = '/'.join(path[:li]) + '/Scripts/sectionviewer'
+            execute = '/'.join(path[:li]) + '/Scripts/sectionviewer %1'
             commands = '@echo off\ncall {0}\ncall activate {1}\ncall {2}'.format(activate, envname, execute)
             with open('SectionViewer_entry.cmd', 'w') as f:
                 f.write(commands)
