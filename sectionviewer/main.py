@@ -45,9 +45,8 @@ class SectionViewer(ttk.Frame):
                 ei = [i for i in range(len(path)) if path[i] == 'lib'][0]
                 envname = 'base'
             activate = '/'.join(path[:ei]) + '/Scripts/activate.bat'
-            li = [i for i in range(len(path)) if path[i] == 'lib'][0]
-            execute = '/'.join(path[:li]) + '/Scripts/sectionviewer %1'
-            commands = '@echo off\ncall {0}\ncall activate {1}\ncall {2}'.format(activate, envname, execute)
+            execute = 'pythonw ' + '/'.join(path) + '/launch.py %1'
+            commands = '@echo off\ncall {0}\ncall activate {1}\nstart {2}'.format(activate, envname, execute)
             with open('SectionViewer_entry.cmd', 'w') as f:
                 f.write(commands)
         
@@ -138,5 +137,3 @@ def console_command():
 def main(*args):
     app = SectionViewer(args)
     app.mainloop()
-    
-
