@@ -16,13 +16,13 @@ pf = platform.system()
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
-        fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
+        self.fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
         
         root = tk.Tk()
         root.withdraw()
         if pf == 'Windows':
-            root.iconbitmap(fdir + 'img/icon.ico')
-        icon = cv2.imread(fdir + 'img/resources.png')[-128:,:128]
+            root.iconbitmap(self.fdir + 'img/icon.ico')
+        icon = cv2.imread(self.fdir + 'img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
@@ -64,10 +64,10 @@ class SectionViewer(ttk.Frame):
                          ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
                          ('SV multi-stack files', '*.stac'),
                          ('All files', '*')]
-            if not os.path.isfile('init_dir.txt'):
-                with open('init_dir.txt', 'w') as f:
+            if not os.path.isfile(self.fdir + 'init_dir.txt'):
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.expanduser('~/Desktop'))
-            with open('init_dir.txt', 'r') as f:
+            with open(self.fdir + 'init_dir.txt', 'r') as f:
                 initialdir = f.read()
             if not os.path.isdir(initialdir):
                 initialdir = os.path.expanduser('~/Desktop')
@@ -81,7 +81,7 @@ class SectionViewer(ttk.Frame):
             w, h = self.screenwidth, self.screenheight
             master.geometry('{0}x{1}+0+0'.format(w, h))
             if pf == 'Windows':
-                master.iconbitmap(fdir + 'img/icon.ico')
+                master.iconbitmap(self.fdir + 'img/icon.ico')
                 master.state('zoomed')
             
             pop = True if 'pop' in arg else False
@@ -92,7 +92,7 @@ class SectionViewer(ttk.Frame):
                 gui = GUI(self, master, file_path)
             
             if hasattr(gui, 'Hub') and not pop:
-                with open('init_dir.txt', 'w') as f:
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(file_path))
         else:
             self.root.destroy()
@@ -105,10 +105,10 @@ class SectionViewer(ttk.Frame):
                          ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
                          ('SV multi-stack files', '*.stac'),
                          ('All files', '*')]
-            if not os.path.isfile('init_dir.txt'):
-                with open('init_dir.txt', 'w') as f:
+            if not os.path.isfile(self.fdir + 'init_dir.txt'):
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.expanduser('~/Desktop'))
-            with open('init_dir.txt', 'r') as f:
+            with open(self.fdir + 'init_dir.txt', 'r') as f:
                 initialdir = f.read()
             if not os.path.isdir(initialdir):
                 initialdir = os.path.expanduser('~/Desktop')

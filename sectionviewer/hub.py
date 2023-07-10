@@ -774,7 +774,7 @@ class Hub:
             
         self.gui.iDir = path
         self.gui.title = os.path.basename(path)
-        with open('init_dir.txt', 'w') as f:
+        with open(self.fdir + 'init_dir.txt', 'w') as f:
             f.write(os.path.dirname(path))
         self.gui.master.title(self.gui.title)
         self.secv_name = path
@@ -821,7 +821,7 @@ class Hub:
             
             if path[-4:] == '.mp4':
                 gui.ask_fps(path)
-                with open('init_dir.txt', 'w') as f:
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             
@@ -853,7 +853,7 @@ class Hub:
                                              '\nFailed to export TIFF file',
                                              parent=self.gui.master)
                         return
-                    with open('init_dir.txt', 'w') as f:
+                    with open(self.fdir + 'init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -866,7 +866,7 @@ class Hub:
                 return
             
             if self.imwrite(path, im):
-                with open('init_dir.txt', 'w') as f:
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
         
     

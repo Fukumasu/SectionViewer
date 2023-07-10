@@ -1176,8 +1176,8 @@ class STAC(ttk.Frame):
         if path == None:
             filetypes = [('SV multi-stack', '*.stac')]
             
-            if os.path.isfile('init_dir.txt'):
-                with open('init_dir.txt', 'r') as f:
+            if os.path.isfile(self.fdir + 'init_dir.txt'):
+                with open(self.fdir + 'init_dir.txt', 'r') as f:
                     initialdir = f.read()
                 if not os.path.isdir(initialdir):
                     initialdir = os.path.dirname(self.iDir)
@@ -1207,7 +1207,7 @@ class STAC(ttk.Frame):
                                      parent=self.master)
                 return False
             self.saving.set('')
-            with open('init_dir.txt', 'w') as f:
+            with open(self.fdir + 'init_dir.txt', 'w') as f:
                 f.write(os.path.dirname(path))
             self.title = os.path.basename(path)
             
@@ -1258,8 +1258,8 @@ class STAC(ttk.Frame):
                          ('Portable image format', '*.pbm'),
                          ('Sun rasters', '*.sr')]
         
-        if os.path.isfile('init_dir.txt'):
-            with open('init_dir.txt', 'r') as f:
+        if os.path.isfile(self.fdir + 'init_dir.txt'):
+            with open(self.fdir + 'init_dir.txt', 'r') as f:
                 initialdir = f.read()
             if not os.path.isdir(initialdir):
                 initialdir = self.file_dir
@@ -1276,7 +1276,7 @@ class STAC(ttk.Frame):
             path = path.replace('\\', '/')
             if path[-4:] == '.mp4':
                 self.ask_fps(path)
-                with open('init_dir.txt', 'w') as f:
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
                 return
             Hub = self.Hub
@@ -1303,7 +1303,7 @@ class STAC(ttk.Frame):
                                              '\nFailed to export TIFF file',
                                              parent=self.master)
                         return
-                    with open('init_dir.txt', 'w') as f:
+                    with open(self.fdir + 'init_dir.txt', 'w') as f:
                         f.write(os.path.dirname(path))
                     return
             if opt == 1:
@@ -1316,7 +1316,7 @@ class STAC(ttk.Frame):
                 return
             
             if self.imwrite(path, im):
-                with open('init_dir.txt', 'w') as f:
+                with open(self.fdir + 'init_dir.txt', 'w') as f:
                     f.write(os.path.dirname(path))
             
             
