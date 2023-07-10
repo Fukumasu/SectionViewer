@@ -23,6 +23,7 @@ from . import utils as ut
 
 class Hub:
     def __init__(self, gui, path, secv=None):
+        self.fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
         self.gui = gui
         
         self.data = []

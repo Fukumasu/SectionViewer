@@ -666,7 +666,7 @@ class Points:
         win = tk.Toplevel(self.Hub.gui.master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap('img/icon.ico')
+            win.iconbitmap(self.Hub.fdir + 'img/icon.ico')
         win.title('Move to')
         
         frame0 = ttk.Frame(win)

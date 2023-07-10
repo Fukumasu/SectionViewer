@@ -690,13 +690,14 @@ class Stack:
     
 class STAC(ttk.Frame):
     def __init__(self, SV, master, file_path, pop=False):
+        self.fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
         
         self.SV = SV
         
         self.file_dir = os.path.dirname(file_path)
         self.file_name = os.path.basename(file_path)
         
-        resources = cv2.imread('img/resources.png')
+        resources = cv2.imread(self.fdir + 'img/resources.png')
         e_image = resources[:14,174:188]
         self.e_image = ImageTk.PhotoImage(Image.fromarray(e_image[:,:,::-1]))
         
@@ -1323,7 +1324,7 @@ class STAC(ttk.Frame):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
         if pf == 'Windows':
-            self.fps_win.iconbitmap('img/icon.ico')
+            self.fps_win.iconbitmap(self.fdir + 'img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1440,7 +1441,7 @@ class STAC(ttk.Frame):
         win = tk.Toplevel(master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap('img/icon.ico')
+            win.iconbitmap(self.fdir + 'img/icon.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

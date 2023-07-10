@@ -17,6 +17,8 @@ pf = platform.system()
 
 class GUI(ttk.Frame):
     def __init__(self, SV, master, file_path):
+        fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
+        
         self.SV = SV
         self.file_path = file_path
         self.file_dir = os.path.dirname(file_path)
@@ -26,7 +28,7 @@ class GUI(ttk.Frame):
         self.title = self.file_name
         self.master.title(self.title)
         
-        resources = cv2.imread('img/resources.png')
+        resources = cv2.imread(fdir + 'img/resources.png')
         k_image = resources[204:373] if pf == 'Darwin' else resources[35:204]
         self.k_image = ImageTk.PhotoImage(Image.fromarray(k_image[:,:,::-1]))
         self.xyz = resources[:22,108:174]
@@ -986,7 +988,7 @@ class GUI(ttk.Frame):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
         if pf == 'Windows':
-            self.fpt_win.iconbitmap('img/icon.ico')
+            self.fpt_win.iconbitmap(self.Hub.fdir + 'img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width=False, height=False)
@@ -1110,7 +1112,7 @@ class GUI(ttk.Frame):
         win = tk.Toplevel(master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap('img/icon.ico')
+            win.iconbitmap(self.Hub.fdir + 'img/icon.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)

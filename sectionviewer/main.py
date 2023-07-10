@@ -16,13 +16,13 @@ pf = platform.system()
 
 class SectionViewer(ttk.Frame):
     def __init__(self, arg):
-        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        fdir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
         
         root = tk.Tk()
         root.withdraw()
         if pf == 'Windows':
-            root.iconbitmap('img/icon.ico')
-        icon = cv2.imread('img/resources.png')[-128:,:128]
+            root.iconbitmap(fdir + 'img/icon.ico')
+        icon = cv2.imread(fdir + 'img/resources.png')[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))
         canvas = tk.Canvas(root, width=240, height=150)
         canvas.create_rectangle(0, 0, 2000, 2000, fill='#606060', width=0)
@@ -81,7 +81,7 @@ class SectionViewer(ttk.Frame):
             w, h = self.screenwidth, self.screenheight
             master.geometry('{0}x{1}+0+0'.format(w, h))
             if pf == 'Windows':
-                master.iconbitmap('img/icon.ico')
+                master.iconbitmap(fdir + 'img/icon.ico')
                 master.state('zoomed')
             
             pop = True if 'pop' in arg else False
@@ -121,9 +121,11 @@ class SectionViewer(ttk.Frame):
 
     
 def launch(file_path=None):
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    if len(sys.argv) > 1:
-        file_path = sys.argv[1]
+    if len(sys.argv) > 1 and file_path == None:
+        if os.path.isfile(sys.argv[1]):
+            file_path = sys.argv[1]
+        else:
+            file_path = ''
     if file_path == None:
         file_path = ''
     subprocess.Popen('sectionviewer ' + file_path, shell=True)
