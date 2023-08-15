@@ -47,7 +47,7 @@ class SectionViewer(ttk.Frame):
             activate = '/'.join(path[:ei]) + '/Scripts/activate.bat'
             execute = 'pythonw ' + '/'.join(path) + '/launch.py %1'
             commands = '@echo off\ncall {0}\ncall activate {1}\nstart {2}'.format(activate, envname, execute)
-            with open('SectionViewer_entry.cmd', 'w') as f:
+            with open(self.fdir + 'SectionViewer_entry.cmd', 'w') as f:
                 f.write(commands)
         
         if len(arg) == 0:
