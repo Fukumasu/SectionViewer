@@ -60,9 +60,8 @@ class SectionViewer(ttk.Frame):
         
         if file_path == None:
             self.root.deiconify()
-            filetypes = [('SectionViewer files', '*.secv'), 
-                         ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
-                         ('SV multi-stack files', '*.stac'),
+            filetypes = [('Supported files', ['*.secv', '*.stac', '*.oir', 
+                                              '*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             if not os.path.isfile(self.fdir + 'init_dir.txt'):
                 with open(self.fdir + 'init_dir.txt', 'w') as f:
@@ -101,9 +100,8 @@ class SectionViewer(ttk.Frame):
     def open_new(self, master, file_path=None):
         
         if file_path == None:
-            filetypes = [('SectionViewer files', '*.secv'), 
-                         ('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']), 
-                         ('SV multi-stack files', '*.stac'),
+            filetypes = [('Supported files', ['*.secv', '*.stac', '*.oir',
+                                              '*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             if not os.path.isfile(self.fdir + 'init_dir.txt'):
                 with open(self.fdir + 'init_dir.txt', 'w') as f:

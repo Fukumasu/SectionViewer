@@ -11,15 +11,26 @@ class Channels:
         chs = Hub.channels
         
         dc = Hub.geometry['shape'][0]
-            
+        
         if len(chs) != dc:
-            c = self.auto_color([], dc) if dc > 1 else [[255]*3]
-            chs = [['ch{0}'.format(i), c[i], 0, 65535] for i in range(dc)]
+            auto = self.auto_color([], dc) if dc > 1 else [[255]*3]
+            chs = [['ch{0}'.format(i), auto[i], 0, 65535] for i in range(dc)]
         else:
-            for c in chs:
-                c[0] = str(c[0])
-                c[1] = [int(c[1][i])%256 for i in range(3)]
-                c[2], c[3] = int(c[2]), int(c[3])
+            cs = []
+            n = 0
+            for i, c in enumerate(chs):
+                if type(c) == list:
+                    c[0] = str(c[0])
+                    c[1] = [int(c[1][i])%256 for i in range(3)]
+                    cs += [c[1]]
+                    n += 1
+                    c[2], c[3] = int(c[2]), int(c[3])
+            auto = self.auto_color(cs, dc - n) if dc > 1 else [[255]*3]
+            n = 0
+            for i, c in enumerate(chs):
+                if type(c) != list:
+                    chs[i] = [str(c), auto[n], 0, 65535]
+                    n += 1
         
         self.chs = chs
         self.chs_trash = {}

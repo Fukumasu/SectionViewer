@@ -3,6 +3,7 @@ import pathlib
 import pickle
 
 import numpy as np
+from aicsimageio.readers import bioformats_reader as br
 import oiffile as oif
 import tifffile as tif
 from tkinter import filedialog
@@ -18,7 +19,7 @@ class Data:
             messagebox.showerror('Error: No data files in SECV',
                                  'Please choose a data file to open.',
                                  parent=Hub.gui.master)
-            filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+            filetypes = [('Supported files', ['*.oir', '*.oib', '*.tif', '*.tiff']),
                          ('All files', '*')]
             initialdir = Hub.gui.file_dir
             file = filedialog.askopenfilename(parent=Hub.gui.master, 
@@ -111,7 +112,7 @@ class Data:
                                     '''The following file path seems to have been changed:
 {0}
 Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
-                filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
+                filetypes = [('Supported files', ['*.oir', '*.oib', '*.tif', '*.tiff']),
                              ('All files', '*')]
                 initialdir = Hub.gui.file_dir
                 initialfile = os.path.splitext(os.path.basename(f))[0]
@@ -133,8 +134,21 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
         
         boxes = []    
         for i, f in enumerate(files):
+              
+            if f[-4:] == '.oir':
+                img = br.BioformatsReader(f)
+                axes = img.dims.order.upper()
+                axes = [axes.index('C'), axes.index('Z'), axes.index('Y'), axes.index('X')]
+                data = img.data
+                data = data.transpose(*([i for i in range(len(data.shape)) if i not in axes] + axes))
+                data = data[tuple([0]*(len(data.shape) - len(axes)))]
+                boxes += [data]
+                pxs = img.physical_pixel_sizes
+                Hub.geometry['xy_oib'] = (pxs.X + pxs.Y)/2
+                Hub.geometry['z_oib'] = pxs.Z
+                Hub.channels += img.channel_names
                 
-            if f[-4:] == '.oib':
+            elif f[-4:] == '.oib':
                 boxes += [oif.imread(f)]
                 
                 try:
@@ -241,8 +255,15 @@ Please specify the file again.'''.format(path), parent=self.Hub.gui.master)
                 return
             path = path.replace('\\', '/')
             
+        if path[-4:] == '.oir':
+            img = br.BioformatsReader(path)
+            axes = img.dims.order.upper()
+            axes = [axes.index('C'), axes.index('Z'), axes.index('Y'), axes.index('X')]
+            box = img.data
+            box = box.transpose(*([i for i in range(len(box.shape)) if i not in axes] + axes))
+            box = box[tuple([0]*(len(box.shape) - len(axes)))]
         
-        if path[-4:] == '.oib':
+        elif path[-4:] == '.oib':
             box = oif.imread(path)
 
         elif path[-4:] == '.tif' or path[-5:] == '.tiff':
