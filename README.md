@@ -11,6 +11,7 @@ Viewer for 3-dimensional images (.oib, .tif) on cross sections (multi-planar rec
 - Windows, macOS, or Linux
 - python >= 3.6
 - Microsoft Visual C++ compiler (for Windows)
+- To open .oir files, a java executable is required to be available in your environment. If you are using conda, you can install with 'conda install -c conda-forge scyjava'.
 
 ## Installation
 
