@@ -25,12 +25,13 @@ class Channels:
                     cs += [c[1]]
                     n += 1
                     c[2], c[3] = int(c[2]), int(c[3])
-            auto = self.auto_color(cs, dc - n) if dc > 1 else [[255]*3]
-            n = 0
-            for i, c in enumerate(chs):
-                if type(c) != list:
-                    chs[i] = [str(c), auto[n], 0, 65535]
-                    n += 1
+            if dc > n:
+                auto = self.auto_color(cs, dc - n) if dc > 1 else [[255]*3]
+                n = 0
+                for i, c in enumerate(chs):
+                    if type(c) != list:
+                        chs[i] = [str(c), auto[n], 0, 65535]
+                        n += 1
         
         self.chs = chs
         self.chs_trash = {}
