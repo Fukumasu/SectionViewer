@@ -328,7 +328,7 @@ class Stack:
         stac = [self.stacked[None], chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'single', 'trans': 0}]
         gui = self.Hub.gui
-        path = os.path.splitext(gui.title)[0] + '.stac'
+        path = os.path.splitext(gui.title)[0].replace(' ', '_') + 'single_projection_autosave.stac'
         try:
             byt = pickle.dumps(stac, protocol=4)
             byt = gzip.compress(byt, compresslevel=1)
@@ -428,7 +428,7 @@ class Stack:
                     {'white back': Hub.gui.white.get(), 'mode':'rotation', 
                      'trans': trans}]
             gui = self.Hub.gui
-            path = os.path.splitext(gui.title)[0] + '.stac'
+            path = os.path.splitext(gui.title)[0].replace(' ', '_') + 'rotation_autosave.stac'
             try:
                 byt = pickle.dumps(stac, protocol=4)
                 byt = gzip.compress(byt, compresslevel=1)
@@ -479,7 +479,7 @@ class Stack:
         stac = [stacks, chs, Hub.geometry.geo,
                 {'white back': Hub.gui.white.get(), 'mode': 'span', 'trans': 0}]
         gui = self.Hub.gui
-        path = os.path.splitext(gui.title)[0] + '.stac'
+        path = os.path.splitext(gui.title)[0].replace(' ', '_') + 'span_autosave.stac'
         try:
             byt = pickle.dumps(stac, protocol=4)
             byt = gzip.compress(byt, compresslevel=1)
@@ -535,17 +535,26 @@ class Stack:
         stop = int(self.s_var[1].get()*self.expansion) + self.center
         
         image1 = self.image1.copy()
-        image1[:,start] = 255 - image1[:,start]
+        start, stop = min(start, len(image1[0])-1), min(stop, len(image1[0])-1)
+        image1[:,start,3:] = 255
+        image1[::2,start] = 255
+        image1[1::2,start,:3] = 0
         if start != stop:
-            image1[:,stop] = 255 - image1[:,stop]
+            image1[:,stop,3:] = 255
+            image1[::2,stop] = 255
+            image1[1::2,stop,:3] = 0
         image1 = np.append(image1[:,:,2::-1], image1[:,:,3:], axis=2)
         self.im1 = ImageTk.PhotoImage(Image.fromarray(image1))
         self.canvas1.itemconfig(self.im1_id, image=self.im1)
         
         image2 = self.image2.copy()
-        image2[:,start] = 255 - image2[:,start]
+        image2[:,start,3:] = 255
+        image2[::2,start] = 255
+        image2[1::2,start,:3] = 0
         if start != stop:
-            image2[:,stop] = 255 - image2[:,stop]
+            image2[:,stop,3:] = 255
+            image2[::2,stop] = 255
+            image2[1::2,stop,:3] = 0
         image2 = np.append(image2[:,:,2::-1], image2[:,:,3:], axis=2)
         self.im2 = ImageTk.PhotoImage(Image.fromarray(image2))
         self.canvas2.itemconfig(self.im2_id, image=self.im2)
