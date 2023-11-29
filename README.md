@@ -4,7 +4,7 @@
 
 ## Overview
 
-Viewer for 3-dimensional images (.oib, .tif) on cross sections (multi-planar reconstruction).
+Viewer for 3-dimensional images (.oir, .oib, .tif) on cross sections (multi-planar reconstruction).
 
 ## Requirements
 
@@ -15,11 +15,11 @@ Viewer for 3-dimensional images (.oib, .tif) on cross sections (multi-planar rec
 
 ## Installation
 
-SectionViewer can be installed with the following simple pip command:
+You can install SectionViewer with the following simple pip command:
 ```
 pip install git+https://github.com/Fukumasu/SectionViewer
 ```
-After installation, the application is launched with a shell command 'sectionviewer'.
+If successful, the application will be launched with a shell command 'sectionviewer'.
 
 ## Description
 
