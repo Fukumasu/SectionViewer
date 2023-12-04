@@ -149,13 +149,28 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                 Hub.channels += img.channel_names
                 
             elif f[-4:] == '.oib':
-                boxes += [oif.imread(f)]
+                box = oif.imread(f)
                 
                 try:
                     with oif.OifFile(f) as oib:
-                        axes = oib.axes
+                        axes = oib.axes.upper()
                         shape = oib.shape
                         data = oib.mainfile
+                    bshape = np.array(box.shape)
+                    oshape = np.array(shape)
+                    if len(bshape) == len(oshape):
+                        ixs = np.zeros(len(bshape), dtype=int)
+                        for n in range(len(bshape)):
+                            w = np.where(bshape == oshape[n])[0]
+                            ixs[oshape==oshape[n]] = w
+                        trans = []
+                        if 'C' in axes:
+                            trans += [ixs[axes.index('C')]]
+                        for a in ['Z', 'Y', 'X']:
+                            trans += [ixs[axes.index(a)]]
+                        box = box.transpose(*([i for i in range(len(bshape)) if i not in trans] + trans))
+                        box = box[tuple([0]*(len(bshape) - len(trans)))]
+                        
                     shape = dict(np.append(np.array(list(axes))[:,None], np.array(shape)[:,None], axis=1))
                     axes = dict(np.append(np.array(list(axes))[::-1][:,None], np.arange(len(axes))[:,None], axis=1))
         
@@ -172,8 +187,10 @@ Please specify the file again.'''.format(f), parent=self.Hub.gui.master)
                         pxs[ax] = px
                     Hub.geometry['xy_oib'] = (pxs['X'] + pxs['Y'])/2
                     Hub.geometry['z_oib'] = pxs['Z']
+                    
                 except:
                     pass
+                boxes += [box]
     
             elif f[-4:] == '.tif' or f[-5:] == '.tiff':
                 boxes += [tif.imread(f)]
