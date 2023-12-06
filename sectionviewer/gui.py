@@ -252,7 +252,7 @@ class GUI(ttk.Frame):
         self.sec_frame = ttk.Frame(self.main_frame)
         self.sec_frame.pack(padx=2, pady=3)
         self.sec_cf = ttk.Frame(self.sec_frame)
-        self.sec_canvas = tk.Canvas(self.sec_cf, width=2000, height=2000)
+        self.sec_canvas = tk.Canvas(self.sec_cf, width=2000, height=2000, cursor='tcross')
         self.barx = tk.Scrollbar(self.sec_frame, orient=tk.HORIZONTAL)
         self.barx.pack(side=tk.BOTTOM, fill=tk.X)
         self.barx.config(command=self.sec_canvas.xview)

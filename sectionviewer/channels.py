@@ -224,7 +224,7 @@ class Channels:
         self.entry_b.bind('<FocusIn>', lambda event: select_entry())
         self.entry_b.bind('<FocusOut>', lambda event: color_entry('b'))
         
-        canvas = tk.Canvas(rgb_frame, width=160, height=20)
+        canvas = tk.Canvas(rgb_frame, width=160, height=20, cursor='hand2')
         canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
         canvas.grid(column=0, row=4, columnspan=2, padx=20, sticky=tk.SW)
         canvas.bind('<Button-1>', self.preset)
@@ -260,7 +260,7 @@ class Channels:
         self.entry_l.bind('<FocusIn>', lambda event: select_entry())
         self.entry_l.bind('<FocusOut>', lambda event: color_entry('l'))
         
-        canvas = tk.Canvas(hsl_frame, width=160, height=20)
+        canvas = tk.Canvas(hsl_frame, width=160, height=20, cursor='hand2')
         canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
         canvas.grid(column=0, row=4, columnspan=2, padx=20, sticky=tk.SW)
         canvas.bind('<Button-1>', self.preset)
