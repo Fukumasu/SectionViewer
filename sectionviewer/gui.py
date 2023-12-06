@@ -245,7 +245,9 @@ class GUI(ttk.Frame):
         
         self.scale = tk.Scale(self.scale_frame, length=2000, variable=self.depth,
                               orient='horizontal', showvalue=False)
-        self.scale.pack(side=tk.LEFT)
+        self.scale.pack(side=tk.TOP)
+        self.reset_button = ttk.Button(self.scale_frame, text='Reset pos')
+        self.reset_button.pack()
         
         self.sec_frame = ttk.Frame(self.main_frame)
         self.sec_frame.pack(padx=2, pady=3)
@@ -365,6 +367,11 @@ class GUI(ttk.Frame):
         self.scale.bind('<Button-1>', Hub.position.scale_clicked)
         self.scale.bind('<ButtonRelease-1>', Hub.position.scale_released)
         self.scale_frame.bind('<Configure>', self.scale_configure)
+        
+        self.reset_button.configure(command=lambda: Hub.position.new([[0.,0.,0.], 
+                                                                      [0.,1.,0.], 
+                                                                      [0.,0.,1.]],
+                                                                     10))
         
         self.sec_canvas.bind('<Motion>', self.track_sec)
         self.sec_canvas.bind('<Button-1>', self.click_sec)

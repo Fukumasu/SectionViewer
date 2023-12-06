@@ -185,6 +185,17 @@ class Channels:
                 elif c in 'hsl':
                     self.variables[c + 's'].set(str(self.variables[c].get()))
         
+        preset = np.zeros([20,160,3], dtype=np.uint8)
+        preset[:,:20] = [15,15,15]
+        preset[:,20:40] = [240,240,240]
+        preset[:,40:60] = [240,15,15]
+        preset[:,60:80] = [240,240,15]
+        preset[:,80:100] = [15,240,15]
+        preset[:,100:120] = [15,240,240]
+        preset[:,120:140] = [15,15,240]
+        preset[:,140:] = [240,15,240]
+        self.preset_image = ImageTk.PhotoImage(Image.fromarray(preset))
+        
         rgb_frame = ttk.Frame(note)
         self.rgb_frame = rgb_frame
         
@@ -212,6 +223,11 @@ class Channels:
         self.entry_b.bind('<Return>', lambda event: color_entry('b'))
         self.entry_b.bind('<FocusIn>', lambda event: select_entry())
         self.entry_b.bind('<FocusOut>', lambda event: color_entry('b'))
+        
+        canvas = tk.Canvas(rgb_frame, width=160, height=20)
+        canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
+        canvas.grid(column=0, row=4, columnspan=2, padx=20, sticky=tk.SW)
+        canvas.bind('<Button-1>', self.preset)
         ttk.Button(rgb_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
         note.add(rgb_frame, text='RGB')
@@ -243,6 +259,11 @@ class Channels:
         self.entry_l.bind('<Return>', lambda event: color_entry('l'))
         self.entry_l.bind('<FocusIn>', lambda event: select_entry())
         self.entry_l.bind('<FocusOut>', lambda event: color_entry('l'))
+        
+        canvas = tk.Canvas(hsl_frame, width=160, height=20)
+        canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
+        canvas.grid(column=0, row=4, columnspan=2, padx=20, sticky=tk.SW)
+        canvas.bind('<Button-1>', self.preset)
         ttk.Button(hsl_frame, text='Auto', command=self.set_auto).grid(column=1, row=4, 
                                                                       columnspan=2, pady=2, sticky=tk.E)
         note.add(hsl_frame, text='HSL')
@@ -391,13 +412,16 @@ class Channels:
         if self.Hub.ch_show[x].all():
             self.variables['sh'].set(1)
             for w in self.rgb_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
         else:
             if self.Hub.ch_show[x].any():
@@ -405,13 +429,16 @@ class Channels:
             else:
                 self.variables['sh'].set(0)
             for w in self.rgb_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
         
         if len(selection) == 1:
@@ -428,7 +455,7 @@ class Channels:
         fix = []
         for i in self.treeview.get_children():
             if not i in x:
-                fix += [list(self.chs[i][1])]
+                fix += [list(self.chs[int(i)][1])]
         new = len(x)
         new = self.auto_color(fix, new)
         
@@ -464,13 +491,16 @@ class Channels:
         if self.variables['sh'].get():
             self.entry_nm['state'] = tk.ACTIVE
             for w in self.rgb_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
             for w in self.hsl_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
             for w in self.vnx_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.ACTIVE
             if (self.Hub.frame[x[0]] == 0).all():
                 self.Hub.calc_frame(x=x)
@@ -487,13 +517,16 @@ class Channels:
         else:
             self.entry_nm['state'] = tk.DISABLED
             for w in self.rgb_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
             for w in self.hsl_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
             for w in self.vnx_frame.grid_slaves():
-                if not 'scale' in str(w)[-6:]:
+                s = str(w).split('!')[-1][:5]
+                if s in ['butto', 'entry', 'label']:
                     w['state'] = tk.DISABLED
             self.Hub.calc_image()
             if hasattr(self.Hub.gui, 'guide_mode'):
@@ -547,7 +580,6 @@ class Channels:
         i = int(x[0])
         self.chs[i][0] = new
         
-        
     def rgb(self, *args):
         if not self.variables['sh'].get():
             i = int(self.treeview.selection()[0])
@@ -579,6 +611,19 @@ class Channels:
         self.variables['b'].set(a[0])
         self.variables['g'].set(a[1])
         self.variables['r'].set(a[2])
+        self.ch_color()
+    def preset(self, event):
+        if not self.variables['sh'].get():
+            return
+        c = [[0,0,0], [255,255,255], [0,0,255], [0,255,255],
+             [0,255,0], [255,255,0], [255,0,0], [255,0,255]][event.x//20]
+        self.variables['b'].set(c[0])
+        self.variables['g'].set(c[1])
+        self.variables['r'].set(c[2])
+        c = self.bgr2hsl(c)
+        self.variables['h'].set(int(c[0]*10))
+        self.variables['s'].set(int(c[1]*10))
+        self.variables['l'].set(int(c[2]*10))
         self.ch_color()
         
     def ch_color(self, *args):
