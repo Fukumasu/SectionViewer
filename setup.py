@@ -42,7 +42,7 @@ setup(
     name = 'sectionviewer',
     version = version,
     packages = ['sectionviewer', 'sectionviewer.gui', 
-                'sectionviewer.img', 'sectionviewer.temp'],
+                'sectionviewer.img'],
     ext_modules = ext_modules,
     cmdclass=cmdclass,
     install_requires = install_requires,
