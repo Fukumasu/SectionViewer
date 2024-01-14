@@ -1,1 +1,0 @@
-Initial directory path for searching files will be written here.
