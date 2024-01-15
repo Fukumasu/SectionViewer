@@ -341,9 +341,9 @@ class HSL(FrozenList):
         self.color._reflect('hsl')
         
 
-def auto_color(units: list, fix: list, offset: int = 120):
-    
-    num_new = len(units) - len(fix)
+def auto_color(units: list, ids: list, offset: int = 120):
+    num_new = len(ids)
+    fix = [i for i in range(len(units)) if i not in ids]
     
     if len(fix) > 0:
         

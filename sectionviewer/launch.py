@@ -1,2 +1,2 @@
-from sectionviewer2.main import main
+from sectionviewer.main import main
 main()

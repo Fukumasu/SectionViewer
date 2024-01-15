@@ -6,7 +6,7 @@ import numpy as np
 
 from .tools import base_dir, desolve_secv, load_stac, load_data
 from .tools import calc_section, calc_sideview
-from .tools import synthesize_image, draw_points, calc_guide
+from .tools import synthesize_image, draw_points, calc_skeleton
 from .components import DataArray, CUI, MetadataDict
 
 
@@ -49,6 +49,15 @@ class SECV(CUI):
             self._update_guide
             ]
         object.__setattr__(self, 'update_funcs', update_funcs)
+        
+        if voxel_array is None:
+            self._load_voxels()
+        else:
+            object.__setattr__(self, 'voxels', voxel_array)
+        object.__setattr__(self, 'metadata', MetadataDict(self))
+        if not hasattr(self, 'meta_prev'):
+            object.__setattr__(self, 'meta_prev', self.metadata.copy())
+        
         key_levels = {
             'files': ({'paths': ({}, 1)}, 6),
             'geometry': ({'image_size': ({}, 2), 'scale_bar_length': ({}, 4)}, 3),
@@ -62,32 +71,12 @@ class SECV(CUI):
             }
         object.__setattr__(self, '_key_levels', key_levels)
         
-        if voxel_array is None:
-            self._load_voxels()
-        else:
-            object.__setattr__(self, 'voxels', voxel_array)
-        object.__setattr__(self, 'metadata', MetadataDict(self))
-        object.__setattr__(self, 'meta_prev', self.metadata.copy())
-        
-        def func(obj, i):
-            res = []
-            for k in obj:
-                if obj[k][1] == i:
-                    res += [[k]]
-                res1 = func(obj[k][0], i)
-                res += [[k] + r for r in res1]
-            return res
-        level_keys = {}
-        for i in range(1, 7):
-            level_keys[i] = func(key_levels, i)
-        object.__setattr__(self, '_level_keys', level_keys)
-        
         sideview_image = DataArray(np.zeros([569, 400, 4], np.uint8))
         object.__setattr__(self, 'sideview_image_raw', sideview_image)
         object.__setattr__(self, 'sideview_image', sideview_image[:,:,:3])
         
-        guide_image = DataArray(np.zeros([400, 400, 3], np.uint8))
-        object.__setattr__(self, 'guide_image', guide_image)
+        skeleton_image = DataArray(np.zeros([400, 400, 3], np.uint8))
+        object.__setattr__(self, 'skeleton_image', skeleton_image)
         
         self.update(level = 4)
     
@@ -140,9 +129,11 @@ class SECV(CUI):
     def update(self, level: int = None, end: int = 6) -> bool:
         if not hasattr(self, 'voxels'):
             raise NoDataGivenError('No available data for 3d-image array')
-        if level is None:
+        if hasattr(self, 'meta_prev') and \
+            hasattr(self.metadata, '_locate_difference'):
             loc = self.metadata._locate_difference(self.meta_prev)
-            level = self._get_update_level(loc)
+            if level is None:
+                level = self._get_update_level(loc)
         level = min(level, end + 1)
         success = True
         for i in range(level - 1, end):
@@ -150,26 +141,23 @@ class SECV(CUI):
             if not success:
                 break
         if success:
-            if hasattr(self, 'meta_prev'):
-                for i in range(level, end + 1):
-                    loc = self._level_keys[i]
-                    for l in loc:
-                        old = self.meta_prev
-                        new = self.metadata
-                        for j in range(len(l) - 1):
-                            old = old[l[j]]
-                            new = new[l[j]]
-                        old[l[-1]] = new[l[-1]]
-                object.__setattr__(self, 'meta_prev', self.meta_prev.copy())
+            if hasattr(self, 'meta_prev') and \
+                hasattr(self.metadata, '_locate_difference'):
+                if level == self._get_update_level(loc) and end == 6:
+                    object.__setattr__(self, 'meta_prev', self.metadata.copy())
         return success
     
     def get_frame(self):
-        self.update(end = 3)
-        return self.view_frame
+        self.update()
+        return self.view_frame[list(self.display['shown_channels'])]
     
     def get_image(self):
         self.update()
-        return self.view_image
+        return self.view_image.copy()
+    
+    def get_skeleton(self):
+        self.update()
+        return self.skeleton_image.copy()
     
     
     def calc_2d_to_3d(self, coor_xy: np.ndarray) -> np.ndarray:
@@ -209,11 +197,21 @@ class SECV(CUI):
                                               voxels, file_paths, channel_nums)
         if len(voxels) == 0:
             raise NoDataGivenError('No available data for 3d-image array')
+        
+        voxel_array = voxels[0]
+        for vx in voxels[1:]:
+            voxel_array = np.append(voxel_array, vx, axis=0)
+        voxel_array = voxel_array.view(DataArray)
+        object.__setattr__(voxel_array, '_file_paths_vx', self.files['paths'])
+        object.__setattr__(voxel_array, '_channel_nums_vx', metadata_in_files['channel_nums'])
+        object.__setattr__(self, 'voxels', voxel_array)
+        object.__setattr__(self, 'shape', voxel_array.shape)
+        
         for k in metadata_in_files:
             dict.__setitem__(self.files, k, metadata_in_files[k])
         if hasattr(self.channels, '_format'):
             old_chs = list(self.channels)
-            old_ch_show = self.display['shown_channels']
+            old_ch_show = list(self.display['shown_channels'])
             sep = [0] + list(np.cumsum(channel_nums))
             old_chs = [old_chs[sep[i]: sep[i+1]] for i in range(len(channel_nums))]
             old_ch_show = [old_ch_show[sep[i]: sep[i+1]] for i in range(len(channel_nums))]
@@ -229,18 +227,8 @@ class SECV(CUI):
                 new_ch_show[0] += new_ch_show[i]
             new_chs = new_chs[0]
             new_ch_show = new_ch_show[0]
-            self.channels.generate(new_chs)
             self.display['shown_channels'] = new_ch_show
-            
-        voxel_array = voxels[0]
-        for vx in voxels[1:]:
-            voxel_array = np.append(voxel_array, vx, axis=0)
-        
-        voxel_array = voxel_array.view(DataArray)
-        object.__setattr__(voxel_array, '_file_paths_vx', self.files['paths'])
-        object.__setattr__(voxel_array, '_channel_nums_vx', metadata_in_files['channel_nums'])
-        object.__setattr__(self, 'voxels', voxel_array)
-        object.__setattr__(self, 'shape', voxel_array.shape)
+            self.channels.generate(new_chs)
         
         return True
     
@@ -328,9 +316,6 @@ class SECV(CUI):
         return True
     
     def _update_guide(self):
-        if not self.display['guide']:
-            return True
-        
         if self.display['sideview']:
             
             sideview1 = self._sideview_frame1
@@ -376,12 +361,12 @@ class SECV(CUI):
                     draw_points(side_image, point_coors[ps], point_colors[ps], 
                                 point_names[ps], thickness, r = 6)
             object.__setattr__(self, 'sideview_image', side_image)
-        else:
-            point_locations = calc_guide(self.files, self.geometry, 
-                                         self.position, self.points,
-                                         self.display, self.guide_image)
-            object.__setattr__(self.display, '_guide_points', point_locations)
         
+        point_locations = calc_skeleton(self.files, self.geometry, 
+                                        self.position, self.points,
+                                        self.display, self.skeleton_image)
+        object.__setattr__(self.display, '_skeleton_points', point_locations)
+    
         return True
     
 class STAC(CUI):

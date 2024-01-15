@@ -5,8 +5,10 @@ import platform
 import subprocess
 from typing import Union
 import numpy as np
-
-from aicsimageio.readers.bioformats_reader import BioformatsReader
+try:
+    from aicsimageio.readers.bioformats_reader import BioformatsReader
+except ModuleNotFoundError:
+    pass
 import cv2
 from PIL import Image, ImageTk
 import oiffile as oif
@@ -425,7 +427,7 @@ def draw_points(image: np.ndarray,
     return show
 
 
-guide_settings = {
+skeleton_settings = {
     'edge_connections': np.array([[-1, 1, 2,-1, 3,-1,-1,-1],
                                   [-1,-1,-1, 0,-1, 0,-1,-1],
                                   [-1,-1,-1, 0,-1,-1, 0,-1],
@@ -441,7 +443,7 @@ guide_settings = {
     }
 xyz_image = resources[:22,108:174]
 
-def calc_guide(
+def calc_skeleton(
         files: FileDict,
         geometry: GeometryDict,
         position: PositionArray,
@@ -452,7 +454,7 @@ def calc_guide(
         ) -> np.ndarray:
     
     shape = np.array(files['shape'])
-    guide_shape = np.array(image.shape[:2])
+    skeleton_shape = np.array(image.shape[:2])
     
     op = (position[0] - shape//2)*position._anisotropy
     n = position.basis*position._anisotropy
@@ -483,7 +485,7 @@ def calc_guide(
     peaks -= op + np.array([sz, sy, sx])//2
     peaks = np.linalg.solve(n.T, peaks.T).T
     
-    edges = guide_settings['edge_connections']
+    edges = skeleton_settings['edge_connections']
     neg = peaks[:, 0] <= 0
     pn = neg[None, :] * ~neg[:, None]
     separated = np.array(np.where((pn + pn.T)*(edges >= 0)))
@@ -518,7 +520,7 @@ def calc_guide(
     im_size = np.array(geometry['image_size'])
     scale = (sz**2 + sy**2 + sx**2)**0.5
     scale = max(scale, im_size[0] / exp_rate, 
-                im_size[1] / exp_rate * guide_shape[0] / guide_shape[1])
+                im_size[1] / exp_rate * skeleton_shape[0] / skeleton_shape[1])
     
     eye = 2.5 * scale
     peaks[:,1:] *= eye/(peaks[:,:1] + eye)
@@ -533,13 +535,13 @@ def calc_guide(
     peaks = peaks[:,2:0:-1]
     point_coors = point_coors[:,::-1]
     
-    e = 0.8 * guide_shape[0] / scale
-    peaks = ((peaks * e + guide_shape//2) * 2**shift).astype(int)
+    e = 0.8 * skeleton_shape[0] / scale
+    peaks = ((peaks * e + skeleton_shape//2) * 2**shift).astype(int)
     point_coors = point_coors * e 
-    point_coors[:,:2] += guide_shape//2
+    point_coors[:,:2] += skeleton_shape//2
     point_locations = point_coors.astype(int)
     point_coors = (point_coors* 2**shift).astype(int)
-    c = (guide_shape//2 - center[::-1]*e).astype(int)
+    c = (skeleton_shape//2 - center[::-1]*e).astype(int)
     
     im_size = (e * im_size / exp_rate / 2).astype(int)
     im_ul = np.array([c[0] - im_size[0], c[1] - im_size[1]])
@@ -571,10 +573,10 @@ def calc_guide(
     image[im_rect] = 255
     
     if len(cross) > 1:
-        section_color = np.array(guide_settings['section_color'])
-        alpha = guide_settings['section_alpha']
+        section_color = np.array(skeleton_settings['section_color'])
+        alpha = skeleton_settings['section_alpha']
         
-        cross = cross * e + guide_shape//2
+        cross = cross * e + skeleton_shape//2
         
         sc_ul = (np.amin(cross, axis=0)).astype(int) - 1
         sc_br = (np.amax(cross, axis=0)).astype(int) + 1
@@ -614,24 +616,24 @@ def calc_guide(
         n = edges[tuple(pair)]
         cv2.line(image, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
                  (240, 240, 240), 
-                 guide_settings['edge_thickness'][n] + 1, 
+                 skeleton_settings['edge_thickness'][n] + 1, 
                  cv2.LINE_AA, shift=shift)
     for pair in pairs:
         n = edges[tuple(pair)]
         cv2.line(image, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
-                 guide_settings['edge_colors'][n], 
-                 guide_settings['edge_thickness'][n], 
+                 skeleton_settings['edge_colors'][n], 
+                 skeleton_settings['edge_thickness'][n], 
                  cv2.LINE_AA, shift=shift)
         
     for i in range(len(cross)):
         n = edges[tuple(separated[:,i])]
         cv2.line(image, tuple(peaks[separated[1,i]]), tuple(peaks[separated[0,i]]),
                  (240, 240, 240), 
-                 guide_settings['edge_thickness'][n] + 1, 
+                 skeleton_settings['edge_thickness'][n] + 1, 
                  cv2.LINE_AA, shift=shift)
         cv2.line(image, tuple(cross[i]), tuple(peaks[separated[0,i]]),\
-                 guide_settings['edge_colors'][n], 
-                 guide_settings['edge_thickness'][n], 
+                 skeleton_settings['edge_colors'][n], 
+                 skeleton_settings['edge_thickness'][n], 
                  cv2.LINE_AA, shift=shift)
     
     use = (point_coors[:,2] > 0) * within
@@ -656,8 +658,8 @@ def calc_guide(
     for i in range(len(cross)):
         n = edges[tuple(separated[:,i])]
         cv2.line(image, tuple(cross[i]), tuple(peaks[separated[1,i]]),\
-                 guide_settings['edge_colors'][n], 
-                 guide_settings['edge_thickness'][n], 
+                 skeleton_settings['edge_colors'][n], 
+                 skeleton_settings['edge_thickness'][n], 
                  cv2.LINE_AA, shift=shift)
     
     pairs = np.array(np.where((edges >= 0) * neg[None] * neg[:,None])).T
@@ -665,13 +667,13 @@ def calc_guide(
         n = edges[tuple(pair)]
         cv2.line(image, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
                  (240, 240, 240), 
-                 guide_settings['edge_thickness'][n] + 1, 
+                 skeleton_settings['edge_thickness'][n] + 1, 
                  cv2.LINE_AA, shift=shift)
     for pair in pairs:
         n = edges[tuple(pair)]
         cv2.line(image, tuple(peaks[pair[0]]), tuple(peaks[pair[1]]),
-                 guide_settings['edge_colors'][n], 
-                 guide_settings['edge_thickness'][n], 
+                 skeleton_settings['edge_colors'][n], 
+                 skeleton_settings['edge_thickness'][n], 
                  cv2.LINE_AA, shift=shift)
         
     use = (point_coors[:,2] <= 0) * ~within

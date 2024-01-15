@@ -36,6 +36,9 @@ class CUI():
         return object.__getattribute__(self, name)
     
     def __setattr__(self, name, value):
+        if name in self.metadata:
+            self.metadata[name] = value
+            return
         self.__getattribute__(name)
         if name == 'metadata':
             object.__setattr__(self, name, value)
@@ -157,7 +160,7 @@ class FileDict(FrozenDict):
         mf = cui.files
         if 'paths' in mf:
             paths = mf['paths']
-            mf['paths'] = tuple([p.replace('\\', '/') for p in paths])
+            mf['paths'] = tuple([os.path.abspath(p).replace('\\', '/') for p in paths])
         if 'secv_path' in mf:
             if mf['secv_path'] is not None:
                 mf['secv_path'] = mf['secv_path'].replace('\\', '/')
@@ -173,20 +176,26 @@ class FileDict(FrozenDict):
         if k not in self:
             raise KeyError(k)
         if k != 'paths':
-            raise ValueError('cannot change item {0}'.format(k))
-        v = [f.replace('\\', '/') for f in v]
-        v = tuple(np.unique(v))
-        if (np.sort(self[k]) == np.sort(v)).all():
-            return
+            raise ValueError("cannot change item '{0}'".format(k))
+        if not hasattr(v, '__iter__'):
+            v = [v]
+        for f in v:
+            ext = os.path.splitext(f)[1]
+            if ext not in ('.oir', '.oib', '.tif', '.tiff'):
+                raise TypeError('File type {0} is not supported.'.format(ext))
+        v = [os.path.abspath(f).replace('\\', '/') for f in v]
+        if len(v) != len(np.unique(v)):
+            raise ValueError('same files cannot be loaded')
+        v = tuple(v)
         dict.__setitem__(self, k, v)
         
     def __str__(self):
         text = '< Files >\n'
         if 'secv_path' in self:
-            text += 'secv path:\n' + str(self['secv_path']) + '\n'
+            text += '{ ' + "'secv path': '{0}'".format(str(self['secv_path'])) + ',\n'
         elif 'stac_path' in self:
-            text += 'stac path:\n' + str(self['stac_path']) + '\n'
-        text += 'paths:\n' + str(self['paths'])
+            text += '{ ' + "'stac path': '{0}'".format(str(self['stac_path'])) + ',\n'
+        text += "      'paths': " + str(self['paths']) + ' }\n'
         return text
         
     def _is_same(self, other):
@@ -198,8 +207,25 @@ class FileDict(FrozenDict):
     def _format(self) -> dict:
         return dict(self)
     
-    def add(self, new_files: list = []):
-        self['paths'] = list(self['paths']) + new_files
+    def add(self, new_files):
+        if not hasattr(new_files, '__iter__'):
+            new_files = [new_files]
+        for f in new_files:
+            ext = os.path.splitext(f)[1]
+            if ext not in ('.oir', '.oib', '.tif', '.tiff'):
+                raise TypeError('File type {0} is not supported.'.format(ext))
+        self['paths'] = list(self['paths']) + list(new_files)
+        
+    def delete(self, file_ids):
+        if not hasattr(file_ids, '__iter__'):
+            file_ids = [file_ids]
+        file_ids = np.sort(np.unique(file_ids))
+        paths = list(self['paths'])
+        for i in file_ids[::-1]:
+            del paths[i]
+        if len(paths) == 0:
+            raise ValueError('Deleting all data is not allowed')
+        self['paths'] = paths
         
         
 class GeometryDict(FrozenDict):
@@ -251,13 +277,21 @@ class GeometryDict(FrozenDict):
                 self.cui.position._update_depth()
                 
     def __str__(self):
-        m = np.amax([len(k) for k in self])
-        text = '< Geometry >\n'
+        m = np.amax([len(k) for k in self]) + 1
+        text = ''
         for k in self:
-            text += ' '*(m - len(k)) + k + ': '
+            text += ' '*(m - len(k)) + "'" + k + "': "
             text += str(self[k])
-            text += '\n'
+            text += ',\n'
+        m = [len(str(self[k])) for k in self]
+        m = np.amax(m) - m[-1] + 2
+        text = '< Geometry >\n{' + text[1:-2] + ' '*m + '}\n'
         return text
+    
+    def reset_px_sizes(self):
+        if 'secv_path' in self.cui.files:
+            for k in ['X_px_size', 'Y_px_size', 'Z_px_size']:
+                self[k] = self.cui.files[k + '_in_files']
     
     def _update_px_size(self):
         xs = self['X_px_size']
@@ -332,7 +366,7 @@ class DisplayDict(FrozenDict):
         object.__setattr__(self, 'cui', cui)
         object.__setattr__(self, '_shown_points_ids', [])
         object.__setattr__(self, '_shown_points_coors', [])
-        object.__setattr__(self, '_guide_points', [])
+        object.__setattr__(self, '_skeleton_points', [])
         
         if 'secv_path' in cui.files:
             keys = ['thickness', 'zoom', 'axis', 'scale_bar', 'points',
@@ -365,6 +399,9 @@ class DisplayDict(FrozenDict):
             dict.__setitem__(self, k, v)
             return
         if k == 'shown_channels':
+            if len(v) != np.sum(self.cui.files['channel_nums']):
+                raise ValueError("length of 'shown_channels' must be "
+                                 "the same with channel number")
             v = tuple([bool(v[i]) for i in range(len(v))])
         elif k in ('center', 'window_size'):
             v = (int(v[0]), int(v[1]))
@@ -379,12 +416,15 @@ class DisplayDict(FrozenDict):
         dict.__setitem__(self, k, v)
         
     def __str__(self):
-        m = np.amax([len(k) for k in self])
-        text = '< Display >\n'
+        m = np.amax([len(k) for k in self]) + 1
+        text = ''
         for k in self:
-            text += ' '*(m - len(k)) + k + ': '
+            text += ' '*(m - len(k)) + "'" + k + "': "
             text += str(self[k])
-            text += '\n'
+            text += ',\n'
+        m = [len(str(self[k])) for k in self]
+        m = np.amax(m) - m[-1] + 2
+        text = '< Display >\n{' + text[1:-2] + ' '*m + '}\n'
         return text
     
     def get_shown_channels(self) -> np.ndarray:
@@ -441,7 +481,7 @@ class PositionArray(DataArray):
     def __str__(self):
         if self.shape != (3, 3):
             return super().__str__()
-        pos = self.asarray()
+        pos = self.base
         text = pos.__repr__()
         text = text.split('\n')
         text = [text[i][6:-1] for i in range(3)]
@@ -449,8 +489,8 @@ class PositionArray(DataArray):
         text[0] = text[0] + '   # center'
         text[1] = text[1] + '   # vertical'
         text[2] = text[2] + '  # horizontal'
-        text = ['#  Z' + ' '*l + 'Y' + ' '*l + 'X'] + text + ['(px)']
-        text = '< Position >\n' + '\n'.join(text)
+        text = ['#  Z' + ' '*l + 'Y' + ' '*l + 'X' + ' '*l + '(px)'] + text
+        text = '< Position >\n' + '\n'.join(text) + '\n'
         return text
             
     def reset(self):
@@ -473,6 +513,7 @@ class PositionArray(DataArray):
     def rotate(self, angle, axis):
         while self.shape != (3, 3):
             self = self.base
+        angle = angle / 180 * np.pi
         ny, nx = self[1:]
         if axis == 0:
             ny1 =  np.sin(angle) * nx + np.cos(angle) * ny
@@ -593,20 +634,20 @@ class ChannelList(FrozenList):
         text += ", [{0:>5}, {1:>5}]]".format(ch_vr[0][0], ch_vr[0][1])
         for i in range(1, len(ch_nm)):
             text += ",\n ['{0}'".format(ch_nm[i])
-            text += " "*(m - len(ch_nm[i]) - 1) 
+            text += " "*(m - len(ch_nm[i])) 
             text += ", [{0:>3}, {1:>3}, {2:>3}]".format(ch_cl[i][0], ch_cl[i][1], ch_cl[i][2])
             text += ", [{0:>5}, {1:>5}]]".format(ch_vr[i][0], ch_vr[i][1])
-        text += "]"
+        text += "]\n"
         return text
         
     def get_names(self) -> list:
-        return [c[0] for c in self]
+        return [str(c[0]) for c in self]
     
     def get_colors(self, option: str = 'bgr') -> list:
-        return [c[1][option] for c in self]
+        return [list(c[1][option]) for c in self]
     
     def get_vranges(self) -> list:
-        return [c[2] for c in self]
+        return [list(c[2]) for c in self]
     
     def get_lut(self) -> np.ndarray:
         vrange = np.array(self.get_vranges())
@@ -617,8 +658,11 @@ class ChannelList(FrozenList):
         lut[lut > 1] = 1
         return lut
     
-    def set_name(self, channel_id: int, name: str):
-        self[channel_id][0] = name
+    def set_name(self, channel_ids: Union[int, list], name: str):
+        if not hasattr(channel_ids, '__iter__'):
+            channel_ids = [channel_ids]
+        for i in channel_ids:
+            self[i][0] = name
     
     def set_color(self, 
                   channel_ids: Union[int, list],
@@ -643,8 +687,12 @@ class ChannelList(FrozenList):
             for i in channel_ids:
                 self[i][2][1] = vmax
                 
-    def auto_color(self, fix: list):
-        auto_color(self, fix)
+    def auto_color(self, channel_ids: Union[int, list] = None):
+        if channel_ids is None:
+            channel_ids = list(range(len(self)))
+        if not hasattr(channel_ids, '__iter__'):
+            channel_ids = [channel_ids]
+        auto_color(self, channel_ids)
         
     def copy(self):
         return [Channel(c) for c in self._format()]
@@ -667,8 +715,8 @@ class ChannelList(FrozenList):
                 mc[i][0] = 'ch{0}'.format(nn)
         news = [i for i in range(len(mc)) if mc[i][1] is None]
         if len(news) > 0:
-            fix = [i for i in range(len(mc)) if mc[i][1] is not None]
-            self.auto_color(fix)
+            ids = [i for i in range(len(mc)) if mc[i][1] is None]
+            self.auto_color(ids)
         if hasattr(cui, 'update') and 'secv_path' in cui.files:
             cui.update(level = 2, end = 3)
         if len(news) > 0:
@@ -711,8 +759,8 @@ class PointList(FrozenList):
                 while 'p{0}'.format(nn) in self.get_names():
                     nn += 1
                 mp[i][0] = 'p{0}'.format(nn)
-        fix = [i for i in range(len(mp)) if mp[i][1] is not None]
-        self.auto_color(fix)
+        ids = [i for i in range(len(mp)) if mp[i][1] is None]
+        self.auto_color(ids)
         
     def __setitem__(self, i, o):
         if type(o) != Point:
@@ -725,7 +773,7 @@ class PointList(FrozenList):
     def __str__(self):
         text = '< Points >\n'
         if len(self) == 0:
-            return text + "[]"
+            return text + "[]\n"
         pt_nm = self.get_names()
         pt_cl = self.get_colors()
         cr = str(np.array(self.get_coordinates()))
@@ -745,7 +793,7 @@ class PointList(FrozenList):
                 text += " "*(m - len(pt_nm[i])) 
                 text += ", [{0:>3}, {1:>3}, {2:>3}]".format(pt_cl[i][0], pt_cl[i][1], pt_cl[i][2])
                 text += ", {0}]".format(cr[i])
-            text += "]"
+            text += "]\n"
         else:
             pt_nm = pt_nm[:3] + ["..."] + pt_nm[-3:]
             m = max([len(nm) for nm in pt_nm])
@@ -765,17 +813,17 @@ class PointList(FrozenList):
                 text += " "*(m - len(pt_nm[i])) 
                 text += ", [{0:>3}, {1:>3}, {2:>3}]".format(pt_cl[i][0], pt_cl[i][1], pt_cl[i][2])
                 text += ", {0}],".format(cr[i])
-            text = text[:-1] + "]"
+            text = text[:-1] + "]\n"
         return text
         
     def get_names(self) -> list:
-        return [p[0] for p in self]
+        return [str(p[0]) for p in self]
     
     def get_colors(self, option: str = 'bgr') -> list:
-        return [p[1][option] for p in self]
+        return [list(p[1][option]) for p in self]
     
     def get_coordinates(self) -> list:
-        return [p[2] for p in self]
+        return [list(p[2]) for p in self]
     
     def coorsonimage(self) -> np.ndarray:
         cui = self.cui
@@ -793,11 +841,11 @@ class PointList(FrozenList):
     def add(self, 
             name: str = None, 
             color: list = None, 
-            coordinates: list = None
+            coordinate: list = None
             ):
-        if coordinates is None:
-            coordinates = self.cui.position[0]
-        pt = Point([name, color, coordinates])
+        if coordinate is None:
+            coordinate = self.cui.position[0]
+        pt = Point([name, color, coordinate])
         list.append(self, pt)
         if name is None:
             nn = 0
@@ -805,18 +853,20 @@ class PointList(FrozenList):
                 nn += 1
             self[-1][0] = 'p{0}'.format(nn)
         if color is None:
-            fix = list(range(len(self) - 1))
-            self.auto_color(fix)
+            self.auto_color(len(self) - 1)
     
     def delete(self, point_ids: Union[int, list]):
         if not hasattr(point_ids, '__iter__'):
             point_ids = [point_ids]
-        point_ids = np.sort(point_ids)[::-1]
+        point_ids = np.sort(np.unique(point_ids))[::-1]
         for i in point_ids:
             del self[i]
             
-    def set_name(self, point_id: int, name: str):
-        self[point_id][0] = name
+    def set_name(self, point_ids: Union[int, list], name: str):
+        if not hasattr(point_ids, '__iter__'):
+            point_ids = [point_ids]
+        for i in point_ids:
+            self[i][0] = name
             
     def set_color(self, 
                   point_ids: Union[int, list],
@@ -836,8 +886,12 @@ class PointList(FrozenList):
         for i in point_ids:
             self[i][2] = coordinate
     
-    def auto_color(self, fix: list):
-        auto_color(self, fix, offset = 180)
+    def auto_color(self, point_ids: Union[int, list] = None):
+        if point_ids is None:
+            point_ids = list(range(len(self)))
+        if not hasattr(point_ids, '__iter__'):
+            point_ids = [point_ids]
+        auto_color(self, point_ids, offset = 180)
         
     def copy(self):
         return [Point(p) for p in self._format()]
@@ -877,14 +931,14 @@ class SnapshotList(FrozenList):
         list.__delitem__(self, i)
         
     def __str__(self):
-        return '< Snapshots >\n' + str(self.get_names())
+        return '< Snapshots >\n' + str(self.get_names()) + '\n'
         
     def get_names(self) -> list:
         return [s['name'] for s in self]
     
-    def get_previews(self, 
-                     snapshot_id: int, 
-                     size: tuple = None):
+    def get_preview(self, 
+                    snapshot_id: int, 
+                    size: tuple = None):
         meta = self.cui.metadata._format()
         ss = self[snapshot_id]._format()
         meta['geometry'] = ss['geometry']
@@ -915,19 +969,19 @@ class SnapshotList(FrozenList):
         meta['display']['sideview'] = False
         meta['display']['window_size'] = None
         
-        secv = self.main.secv.copy(metadata = meta)
+        secv = self.cui.copy(metadata = meta)
         view_image = secv.view_image
-        guide_image = secv.guide_image
+        skeleton_image = secv.skeleton_image
         if size is not None:
-            ih, iw = guide_image.shape[:2]
+            ih, iw = skeleton_image.shape[:2]
             gain = min(iw1/iw, ih1/ih)
             shift = (iw1 - iw*gain)/2, (ih1 - ih*gain)/2
             M = np.array([[gain, 0, shift[0]], [0, gain, shift[1]]], dtype = float)
-            guide_image = cv2.warpAffine(guide_image, M, (iw1, ih1),
-                                         borderMode = cv2.BORDER_CONSTANT, 
-                                         borderValue = (240, 240, 240))
+            skeleton_image = cv2.warpAffine(skeleton_image, M, (iw1, ih1),
+                                            borderMode = cv2.BORDER_CONSTANT, 
+                                            borderValue = (240, 240, 240))
         
-        return view_image, guide_image
+        return view_image, skeleton_image
     
     def copy(self):
         return [Snapshot(s) for s in self._format()]
@@ -944,14 +998,14 @@ class SnapshotList(FrozenList):
     def delete(self, snapshot_ids: Union[int, list]):
         if not hasattr(snapshot_ids, '__iter__'):
             snapshot_ids = [snapshot_ids]
-        snapshot_ids = np.sort(snapshot_ids)[::-1]
+        snapshot_ids = np.sort(np.unique(snapshot_ids))[::-1]
         for i in snapshot_ids:
             del self[i]
             
-    def override(self, i: int, 
-                pos_on: bool = True,
-                chs_on: bool = True,
-                pts_on: bool = True):
+    def overwrite(self, i: int, 
+                  pos_on: bool = True,
+                  chs_on: bool = True,
+                  pts_on: bool = True):
         cui = self.cui
         
         meta = cui.metadata._format()
@@ -973,7 +1027,6 @@ class SnapshotList(FrozenList):
                 chs_on: bool = True,
                 pts_on: bool = True):
         cui = self.cui
-        
         new = cui.metadata._format()
         ss = self[i]._format()
         
@@ -985,11 +1038,13 @@ class SnapshotList(FrozenList):
             new['channels'] = ss['channels']
         if pts_on:
             new['points'] = ss['points']
-            
         cui.metadata = new
         
-    def set_name(self, snapshot_id: int, name: str):
-        self[snapshot_id]['name'] = name
+    def set_name(self, snapshot_ids: Union[int, list], name: str):
+        if not hasattr(snapshot_ids, '__iter__'):
+            snapshot_ids = [snapshot_ids]
+        for i in snapshot_ids:
+            self[i]['name'] = name
     
     def _is_same(self, other):
         if len(self) != len(other):
