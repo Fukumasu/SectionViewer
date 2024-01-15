@@ -23,8 +23,8 @@ If successful, a GUI software will be launched with a shell command 'sectionview
 
 ## Description
 
-In addition to GUI, SectionViewer provides a CUI platform to adjust settings of the software. For detailed instructions to use CUI, please check the following jupyter notebook:<br>
-[examples.ipynb](https://github.com/Fukumasu/SectionViewer/blob/master/examples.ipynb)<br>
+In addition to GUI, SectionViewer provides a CUI platform to adjust settings of the software.<br>
+For detailed instructions to use CUI, please check [examples.ipynb](https://github.com/Fukumasu/SectionViewer/blob/master/examples.ipynb)<br>
 
 ## License
 
