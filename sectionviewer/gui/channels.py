@@ -80,8 +80,6 @@ class Channels_GUI(Color_GUI):
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
                            if not desolve_state(e.state)['Control'] else None)
         self.treeview.bind('<<TreeviewSelect>>', self.select)
-        self.base_frame.bind('<Control-a>', lambda event:
-                             self.treeview.selection_set(self.treeview.get_children()))
         self.refresh_tree()
         
         control_frame = ttk.Frame(base_frame, relief='groove')
@@ -398,7 +396,7 @@ class Channels_GUI(Color_GUI):
                 message = 'File \n{0} \nis already loaded.'.format(p)
                 messagebox.showinfo(title = 'Same data file', message = message)
                 return
-        main.files.add(new_files = add_paths)
+        main.files.add(add_paths)
         
     def delete(self):
         main = self.main
@@ -446,10 +444,7 @@ class Channels_GUI(Color_GUI):
                                   parent = main.master)
         if not ans:
             return
-        paths = list(main.files['paths'])
-        for i in file_ids[::-1]:
-            del paths[i]
-        main.files['paths'] = paths
+        main.files.delete(file_ids)
         
     def update(self, loc):
         obj = self.obj

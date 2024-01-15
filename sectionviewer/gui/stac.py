@@ -332,6 +332,9 @@ class STAC_GUI(GUI):
             self.undo()
         elif key in ['Ctrl+Y', 'Command+Y']:
             self.redo()
+        elif key in ['Ctrl+A', 'Command+A']:
+            treeview = self.channels_gui.treeview
+            treeview.selection_set(treeview.get_children())
             
         focus = str(self.master.focus_get()).rsplit('!', 1)[-1]
         if 'entry' in focus:

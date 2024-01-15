@@ -18,6 +18,10 @@ class Base_GUI(ttk.Frame):
                 except Exception:
                     messagebox.showerror('Error', traceback.format_exc(),
                                          parent = main.master)
+                    if main.master.winfo_exists():
+                        main.master.destroy()
+                    if hasattr(main, 'root'):
+                        main.root.destroy()
             return func
         for name in dir(self):
             if name in dir(super()) and name != 'update':
@@ -311,11 +315,8 @@ class Color_GUI(Base_GUI):
     
     def auto_color(self):
         x = self.treeview.selection()
-        fix = []
-        for i in self.treeview.get_children():
-            if i not in x:
-                fix += [int(i)]
-        self.obj.auto_color(fix)
+        ids = [int(i) for i in x]
+        self.obj.auto_color(ids)
         
     def preset(self, event):
         if self.vars['sh'].get() != 1:
@@ -343,10 +344,10 @@ class Color_GUI(Base_GUI):
                 c = self.obj[i][1][num]
                 self.vars[vn[0]].set(c)
                 return
-            c = self.vars[vn[0]].get()
-            for i in x:
-                i = int(i)
-                self.obj[i][1][num] = c
+            color = [self.vars[v].get() 
+                     for v in ['b', 'g', 'r']]
+            ids = [int(i) for i in x]
+            self.obj.set_color(ids, color)
         return func
     
     def rgb_enter(self, num):
@@ -366,9 +367,10 @@ class Color_GUI(Base_GUI):
                     c = 0
                 c = int(c)
                 self.vars[vn[0]].set(c)
-                for i in x:
-                    i = int(i)
-                    self.obj[i][1][num] = c
+                color = [self.vars[v].get() 
+                         for v in ['b', 'g', 'r']]
+                ids = [int(i) for i in x]
+                self.obj.set_color(ids, color)
             except Exception:
                 i = int(x[0])
                 self.vars[vn[0]].set(self.obj[i][1][num])
@@ -385,10 +387,10 @@ class Color_GUI(Base_GUI):
                 c = int(self.obj[i][1]['hsl'][num] * 10)
                 self.vars[vn[0]].set(c)
                 return
-            c = self.vars[vn[0]].get() / 10
-            for i in x:
-                i = int(i)
-                self.obj[i][1]['hsl'][num] = c
+            color = [self.vars[v].get() / 10 
+                     for v in ['h', 's', 'l']]
+            ids = [int(i) for i in x]
+            self.obj.set_color(ids, color, as_hsl = True)
         return func
     
     def hsl_enter(self, num):
@@ -408,9 +410,10 @@ class Color_GUI(Base_GUI):
                     c = 0
                 c = float(c)
                 self.vars[vn[0]].set(int(c * 10))
-                for i in x:
-                    i = int(i)
-                    self.obj[i][1]['hsl'][num] = c
+                color = [self.vars[v].get() / 10 
+                         for v in ['h', 's', 'l']]
+                ids = [int(i) for i in x]
+                self.obj.set_color(ids, color, as_hsl = True)
             except Exception:
                 i = int(x[0])
                 c = int(self.obj[i][1]['hsl'][num] * 10)

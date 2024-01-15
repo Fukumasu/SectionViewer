@@ -41,8 +41,6 @@ class Snapshots_GUI(Base_GUI):
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
                            if not desolve_state(e.state)['Control'] else None)
         self.treeview.bind('<<TreeviewSelect>>', self.select)
-        self.base_frame.bind('<Control-a>', lambda event:
-                             self.treeview.selection_set(self.treeview.get_children()))
         self.selected = []
         
         self.refresh_tree()
@@ -82,8 +80,8 @@ class Snapshots_GUI(Base_GUI):
         
         top_frame = ttk.Frame(control_frame)
         top_frame.pack(padx=10, pady=10, fill=tk.X)
-        button3 = ttk.Button(top＿frame, text = 'Override', 
-                             command = self.override)
+        button3 = ttk.Button(top＿frame, text = 'Overwrite', 
+                             command = self.overwrite)
         button3.pack(side=tk.RIGHT)
         self.button_ov = button3
         button4 = ttk.Button(top_frame, text = 'Restore', 
@@ -129,7 +127,7 @@ class Snapshots_GUI(Base_GUI):
     
     def set_vars(self, i):
         self.name_var.set(self.obj[i]['name'])
-        sec, ske = self.obj.get_preview(i, im_size = self.im_size)
+        sec, ske = self.obj.get_preview(i, size = self.im_size)
         self.sec = tk_from_array(sec)
         self.canvas1.itemconfig(self.sec_id, image=self.sec)
         self.ske = tk_from_array(ske)
@@ -182,17 +180,17 @@ class Snapshots_GUI(Base_GUI):
         ids = [int(i) for i in x]
         self.obj.delete(ids)
     
-    def override(self):
+    def overwrite(self):
         select = self.treeview.selection()[0]
         i = int(select)
-        self.obj.override(i, self.pos_on.get(),
-                                     self.chs_on.get(), self.pts_on.get())
+        self.obj.overwrite(i, self.pos_on.get(),
+                           self.chs_on.get(), self.pts_on.get())
 
     def restore(self):
         select = self.treeview.selection()[0]
         i = int(select)
         self.obj.restore(i, self.pos_on.get(),
-                                    self.chs_on.get(), self.pts_on.get())
+                         self.chs_on.get(), self.pts_on.get())
         self.main.cut_history = True
         
     def update(self, loc):

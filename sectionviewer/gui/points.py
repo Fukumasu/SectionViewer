@@ -77,8 +77,6 @@ class Points_GUI(Color_GUI):
         self.treeview.bind('<Button-1>', lambda e: self.treeview.selection_set()\
                            if not desolve_state(e.state)['Control'] else None)
         self.treeview.bind('<<TreeviewSelect>>', self.select)
-        self.base_frame.bind('<Control-a>', lambda event:
-                             self.treeview.selection_set(self.treeview.get_children()))
         self.refresh_tree()
         
         control_frame = ttk.Frame(base_frame, relief='groove')
@@ -196,7 +194,7 @@ class Points_GUI(Color_GUI):
         if len(x) == 0:
             self.button_mv['state'] = tk.DISABLED
         else:
-            self.button_mv['state'] = tk.ACTIVE
+            self.button_mv['state'] = tk.NORMAL
             
     def settings(self, select = None):
         if select == -1:
@@ -228,14 +226,14 @@ class Points_GUI(Color_GUI):
         else:
             self.control_frame.pack(padx=10, pady=10, fill=tk.X)
         
-        self.button_dl['state'] = tk.ACTIVE
+        self.button_dl['state'] = tk.NORMAL
         
         i = int(selection[0])
         self.set_vars(i)
         
         if len(selection) == 1:
-            self.entry_nm['state'] = tk.ACTIVE
-            self.button_cg['state'] = tk.ACTIVE
+            self.entry_nm['state'] = tk.NORMAL
+            self.button_cg['state'] = tk.NORMAL
         else:
             self.entry_nm['state'] = tk.DISABLED
             self.button_cg['state'] = tk.DISABLED
@@ -276,7 +274,7 @@ class Points_GUI(Color_GUI):
             main.menu_bar.entryconfig('File', state='active')
             main.menu_bar.entryconfig('Settings', state='active')
             main.menu_bar.entryconfig('Tools', state='active')
-            main.sbar_entry['state'] = tk.ACTIVE
+            main.sbar_entry['state'] = tk.NORMAL
             
             main.master.unbind('<Return>')
             
@@ -561,7 +559,7 @@ class Points_GUI(Color_GUI):
     def delete(self):
         x = self.treeview.selection()
         ids = [int(i) for i in x]
-        self.obj.delete(point_ids = ids)
+        self.obj.delete(ids)
         
     def update(self, loc):
         obj = self.obj

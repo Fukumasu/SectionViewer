@@ -165,18 +165,18 @@ class SECV_GUI(GUI):
                                      text = 'Side view', value = True, 
                                      variable = self.sideview_on)
         self.rad_s.pack(side = tk.LEFT)
-        self.guide_canvas = tk.Canvas(self.guide_frame, 
-                                      width = 400, height = 569)
-        self.guide_id = self.guide_canvas.create_image(0, 0, anchor = 'nw')
-        self.guide_canvas.create_image(0, 400, 
-                                       anchor = 'nw', image = self.k_image)
+        self.skeleton_canvas = tk.Canvas(self.guide_frame, 
+                                         width = 400, height = 569)
+        self.skeleton_id = self.skeleton_canvas.create_image(0, 0, anchor = 'nw')
+        self.skeleton_canvas.create_image(0, 400, 
+                                          anchor = 'nw', image = self.k_image)
         self.side_canvas = tk.Canvas(self.guide_frame, 
                                      width = 400, height = 569)
         self.side_id = self.side_canvas.create_image(0, 0, anchor = 'nw')
         if self.display['sideview']:
             self.side_canvas.pack()
         else:
-            self.guide_canvas.pack()
+            self.skeleton_canvas.pack()
         self.dock_note.add(self.guide_frame, text = 'Guide')
         self.display['guide'] = True
         
@@ -339,8 +339,8 @@ class SECV_GUI(GUI):
         self.tools_menu.add_command(label = 'Stack', 
                                     command = self.open_stack)
         
-        self.guide_im = tk_from_array(secv.guide_image)
-        self.guide_canvas.itemconfig(self.guide_id, image = self.guide_im)
+        self.skeleton_im = tk_from_array(secv.skeleton_image)
+        self.skeleton_canvas.itemconfig(self.skeleton_id, image = self.skeleton_im)
         
         self.side_im = tk_from_array(secv.sideview_image)
         self.side_canvas.itemconfig(self.side_id, image = self.side_im)
@@ -364,7 +364,7 @@ class SECV_GUI(GUI):
         if self.geometry._min_px_size == None:
             self.sbar_entry.configure(state = tk.DISABLED)
         
-        self.guide_canvas.bind('<Button-1>', self.click_guide)
+        self.skeleton_canvas.bind('<Button-1>', self.click_skeleton)
         self.dock_note.bind('<<NotebookTabChanged>>', self.dock_note_changed)
         self.depth_frame.bind('<Configure>', self.depth_configure)
         self.view_canvas.bind('<Button-1>', self.click_view)
@@ -381,8 +381,8 @@ class SECV_GUI(GUI):
         
         self.view_configure = \
             wrap_bind(self.view_cf, '<Configure>', self.view_configure)
-        self.track_guide = \
-            wrap_bind(self.guide_canvas, '<Motion>', self.track_guide)
+        self.track_skeleton = \
+            wrap_bind(self.skeleton_canvas, '<Motion>', self.track_skeleton)
         self.track_view = \
             wrap_bind(self.view_canvas, '<Motion>', self.track_view)
         self.key = \
@@ -435,6 +435,11 @@ class SECV_GUI(GUI):
             self.undo()
         elif key in ['Ctrl+Y', 'Command+Y']:
             self.redo()
+        elif key in ['Ctrl+A', 'Command+A'] and self.display['dock']:
+            name = self.dock_note.tab(self.dock_note.select(), 'text')
+            if name in ['Channels', 'Points']:
+                treeview = getattr(self, name.lower() + '_gui').treeview
+                treeview.selection_set(treeview.get_children())
             
         focus = str(self.master.focus_get()).rsplit('!', 1)[-1]
         if 'entry' in focus:
@@ -450,7 +455,12 @@ class SECV_GUI(GUI):
              'P': self.open_points,
              'S': self.open_snapshots}[key]()
         elif key in ['DELETE', 'BACKSPACE']:
-            self.points.delete(point_ids = [self.display['point_focus']])
+            if self.display['point_focus'] != -1:
+                self.points.delete(point_ids = [self.display['point_focus']])
+            elif self.display['dock']:
+                name = self.dock_note.tab(self.dock_note.select(), 'text')
+                if name in ['Channels', 'Points', 'Snapshots']:
+                    getattr(self, name.lower() + '_gui').delete()
         else:
             self.position_key(key)
     
@@ -499,7 +509,9 @@ class SECV_GUI(GUI):
     
     def reload(self):
         try:
+            display = self.secv.meta_prev.display._format()
             self.secv.reload()
+            self.secv.display = display
             self.hidx_saved = self.hidx + 1
             self.cut_history = True
         except Exception:
@@ -601,11 +613,11 @@ class SECV_GUI(GUI):
             self.position.shift(amount, axis)
         elif key in ['H', 'L', 'I', 'N']:
             if flag == 'Shift':
-                ang = np.pi / 256
+                ang = 180 / 256
             elif flag == 'Ctrl':
-                ang = np.pi / 2
+                ang = 180 / 2
             else:
-                ang = np.pi / 32
+                ang = 180 / 32
             ang *= 1 if key in ['H', 'I'] else -1
             axis = 1 if key in ['H', 'L'] else 2
             self.position.rotate(ang, axis)
@@ -630,11 +642,11 @@ class SECV_GUI(GUI):
     def sideview_on_trace(self, *args):
         self.display['sideview'] = self.sideview_on.get()
         if self.display['sideview']:
-            self.guide_canvas.pack_forget()
+            self.skeleton_canvas.pack_forget()
             self.side_canvas.pack()
         else:
             self.side_canvas.pack_forget()
-            self.guide_canvas.pack()
+            self.skeleton_canvas.pack()
     
     def depth_trace(self, *args):
         if np.count_nonzero(self.display['shown_channels']) == 0:
@@ -703,12 +715,13 @@ class SECV_GUI(GUI):
             elif self.mode == 2:
                 coor = self.secv.calc_2d_to_3d(self.click)
                 try:
-                    self.points.add(coordinates = coor)
+                    self.points.add(coordinate = coor)
                 except CoordinateError:
                     pass
         if self.click is not None:
             self.cut_history = True
             self.click = None
+            object.__setattr__(self.secv, 'meta_prev', self.meta_kept.copy())
         self.update_params = {}
         self.record_on = True
     
@@ -759,6 +772,7 @@ class SECV_GUI(GUI):
         center = np.array([iw, ih])//2
         click = self.click - center
         cursol = np.array([x, y]) - center
+        object.__setattr__(self.secv, 'meta_prev', self.secv.metadata.copy())
         
         if self.mode != 3:
             if self.mode == 0:
@@ -813,12 +827,12 @@ class SECV_GUI(GUI):
             else:
                 return
     
-    def click_guide(self, event):
+    def click_skeleton(self, event):
         self.focus_set()
         self.open_points(select = self.display['point_focus'])
     
-    def track_guide(self, event):
-        points = self.display._guide_points
+    def track_skeleton(self, event):
+        points = self.display._skeleton_points
         x, y = event.x, event.y
         if len(points) != 0:
             dists = np.linalg.norm(points[:,:2] - np.array([x, y]), axis=1)
@@ -1113,14 +1127,13 @@ class SECV_GUI(GUI):
                 self.depth_scale.config(to = to - from_)
             self.depth.set(-from_)
         
-        
         if self.display['guide']:
             if self.display['sideview']:
                 self.side_im = tk_from_array(self.secv.sideview_image)
                 self.side_canvas.itemconfig(self.side_id, image = self.side_im)
             else:
-                self.guide_im = tk_from_array(self.secv.guide_image)
-                self.guide_canvas.itemconfig(self.guide_id, image = self.guide_im)
+                self.skeleton_im = tk_from_array(self.secv.skeleton_image)
+                self.skeleton_canvas.itemconfig(self.skeleton_id, image = self.skeleton_im)
         
         self.sbar_len.set(str(self.geometry['scale_bar_length']))
         self.channels_gui.update(loc)
