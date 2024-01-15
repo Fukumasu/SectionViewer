@@ -19,11 +19,12 @@ You can install SectionViewer with the following simple pip command:
 ```
 pip install git+https://github.com/Fukumasu/SectionViewer
 ```
-If successful, the application will be launched with a shell command 'sectionviewer'.
+If successful, a GUI software will be launched with a shell command 'sectionviewer'.
 
 ## Description
 
-[examples.ipynb](https://github.com/Fukumasu/SectionViewer/blob/master/examples.ipynb)
+In addition to GUI, SectionViewer provides a CUI platform to adjust settings of the software. For detailed instructions to use CUI, please check the following jupyter notebook:<br>
+[examples.ipynb](https://github.com/Fukumasu/SectionViewer/blob/master/examples.ipynb)<br>
 
 ## License
 
