@@ -324,14 +324,14 @@ class Color_GUI(Base_GUI):
         obj_ids = [int(i) for i in self.treeview.selection()]
         color = [[0,0,0], [255,255,255], [0,0,255], [0,255,255],
                  [0,255,0], [255,255,0], [255,0,0], [255,0,255]][event.x//20]
-        self.obj.set_color(obj_ids, color)
+        self.obj.setcolor(obj_ids, color)
                 
     def nm_trace(self, *args):
         x = self.treeview.selection()
         if len(x) != 1:
             return
         name = self.vars['nm'].get()
-        self.obj.set_name(int(x[0]), name)
+        self.obj.setname(int(x[0]), name)
     
     def rgb_scale(self, num):
         vn = ['bs', 'gs', 'rs'][num]
@@ -347,7 +347,7 @@ class Color_GUI(Base_GUI):
             color = [self.vars[v].get() 
                      for v in ['b', 'g', 'r']]
             ids = [int(i) for i in x]
-            self.obj.set_color(ids, color)
+            self.obj.setcolor(ids, color)
         return func
     
     def rgb_enter(self, num):
@@ -370,7 +370,7 @@ class Color_GUI(Base_GUI):
                 color = [self.vars[v].get() 
                          for v in ['b', 'g', 'r']]
                 ids = [int(i) for i in x]
-                self.obj.set_color(ids, color)
+                self.obj.setcolor(ids, color)
             except Exception:
                 i = int(x[0])
                 self.vars[vn[0]].set(self.obj[i][1][num])
@@ -390,7 +390,7 @@ class Color_GUI(Base_GUI):
             color = [self.vars[v].get() / 10 
                      for v in ['h', 's', 'l']]
             ids = [int(i) for i in x]
-            self.obj.set_color(ids, color, as_hsl = True)
+            self.obj.setcolor(ids, color, as_hsl = True)
         return func
     
     def hsl_enter(self, num):
@@ -413,7 +413,7 @@ class Color_GUI(Base_GUI):
                 color = [self.vars[v].get() / 10 
                          for v in ['h', 's', 'l']]
                 ids = [int(i) for i in x]
-                self.obj.set_color(ids, color, as_hsl = True)
+                self.obj.setcolor(ids, color, as_hsl = True)
             except Exception:
                 i = int(x[0])
                 c = int(self.obj[i][1]['hsl'][num] * 10)
