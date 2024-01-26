@@ -122,9 +122,9 @@ class MetadataDict(FrozenDict):
         return MetadataDict(metadata = self._format())
     
     def _locate_difference(self, other) -> list:
-        is_same = {}
+        issame = {}
         for k in self:
-            is_same[k] = self[k]._is_same(other[k])
+            issame[k] = self[k]._issame(other[k])
         def search(ks: list, obj) -> list:
             typ = type(obj)
             if not hasattr(obj, '__iter__'):
@@ -144,7 +144,7 @@ class MetadataDict(FrozenDict):
                     if re is not None:
                         res += re
                 return res
-        res = search([], is_same)
+        res = search([], issame)
         return res
         
     def _format(self) -> dict:
@@ -198,7 +198,7 @@ class FileDict(FrozenDict):
         text += "      'paths': " + str(self['paths']) + ' }\n'
         return text
         
-    def _is_same(self, other):
+    def _issame(self, other):
         res = {}
         for k in self:
             res[k] = self[k] == other[k]
@@ -329,7 +329,7 @@ class GeometryDict(FrozenDict):
             scale_bar_length = 0
         self['scale_bar_length'] = scale_bar_length
                 
-    def _is_same(self, other):
+    def _issame(self, other):
         res = {}
         for k in self:
             if type(self[k]) == float:
@@ -427,11 +427,11 @@ class DisplayDict(FrozenDict):
         text = '< Display >\n{' + text[1:-2] + ' '*m + '}\n'
         return text
     
-    def get_shown_channels(self) -> np.ndarray:
+    def getshown(self) -> np.ndarray:
         shown_ch = np.where(self['shown_channels'])[0].astype(int)
         return shown_ch
     
-    def _is_same(self, other):
+    def _issame(self, other):
         res = {}
         for k in self:
             if type(self[k]) == float:
@@ -602,7 +602,7 @@ class PositionArray(DataArray):
         to = max(0, int(to / exp_rate) - 9)
         object.__setattr__(self, 'depth_range', [from_, to])
         
-    def _is_same(self, other):
+    def _issame(self, other):
         res = np.linalg.norm(np.array(self) - np.array(other), axis = 1)
         res = res < 10**(-sf)
         return res.tolist()
@@ -622,12 +622,12 @@ class ChannelList(FrozenList):
         list.__setitem__(self, i, o)
         
     def __str__(self):
-        ch_nm = self.get_names()
+        ch_nm = self.getnames()
         m = max([len(nm) for nm in ch_nm])
         text = '< Channels >\n'
         text += "# Name" + " "*m + " Color (BGR)      Vrange\n"
-        ch_cl = self.get_colors()
-        ch_vr = self.get_vranges()
+        ch_cl = self.getcolors()
+        ch_vr = self.getvranges()
         text += "[['{0}'".format(ch_nm[0])
         text += " "*(m - len(ch_nm[0])) 
         text += ", [{0:>3}, {1:>3}, {2:>3}]".format(ch_cl[0][0], ch_cl[0][1], ch_cl[0][2])
@@ -640,17 +640,17 @@ class ChannelList(FrozenList):
         text += "]\n"
         return text
         
-    def get_names(self) -> list:
+    def getnames(self) -> list:
         return [str(c[0]) for c in self]
     
-    def get_colors(self, option: str = 'bgr') -> list:
+    def getcolors(self, option: str = 'bgr') -> list:
         return [list(c[1][option]) for c in self]
     
-    def get_vranges(self) -> list:
+    def getvranges(self) -> list:
         return [list(c[2]) for c in self]
     
-    def get_lut(self) -> np.ndarray:
-        vrange = np.array(self.get_vranges())
+    def getlut(self) -> np.ndarray:
+        vrange = np.array(self.getvranges())
         lut = np.arange(65536)[None]
         diff = vrange[:,1] - vrange[:,0]
         lut = ((1 / diff[:,None]) * (lut - vrange[:,:1]))
@@ -710,7 +710,7 @@ class ChannelList(FrozenList):
         nn = 0
         for i in range(len(mc)):
             if mc[i][0] is None:
-                while 'ch{0}'.format(nn) in self.get_names():
+                while 'ch{0}'.format(nn) in self.getnames():
                     nn += 1
                 mc[i][0] = 'ch{0}'.format(nn)
         news = [i for i in range(len(mc)) if mc[i][1] is None]
@@ -732,12 +732,12 @@ class ChannelList(FrozenList):
                     self[n][2][0] = vmins[i]
                     self[n][2][1] = vmaxs[i]
     
-    def _is_same(self, other):
+    def _issame(self, other):
         if len(self) != len(other):
             return False
         res = []
         for i in range(len(self)):
-            res += [self[i]._is_same(other[i])]
+            res += [self[i]._issame(other[i])]
         return res
     
     def _format(self) -> list:
@@ -756,7 +756,7 @@ class PointList(FrozenList):
         nn = 0
         for i in range(len(mp)):
             if mp[i][0] is None:
-                while 'p{0}'.format(nn) in self.get_names():
+                while 'p{0}'.format(nn) in self.getnames():
                     nn += 1
                 mp[i][0] = 'p{0}'.format(nn)
         ids = [i for i in range(len(mp)) if mp[i][1] is None]
@@ -774,9 +774,9 @@ class PointList(FrozenList):
         text = '< Points >\n'
         if len(self) == 0:
             return text + "[]\n"
-        pt_nm = self.get_names()
-        pt_cl = self.get_colors()
-        cr = str(np.array(self.get_coordinates()))
+        pt_nm = self.getnames()
+        pt_cl = self.getcolors()
+        cr = str(np.array(self.getcoordinates()))
         cr = cr.split("\n")
         cr[-1] = cr[-1][:-1]
         l = (len(cr[0][1:]) - 4)//3 + 1
@@ -816,18 +816,18 @@ class PointList(FrozenList):
             text = text[:-1] + "]\n"
         return text
         
-    def get_names(self) -> list:
+    def getnames(self) -> list:
         return [str(p[0]) for p in self]
     
-    def get_colors(self, option: str = 'bgr') -> list:
+    def getcolors(self, option: str = 'bgr') -> list:
         return [list(p[1][option]) for p in self]
     
-    def get_coordinates(self) -> list:
+    def getcoordinates(self) -> list:
         return [list(p[2]) for p in self]
     
     def coorsonimage(self) -> np.ndarray:
         cui = self.cui
-        coors = np.array(self.get_coordinates())
+        coors = np.array(self.getcoordinates())
         if len(coors) > 0:
             op = cui.position[0]
             n = cui.position.basis
@@ -849,7 +849,7 @@ class PointList(FrozenList):
         list.append(self, pt)
         if name is None:
             nn = 0
-            while 'p{0}'.format(nn) in self.get_names():
+            while 'p{0}'.format(nn) in self.getnames():
                 nn += 1
             self[-1][0] = 'p{0}'.format(nn)
         if color is None:
@@ -896,12 +896,12 @@ class PointList(FrozenList):
     def copy(self):
         return [Point(p) for p in self._format()]
     
-    def _is_same(self, other):
+    def _issame(self, other):
         if len(self) != len(other):
             return False
         res = []
         for i in range(len(self)):
-            res += [self[i]._is_same(other[i])]
+            res += [self[i]._issame(other[i])]
         return res
     
     def _format(self) -> list:
@@ -918,7 +918,7 @@ class SnapshotList(FrozenList):
         nn = 0
         for i in range(len(ms)):
             if ms[i]['name'] is None:
-                while 'ss{0}'.format(nn) in self.get_names():
+                while 'ss{0}'.format(nn) in self.getnames():
                     nn += 1
                 ms[i]['name'] = 'ss{0}'.format(nn)
     
@@ -931,14 +931,14 @@ class SnapshotList(FrozenList):
         list.__delitem__(self, i)
         
     def __str__(self):
-        return '< Snapshots >\n' + str(self.get_names()) + '\n'
+        return '< Snapshots >\n' + str(self.getnames()) + '\n'
         
-    def get_names(self) -> list:
+    def getnames(self) -> list:
         return [s['name'] for s in self]
     
-    def get_preview(self, 
-                    snapshot_id: int, 
-                    size: tuple = None):
+    def getpreview(self, 
+                   snapshot_id: int, 
+                   size: tuple = None):
         meta = self.cui.metadata._format()
         ss = self[snapshot_id]._format()
         meta['geometry'] = ss['geometry']
@@ -991,7 +991,7 @@ class SnapshotList(FrozenList):
         list.append(self, new)
         if new['name'] is None:
             nn = 0
-            while 'ss{0}'.format(nn) in self.get_names():
+            while 'ss{0}'.format(nn) in self.getnames():
                 nn += 1
             self[-1]['name'] = 'ss{0}'.format(nn)
             
@@ -1046,12 +1046,12 @@ class SnapshotList(FrozenList):
         for i in snapshot_ids:
             self[i]['name'] = name
     
-    def _is_same(self, other):
+    def _issame(self, other):
         if len(self) != len(other):
             return False
         res = []
         for i in range(len(self)):
-            res += [self[i]._is_same(other[i])]
+            res += [self[i]._issame(other[i])]
         return res
     
     def _format(self) -> list:

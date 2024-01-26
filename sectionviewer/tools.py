@@ -283,7 +283,7 @@ def calc_section(
     axes[1:] /= geometry['expansion_rate']
     nz /= geometry['expansion_rate']
     
-    shown_ch = display.get_shown_channels()
+    shown_ch = display.getshown()
     thickness = display['thickness']
     
     if thickness == 1:
@@ -321,7 +321,7 @@ def calc_sideview(
     axes1 = np.array([op, nz, nx])
     axes2 = np.array([op, nz, ny])
     
-    shown_ch = display.get_shown_channels()
+    shown_ch = display.getshown()
     thickness = display['thickness']
     
     if thickness == 1:
@@ -348,9 +348,9 @@ def synthesize_image(
         display: DisplayDict, 
         image: DataArray
         ) -> np.ndarray:
-    colors = np.array(channels.get_colors('bgr'), np.uint8)
-    lut = channels.get_lut()
-    shown_ch = display.get_shown_channels()
+    colors = np.array(channels.getcolors('bgr'), np.uint8)
+    lut = channels.getlut()
+    shown_ch = display.getshown()
     
     if display['white_back']:
         ut.calc_bgr_w(section.base, lut, colors, shown_ch, image.base)
@@ -460,7 +460,7 @@ def calc_skeleton(
     n = position.basis*position._anisotropy
     sz, sy, sx = shape*position._anisotropy
     
-    point_coors = np.array(points.get_coordinates())
+    point_coors = np.array(points.getcoordinates())
     if len(point_coors) == 0:
         point_coors = np.empty([0, 3])
     within = np.prod(point_coors >= 0, axis=1, dtype=bool)* \
@@ -470,7 +470,7 @@ def calc_skeleton(
     point_coors -= op + np.array([sz, sy, sx])//2
     point_coors = np.linalg.solve(n.T, point_coors.T).T
     
-    point_colors = np.array(points.get_colors(), dtype=np.uint8)
+    point_colors = np.array(points.getcolors(), dtype=np.uint8)
     if len(point_colors) > 0:
         point_colors[:] = point_colors//1.5
         
@@ -685,7 +685,7 @@ def calc_skeleton(
     p_num = display['point_focus']
     if 0 <= p_num < len(points):
         radius = int(radius * 1.5)
-        name = points.get_names()[p_num]
+        name = points.getnames()[p_num]
         coor = point_coors[p_num]
         color = point_colors[p_num]
         color = (int(color[0]), int(color[1]), int(color[2]))

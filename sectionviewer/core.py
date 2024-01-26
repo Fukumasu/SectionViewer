@@ -147,15 +147,15 @@ class SECV(CUI):
                     object.__setattr__(self, 'meta_prev', self.metadata.copy())
         return success
     
-    def get_frame(self):
+    def getframe(self):
         self.update()
         return self.view_frame[list(self.display['shown_channels'])]
     
-    def get_image(self):
+    def getimage(self):
         self.update()
         return self.view_image.copy()
     
-    def get_skeleton(self):
+    def getskeleton(self):
         self.update()
         return self.skeleton_image.copy()
     
@@ -283,8 +283,8 @@ class SECV(CUI):
         
         if self.display['points'] and len(self.points) > 0:
             
-            point_names = np.array(self.points.get_names())
-            point_colors = np.array(self.points.get_colors())
+            point_names = np.array(self.points.getnames())
+            point_colors = np.array(self.points.getcolors())
             point_coors = self.points.coorsonimage()
             thickness = self.display['thickness']
             
@@ -336,8 +336,8 @@ class SECV(CUI):
                 255 - side_image[len(sideview1[0]) + len(sideview2[0])//2]
             
             if self.display['points'] and len(self.points) > 0:
-                point_names = np.array(self.points.get_names())
-                point_colors = np.array(self.points.get_colors())
+                point_names = np.array(self.points.getnames())
+                point_colors = np.array(self.points.getcolors())
                 point_coors = self.points.coorsonimage()
                 thickness = self.display['thickness']
                 
