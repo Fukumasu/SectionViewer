@@ -456,7 +456,7 @@ class STAC_GUI(GUI):
                                        'Stack data (16 bit)'])
                 if opt == 1:
                     frame = self.stac.stacks[self.display['index']]
-                    sort = np.argsort(self.channels.get_names())
+                    sort = np.argsort(self.channels.getnames())
                     try:
                         tif.imwrite(path, frame[sort])
                     except:

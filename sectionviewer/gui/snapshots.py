@@ -117,7 +117,7 @@ class Snapshots_GUI(Base_GUI):
         
     def refresh_tree(self):
         self.treeview.delete(*self.treeview.get_children())
-        names = self.obj.get_names()
+        names = self.obj.getnames()
         for i in np.argsort(names):
             self.treeview.insert('', 'end', str(i), text=' ' + names[i])
         self.treeview.selection_set()
@@ -127,7 +127,7 @@ class Snapshots_GUI(Base_GUI):
     
     def set_vars(self, i):
         self.name_var.set(self.obj[i]['name'])
-        sec, ske = self.obj.get_preview(i, size = self.im_size)
+        sec, ske = self.obj.getpreview(i, size = self.im_size)
         self.sec = tk_from_array(sec)
         self.canvas1.itemconfig(self.sec_id, image=self.sec)
         self.ske = tk_from_array(ske)

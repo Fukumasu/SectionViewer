@@ -220,8 +220,8 @@ class Channels_GUI(Color_GUI):
         return super().__getattribute__(name)
     
     def refresh_tree(self):
-        names = self.obj.get_names()
-        colors = np.array(self.obj.get_colors())
+        names = self.obj.getnames()
+        colors = np.array(self.obj.getcolors())
         self.treeview.delete(*self.treeview.get_children())
         sort = np.argsort(names)
         im = np.zeros([8,8,3], np.uint8)

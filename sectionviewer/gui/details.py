@@ -172,8 +172,8 @@ class Details_GUI(Base_GUI):
             w.pack_forget()
         paths = main.files['paths']
         ch_nums = main.files['channel_nums']
-        names = np.array(main.channels.get_names())
-        colors = np.array(main.channels.get_colors())
+        names = np.array(main.channels.getnames())
+        colors = np.array(main.channels.getcolors())
         colors = (colors/255*55 + 200).astype(int)
         n = 0
         for i, p in enumerate(paths):

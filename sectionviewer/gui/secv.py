@@ -371,11 +371,12 @@ class SECV_GUI(GUI):
         self.view_canvas.bind('<ButtonRelease-1>', self.release_view)
         
         def wrap_bind(widget, event_name, method):
+            def func1(*args, **kwargs):
+                method(*args, **kwargs)
+                self.master.after(5, widget.bind, event_name, func)
             def func(*args, **kwargs):
                 widget.unbind(event_name)
-                ret = method(*args, **kwargs)
-                self.master.after(10, widget.bind, event_name, func)
-                return ret
+                self.master.after(5, func1, *args, **kwargs)
             widget.bind(event_name, func)
             return func
         
@@ -570,7 +571,7 @@ class SECV_GUI(GUI):
                                        'Section data (16 bit)'])
                 if opt == 1:
                     frame = self.secv.view_frame
-                    sort = np.argsort(self.channels.get_names())
+                    sort = np.argsort(self.channels.getnames())
                     try:
                         tif.imwrite(path, frame[sort])
                     except:
@@ -679,6 +680,7 @@ class SECV_GUI(GUI):
         
         if np.count_nonzero(self.display['shown_channels']) == 0:
             return
+        self.master.unbind('<Key>')
         x, y = event.x, event.y
         x, y = self.screen_to_image_coor(x, y)
         iw, ih = self.geometry['image_size']
@@ -724,6 +726,7 @@ class SECV_GUI(GUI):
             object.__setattr__(self.secv, 'meta_prev', self.meta_kept.copy())
         self.update_params = {}
         self.record_on = True
+        self.master.bind('<Key>', self.key)
     
     def track_view(self, event):
         secv = self.secv
@@ -738,7 +741,7 @@ class SECV_GUI(GUI):
         state = desolve_state(event.state)
         if not state['Click']:
             p = secv.calc_2d_to_3d(np.array([x,y]))
-            sort = np.argsort(self.channels.get_names())
+            sort = np.argsort(self.channels.getnames())
             xi, yi = int(x), int(y)
             if 0 <= xi < iw and 0 <= yi < ih:
                 vals = secv.view_frame[:, yi, xi]
@@ -1035,19 +1038,19 @@ class SECV_GUI(GUI):
             else:
                 self.secv.metadata = self.meta_kept._format()
                 self.update(level = 3)
-            
-            if self.hidx == len(self.history) - 1:
-                self.edit_menu.entryconfig('Redo', state='disable')
-            else:
-                self.edit_menu.entryconfig('Redo', state='normal')
-            if self.hidx == 0:
-                self.edit_menu.entryconfig('Undo', state='disable')
-            else:
-                self.edit_menu.entryconfig('Undo', state='normal')
-            if self.hidx != self.hidx_saved:
-                self.master.title('*' + self.file_name)
-            else:
-                self.master.title(self.file_name)
+            if self.record_on:
+                if self.hidx == len(self.history) - 1:
+                    self.edit_menu.entryconfig('Redo', state='disable')
+                else:
+                    self.edit_menu.entryconfig('Redo', state='normal')
+                if self.hidx == 0:
+                    self.edit_menu.entryconfig('Undo', state='disable')
+                else:
+                    self.edit_menu.entryconfig('Undo', state='normal')
+                if self.hidx != self.hidx_saved:
+                    self.master.title('*' + self.file_name)
+                else:
+                    self.master.title(self.file_name)
         if self.terminate:
             self.master.destroy()
             self.root.destroy()
@@ -1121,7 +1124,7 @@ class SECV_GUI(GUI):
         v2 = v1 + h / (ih + 2*h - 100)
         self.bary.set(v1, v2)
         
-        if level <= 3:
+        if level <= 3 and self.record_on:
             from_, to = self.position.depth_range
             if hasattr(self, 'depth_scale'):
                 self.depth_scale.config(to = to - from_)
@@ -1135,11 +1138,12 @@ class SECV_GUI(GUI):
                 self.skeleton_im = tk_from_array(self.secv.skeleton_image)
                 self.skeleton_canvas.itemconfig(self.skeleton_id, image = self.skeleton_im)
         
-        self.sbar_len.set(str(self.geometry['scale_bar_length']))
-        self.channels_gui.update(loc)
-        self.points_gui.update(loc)
-        self.snapshots_gui.update(loc)
-        self.stack_gui.update()
+        if self.record_on:
+            self.sbar_len.set(str(self.geometry['scale_bar_length']))
+            self.channels_gui.update(loc)
+            self.points_gui.update(loc)
+            self.snapshots_gui.update(loc)
+            self.stack_gui.update()
         
         return True
         

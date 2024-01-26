@@ -179,8 +179,8 @@ class Points_GUI(Color_GUI):
         return super().__getattribute__(name)
     
     def refresh_tree(self):
-        names = self.obj.get_names()
-        colors = np.array(self.obj.get_colors())
+        names = self.obj.getnames()
+        colors = np.array(self.obj.getcolors())
         self.treeview.delete(*self.treeview.get_children())
         sort = np.argsort(names)
         im = np.zeros([8,8,3], np.uint8)
@@ -404,7 +404,7 @@ class Points_GUI(Color_GUI):
         ttk.Label(frame1, text=' : ').grid(column=2, row=1)
         ttk.Label(frame1, text=' : ').grid(column=2, row=2)
         
-        names = self.obj.get_names()
+        names = self.obj.getnames()
         sort = np.argsort(names)
         names = np.array(names)[sort]
         names = [str(i) +'. ' + n for i, n in enumerate(names)]
@@ -467,7 +467,7 @@ class Points_GUI(Color_GUI):
         main = self.main
         obj = self.obj
         op, ny, nx = main.position * main.position._anisotropy
-        coors = np.array(obj.get_coordinates())
+        coors = np.array(obj.getcoordinates())
         def calc_3d_rot_mat(c, s, n):
             n /= np.linalg.norm(n)
             mat = np.array([
@@ -547,7 +547,7 @@ class Points_GUI(Color_GUI):
         else:
             selection = self.treeview.selection()
             selection = [int(s) for s in selection]
-            coor = np.array(self.obj.get_coordinates())[selection]
+            coor = np.array(self.obj.getcoordinates())[selection]
             coor = np.average(coor, axis=0)
         
         try:
