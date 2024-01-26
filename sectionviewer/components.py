@@ -658,13 +658,13 @@ class ChannelList(FrozenList):
         lut[lut > 1] = 1
         return lut
     
-    def set_name(self, channel_ids: Union[int, list], name: str):
+    def setname(self, channel_ids: Union[int, list], name: str):
         if not hasattr(channel_ids, '__iter__'):
             channel_ids = [channel_ids]
         for i in channel_ids:
             self[i][0] = name
     
-    def set_color(self, 
+    def setcolor(self, 
                   channel_ids: Union[int, list],
                   color: list,
                   as_hsl: bool = False):
@@ -674,7 +674,7 @@ class ChannelList(FrozenList):
         for i in channel_ids:
             self[i][1][key] = color
             
-    def set_vrange(self,
+    def setvrange(self,
                    channel_ids: Union[int, list],
                    vmin: int = None,
                    vmax: int = None):
@@ -862,13 +862,13 @@ class PointList(FrozenList):
         for i in point_ids:
             del self[i]
             
-    def set_name(self, point_ids: Union[int, list], name: str):
+    def setname(self, point_ids: Union[int, list], name: str):
         if not hasattr(point_ids, '__iter__'):
             point_ids = [point_ids]
         for i in point_ids:
             self[i][0] = name
             
-    def set_color(self, 
+    def setcolor(self, 
                   point_ids: Union[int, list],
                   color: list,
                   as_hsl: bool = False):
@@ -878,7 +878,7 @@ class PointList(FrozenList):
         for i in point_ids:
             self[i][1][key] = color
             
-    def set_coordinate(self,
+    def setcoordinate(self,
                        point_ids: Union[int, list],
                        coordinate: list):
         if not hasattr(point_ids, '__iter__'):
@@ -1040,7 +1040,7 @@ class SnapshotList(FrozenList):
             new['points'] = ss['points']
         cui.metadata = new
         
-    def set_name(self, snapshot_ids: Union[int, list], name: str):
+    def setname(self, snapshot_ids: Union[int, list], name: str):
         if not hasattr(snapshot_ids, '__iter__'):
             snapshot_ids = [snapshot_ids]
         for i in snapshot_ids:

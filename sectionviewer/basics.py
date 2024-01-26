@@ -77,7 +77,7 @@ class Channel(FrozenList):
             raise IndexError('index has to be one of (0, 1, 2)')
         list.__setitem__(self, k, v)
     
-    def _is_same(self, other):
+    def _issame(self, other):
         return [self[i] == other[i] for i in range(3)]
     
     def _format(self) -> list:
@@ -104,7 +104,7 @@ class Point(FrozenList):
             raise IndexError('index has to be one of (0, 1, 2)')
         list.__setitem__(self, k, v)
         
-    def _is_same(self, other):
+    def _issame(self, other):
         return [self[i] == other[i] for i in range(3)]
     
     def _format(self) -> list:
@@ -161,7 +161,7 @@ class Snapshot(FrozenDict):
                 v = list(v)
         dict.__setitem__(self, k, v)
     
-    def _is_same(self, other):
+    def _issame(self, other):
         res = {}
         for k in self.keys():
             res[k] = self[k] == other[k]
