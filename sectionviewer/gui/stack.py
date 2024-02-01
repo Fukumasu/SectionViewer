@@ -344,7 +344,7 @@ class Stack_GUI(Base_GUI):
         main = self.main
         stac = [stacks, main.channels._format(), main.geometry._format(),
                 {'white back': main.display['white_back']}]
-        path = base_dir + 'temp/{0}.stac'.format(str(uuid.uuid4()))
+        path = base_dir + '{0}.stac'.format(str(uuid.uuid4()))
         byt = pickle.dumps(stac, protocol=4)
         byt = gzip.compress(byt, compresslevel=1)
         with open(path, 'wb') as f:
