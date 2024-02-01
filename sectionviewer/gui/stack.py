@@ -16,14 +16,15 @@ class Stack_GUI(Base_GUI):
     
     def __init__(self, main):
         super().__init__(main)
-        
         self.main = main
-        self.interrupt = False
         self.active = False
-        self.base_frame = tk.LabelFrame(main.master, text='Stack', relief='raised',
+        
+    def initialize(self):
+        self.interrupt = False
+        self.base_frame = tk.LabelFrame(self.main.master, text='Stack', relief='raised',
                                         fg='blue', font=('arial', 13, 'bold'))
-        self.stack_id = main.dock_canvas.create_window(500, 0, anchor='nw', 
-                                                       window = self.base_frame)
+        self.stack_id =self. main.dock_canvas.create_window(500, 0, anchor='nw', 
+                                                            window = self.base_frame)
         im_size = 350, 300
         self.im_size = im_size
         
@@ -117,7 +118,9 @@ class Stack_GUI(Base_GUI):
         control_frame.pack(fill=tk.X, padx=10, pady=10)
         ok_frame.pack(pady=10)
     
+    
     def settings(self):
+        self.initialize()
         main = self.main
         
         op, ny, nx = main.position
