@@ -31,7 +31,7 @@ class SectionViewer(Base_GUI):
         
         if file_path is None:
             if len(sys.argv) > 1:
-                file_path = sys.argv[1]
+                file_path = ' '.join(sys.argv[1:])
             else:
                 file_path = ask_file_path(master)
             
