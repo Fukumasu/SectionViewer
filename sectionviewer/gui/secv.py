@@ -1143,7 +1143,7 @@ class SECV_GUI(GUI):
             self.channels_gui.update(loc)
             self.points_gui.update(loc)
             self.snapshots_gui.update(loc)
-            self.stack_gui.update()
+        self.stack_gui.update()
         
         return True
         
