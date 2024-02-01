@@ -551,7 +551,7 @@ class Points_GUI(Color_GUI):
             coor = np.average(coor, axis=0)
         
         try:
-            self.obj.add(coordinates = coor)
+            self.obj.add(coordinate = coor)
         except CoordinateError:
             pass
         self.main.p_on.set(True)
