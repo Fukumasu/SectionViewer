@@ -376,7 +376,7 @@ class STAC(CUI):
             raise TypeError('Only .stac files are supported.')
         stacks, metadata = load_stac(path)
         object.__setattr__(self, 'metadata', metadata)
-        if os.path.dirname(path) == base_dir[-1]:
+        if os.path.dirname(path) == base_dir[:-1]:
             os.remove(path)
             metadata['files']['stac_path'] = None
         shape = np.array(stacks).shape
