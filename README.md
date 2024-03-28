@@ -15,7 +15,7 @@ Viewer for 3-dimensional images (.oir, .oib, .tif) on cross sections (multi-plan
 
 ## Installation
 
-You can install SectionViewer with the following simple pip command:
+You can install SectionViewer simply by the following pip command:
 ```
 pip install git+https://github.com/Fukumasu/SectionViewer
 ```
