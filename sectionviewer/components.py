@@ -261,10 +261,13 @@ class GeometryDict(FrozenDict):
                 return
         if k not in self:
             raise KeyError(k)
+        if v is None:
+            return
         if k == 'image_size':
             v = (int(v[0]), int(v[1]))
         else:
             v = float(v)
+                
         dict.__setitem__(self, k, v)
         if 'px' in k:
             self._update_px_size()
@@ -396,7 +399,6 @@ class DisplayDict(FrozenDict):
         if k not in self:
             raise KeyError(k)
         if v is None:
-            dict.__setitem__(self, k, v)
             return
         if k == 'shown_channels':
             if len(v) != np.sum(self.cui.files['channel_nums']):

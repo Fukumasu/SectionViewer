@@ -250,6 +250,10 @@ def load_data(
             if img.ndim == 3:
                 img = img[None]
             assert img.ndim == 4
+            a = np.argmin(img.shape)
+            b = [0,1,2,3]
+            b.remove(a)
+            img = img.transpose(a, *b)
             data += [img]
             
     shape = data[0][0].shape
@@ -340,6 +344,34 @@ def calc_sideview(
         ut.fast_stack(voxels.base, axes2, nx, start, stop,
                       sideview2.base, np.array(sideview2[0].shape)//2,
                       shown_ch)
+        
+
+def calc_projection(
+        voxels: DataArray, 
+        geometry: GeometryDict, 
+        position: PositionArray,
+        stack: DataArray,
+        start: int, stop: int
+        ) -> bool:
+    axes = position.copy()
+    nz = position.basis[0].copy()
+    exp_rate = geometry['expansion_rate']
+    axes[1:] /= exp_rate
+    from_, to = position.depth_range
+    start = (to - from_) * (start / 100) + from_
+    stop = (to - from_) * (stop / 100) + from_
+    if exp_rate < 1:
+        nz /= exp_rate
+        start = int(start * exp_rate)
+        stop = int(stop * exp_rate)
+    else:
+        start = int(start)
+        stop = int(stop)
+    voxels = voxels.base
+    ut.stack_section(voxels, axes, nz, start, stop, stack, 
+                     np.array(stack[0].shape)//2,
+                     np.arange(len(stack)))
+    return True
         
 
 def synthesize_image(
