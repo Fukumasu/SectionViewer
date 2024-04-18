@@ -33,10 +33,12 @@ class SectionViewer(Base_GUI):
         
         v = check_version()
         if v:
+            master.deiconify()
             mes = 'Version {0} is now available! Please check <{1}>.'.format(v, url)
-            messagebox.showinfo('Version {0}'.format(v), mes)
+            messagebox.showinfo(title = 'Version {0}'.format(v), 
+                                message = mes,
+                                parent = master)
             
-        
         if file_path is None:
             if len(sys.argv) > 1:
                 file_path = ' '.join(sys.argv[1:])
