@@ -246,11 +246,11 @@ class GeometryDict(FrozenDict):
             for k in ['X_px_size', 'Y_px_size', 'Z_px_size']:
                 if self[k] is None:
                     self[k] = cui.files[k + '_in_files']
+        self._update_px_size()
         if self['image_size'] is None:
             self['image_size'] = cui.files['shape'][-1:-3:-1]
         if self['expansion_rate'] is None:
             self['expansion_rate'] = 1.
-        self._update_px_size()
         self._update_scale_bar_length()
         if self['scale_bar_length'] is None:
             self._auto_scale_bar_length()
