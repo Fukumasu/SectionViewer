@@ -2,8 +2,10 @@ import sys
 
 from PIL import Image, ImageTk
 import tkinter as tk
+from tkinter import messagebox
 
-from .tools import base_dir, ask_file_path, resources, pf
+from .info import url
+from .tools import base_dir, check_version, ask_file_path, resources, pf
 from .gui.gui import Base_GUI
 from .gui.secv import SECV_GUI
 from .gui.stac import STAC_GUI
@@ -28,6 +30,12 @@ class SectionViewer(Base_GUI):
         master.title('SectionViewer')
         master.screenwidth = master.winfo_screenwidth()
         master.screenheight = master.winfo_screenheight()
+        
+        v = check_version()
+        if v:
+            mes = 'Version {0} is now available! Please check <{1}>.'.format(v, url)
+            messagebox.showinfo('Version {0}'.format(v), mes)
+            
         
         if file_path is None:
             if len(sys.argv) > 1:

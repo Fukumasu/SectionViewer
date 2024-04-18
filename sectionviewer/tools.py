@@ -2,8 +2,10 @@ import gzip
 import os
 import pickle
 import platform
+import re
 import subprocess
 from typing import Union
+import urllib.request
 import numpy as np
 try:
     from aicsimageio.readers.bioformats_reader import BioformatsReader
@@ -15,6 +17,7 @@ import oiffile as oif
 import tifffile as tif
 from tkinter import filedialog
 
+from .info import version, url
 from .components import FileDict, DataArray, GeometryDict, PositionArray
 from .components import ChannelList, PointList, DisplayDict
 from . import utils as ut
@@ -59,6 +62,34 @@ def launch(file_path = None):
     command = 'python ' + base_dir + 'launch.py ' + file_path
     subprocess.Popen(command, shell = True)
     return
+
+def check_version():
+    infourl = url + '/blob/master/info.txt'
+    try:
+        with urllib.request.urlopen(infourl) as res:
+            html = res.read()
+            txt = html.decode()
+    except Exception:
+        return
+    location = [m.end() for m in re.finditer("version = '*'", txt)]
+    vs = [txt[i:i+10].split("'")[0] for i in location]
+    for i in range(len(vs)-1,-1,-1):
+        nums = vs[i].split('.')
+        if len(nums) != 3:
+            del vs[i]
+            continue
+        for n in nums:
+            try:
+                int(n)
+            except ValueError:
+                del vs[i]
+    if len(vs) != 1:
+        return
+    if version < vs[0]:
+        return vs[0]
+    else:
+        return False
+    
 
 resources = cv2.imread(base_dir + 'img/resources.png')
 pf = platform.system()
