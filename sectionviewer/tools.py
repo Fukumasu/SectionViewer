@@ -53,13 +53,13 @@ def ask_file_path(master):
     return file_path
 
 def launch(file_path = None):
-    launch_code = 'from {0}.main import main\nmain()'
+    launch_code = 'from {0}.main import main\nmain(check_latest_version = False)'
     launch_code = launch_code.format(os.path.basename(os.path.dirname(base_dir)))
     with open(base_dir + 'launch.py', 'w') as f:
         f.write(launch_code)
     if file_path == None:
         file_path = ''
-    command = 'python ' + base_dir + 'launch.py ' + file_path
+    command = 'python "' + base_dir + 'launch.py" "' + file_path + '"'
     subprocess.Popen(command, shell = True)
     return
 
@@ -85,7 +85,14 @@ def check_version():
                 del vs[i]
     if len(vs) != 1:
         return
-    if version < vs[0]:
+    a, b = version.split("."), vs[0].split(".")
+    available = False
+    for i in range(3):
+        if int(a[i]) == int(b[i]):
+            continue
+        available = int(a[i]) < int(b[i])
+        break
+    if available:
         return vs[0]
     else:
         return False

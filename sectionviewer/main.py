@@ -12,7 +12,7 @@ from .gui.stac import STAC_GUI
 
 
 class SectionViewer(Base_GUI):
-    def __init__(self, file_path = None):
+    def __init__(self, file_path = None, check_latest_version = True):
         master = tk.Tk()
         self.master = master
         super().__init__(self)
@@ -31,13 +31,14 @@ class SectionViewer(Base_GUI):
         master.screenwidth = master.winfo_screenwidth()
         master.screenheight = master.winfo_screenheight()
         
-        v = check_version()
-        if v:
-            master.deiconify()
-            mes = 'Version {0} is now available! Please check <{1}>.'.format(v, url)
-            messagebox.showinfo(title = 'Version {0}'.format(v), 
-                                message = mes,
-                                parent = master)
+        if check_latest_version:
+            v = check_version()
+            if v:
+                master.deiconify()
+                mes = 'Version {0} is now available! Please check <{1}>.'.format(v, url)
+                messagebox.showinfo(title = 'Version {0}'.format(v), 
+                                    message = mes,
+                                    parent = master)
             
         if file_path is None:
             if len(sys.argv) > 1:
@@ -55,8 +56,8 @@ class SectionViewer(Base_GUI):
         else:
             master.destroy()
 
-def main():
-    app = SectionViewer()
+def main(check_latest_version = True):
+    app = SectionViewer(check_latest_version = check_latest_version)
     app.mainloop()
     
 if __name__ == '__main__':
