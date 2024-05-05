@@ -178,17 +178,31 @@ def load_stac(stac_path: str):
 
 
 def load_data(
-        paths: list, 
-        original_secv_path: Union[str, None] = None,
+        files: dict,
         voxels: np.ndarray = None, 
         file_paths_vx: tuple = (), 
         channel_nums_vx: tuple = ()
         ):
+    paths = files['paths']
+    secv_path = files['secv_path']
     
-    for path in paths:
+    for n, path in enumerate(paths):
         if not os.path.exists(path):
-            # TODO relative path calculation
-            raise FileNotFoundError('[Errno 2] No such file or directory: {0}'.format(path))
+            path = path.replace('//', '/')
+            p = path.split('/')
+            secv_path = secv_path.replace('\\', '/')
+            s = secv_path.split('/')
+            for i in range(1,len(s)):
+                for j in range(1,len(p)):
+                    path1 = '/'.join(s[:-i] + p[-j:])
+                    if os.path.exists(path1):
+                        path = path1
+                        paths[n] = path
+                        break
+                if os.path.exists(path):
+                    break
+            if not os.path.exists(path):                
+                raise FileNotFoundError('[Errno 2] No such file or directory: {0}'.format(path))
         ext = os.path.splitext(path)[1]
         if ext not in ('.oir', '.oib', '.tif', '.tiff'):
             raise TypeError('File type {0} is not supported.'.format(ext))

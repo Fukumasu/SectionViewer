@@ -192,8 +192,7 @@ class SECV(CUI):
                 voxels = self.voxels.base
                 file_paths = self.voxels._file_paths_vx
                 channel_nums = self.voxels._channel_nums_vx
-        voxels, metadata_in_files = load_data(self.files['paths'], 
-                                              self.files['original_secv_path'],
+        voxels, metadata_in_files = load_data(self.files,
                                               voxels, file_paths, channel_nums)
         if len(voxels) == 0:
             raise NoDataGivenError('No available data for 3d-image array')
