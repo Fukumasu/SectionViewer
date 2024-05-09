@@ -20,6 +20,7 @@ from tkinter import filedialog
 from .info import version, url
 from .components import FileDict, DataArray, GeometryDict, PositionArray
 from .components import ChannelList, PointList, DisplayDict
+from .basics import geometry_key_patterns
 from . import utils as ut
 
 base_dir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
@@ -100,15 +101,6 @@ def check_version():
 
 resources = cv2.imread(base_dir + 'img/resources.png')
 pf = platform.system()
-
-geometry_key_patterns = [
-    ['res_xy', 'X_px_size'],
-    ['res_xy', 'Y_px_size'],
-    ['res_z', 'Z_px_size'],
-    ['exp_rate', 'expansion_rate'],
-    ['im_size', 'image_size'],
-    ['bar_len', 'scale_bar_length']
-    ]
 
 def desolve_secv(secv_path: Union[str, None]) -> dict:
     

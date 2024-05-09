@@ -915,6 +915,9 @@ class SnapshotList(FrozenList):
         object.__setattr__(self, 'cui', cui)
         ms = cui.snapshots
         for i in range(len(ms)):
+            for k in ['files', 'geometry', 'position', 'channels', 'points']:
+                if k not in ms[i]:
+                    ms[i][k] = cui.metadata[k]
             ms[i] = Snapshot(ms[i])
         super().__init__(ms)
         nn = 0

@@ -2,6 +2,15 @@ from typing import Union
 import numpy as np
 
 sf = 5
+geometry_key_patterns = [
+    ['res_xy', 'X_px_size'],
+    ['res_xy', 'Y_px_size'],
+    ['res_z', 'Z_px_size'],
+    ['exp_rate', 'expansion_rate'],
+    ['im_size', 'image_size'],
+    ['bar_len', 'scale_bar_length']
+    ]
+gkp = dict(geometry_key_patterns)
 
 class FrozenList(list):
     def __setitem__(self, *args):
@@ -120,6 +129,10 @@ class Snapshot(FrozenDict):
                 dict.__delitem__(metadata, k)
         if not 'name' in metadata:
             dict.__setitem__(metadata, 'name', None)
+        for k in list(metadata['geometry'].keys()):
+            if k in gkp:
+                metadata['geometry'][gkp[k]] = metadata['geometry'][k]
+                del metadata['geometry'][k]
         super().__init__(metadata)
     
     def __getattribute(self, name):
