@@ -15,7 +15,7 @@ import cv2
 from PIL import Image, ImageTk
 import oiffile as oif
 import tifffile as tif
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 
 from .info import version, url
 from .components import FileDict, DataArray, GeometryDict, PositionArray
@@ -41,7 +41,7 @@ def save_init(path):
         with open(base_dir + 'init_dir.txt', 'w') as f:
             f.write(os.path.dirname(path))
             
-def ask_file_path(master):
+def ask_file_path(master, title = 'Open'):
     master.deiconify()
     filetypes = [('Supported files', ['*.secv', '*.stac', '*.oir', 
                                       '*.oib', '*.tif', '*.tiff']),
@@ -50,7 +50,7 @@ def ask_file_path(master):
     file_path = filedialog.askopenfilename(parent = master, 
                                            filetypes = filetypes, 
                                            initialdir = initialdir, 
-                                           title = 'Open')
+                                           title = title)
     return file_path
 
 def launch(file_path = None):
@@ -173,28 +173,39 @@ def load_data(
         files: dict,
         voxels: np.ndarray = None, 
         file_paths_vx: tuple = (), 
-        channel_nums_vx: tuple = ()
+        channel_nums_vx: tuple = (),
+        master = None
         ):
     paths = files['paths']
     secv_path = files['secv_path']
     
     for n, path in enumerate(paths):
         if not os.path.exists(path):
-            path = path.replace('//', '/')
-            p = path.split('/')
+            path0 = path.replace('//', '/')
+            p = path0.split('/')
             secv_path = secv_path.replace('\\', '/')
             s = secv_path.split('/')
             for i in range(1,len(s)):
                 for j in range(1,len(p)):
                     path1 = '/'.join(s[:-i] + p[-j:])
                     if os.path.exists(path1):
-                        path = path1
-                        paths[n] = path
+                        path0 = path1
+                        paths[n] = path0
                         break
-                if os.path.exists(path):
+                if os.path.exists(path0):
                     break
-            if not os.path.exists(path):                
-                raise FileNotFoundError('[Errno 2] No such file or directory: {0}'.format(path))
+            if not os.path.exists(path0):  
+                if master is None:
+                    raise FileNotFoundError('[Errno 2] No such file or directory: {0}'.format(path))
+                else:
+                    messagebox.showwarning('File not found', 
+                                           'No such file or directory: {0}\nPlease relocate the file.'.format(path))
+                    path0 = ask_file_path(master, title='Relocate {0}'.format(os.path.basename(path)))
+                    if len(path0) > 0:
+                        paths[n] = path0
+                    else:
+                        raise Exception('Could not find {0}.'.format(os.path.basename(path)))
+                    
         ext = os.path.splitext(path)[1]
         if ext not in ('.oir', '.oib', '.tif', '.tiff'):
             raise TypeError('File type {0} is not supported.'.format(ext))
@@ -307,6 +318,7 @@ def load_data(
                                          ' input data must match exactly')
     
     metadata = {}
+    metadata['paths'] = paths
     metadata['X_px_size_in_files'] = X_px_size_in_files
     metadata['Y_px_size_in_files'] = Y_px_size_in_files
     metadata['Z_px_size_in_files'] = Z_px_size_in_files

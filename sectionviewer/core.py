@@ -21,7 +21,9 @@ class SECV(CUI):
     
     def __init__(self, paths: Union[str, list], 
                 voxel_array: Union[DataArray, None] = None,
-                metadata: Union[dict, None] = None):
+                metadata: Union[dict, None] = None,
+                master = None):
+        object.__setattr__(self, 'master', master)
         if type(paths) == str:
             paths = [paths]
             
@@ -193,7 +195,8 @@ class SECV(CUI):
                 file_paths = self.voxels._file_paths_vx
                 channel_nums = self.voxels._channel_nums_vx
         voxels, metadata_in_files = load_data(self.files,
-                                              voxels, file_paths, channel_nums)
+                                              voxels, file_paths, channel_nums,
+                                              master = self.master)
         if len(voxels) == 0:
             raise NoDataGivenError('No available data for 3d-image array')
         
