@@ -51,7 +51,7 @@ class SECV_GUI(GUI):
         self.ver_image = tk_from_array(ver_image)
         
         try:
-            secv = SECV(file_path)
+            secv = SECV(file_path, master = master)
         except:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent = master)
@@ -106,6 +106,7 @@ class SECV_GUI(GUI):
         self.update([['new']], level = 7)
         self.master.after(1, self.monitor)
         
+        self.secv.save(file_path)
         save_init(file_path)
         
     def __getattribute__(self, name):
