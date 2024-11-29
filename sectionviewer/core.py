@@ -403,7 +403,7 @@ class STAC(CUI):
         if os.path.splitext(file_path)[1] != '.stac':
             file_path = file_path + '.stac'
             
-        stacks = self.stacks.base
+        stacks = [s.base for s in self.stacks]
         channels = self.channels._format()
         geometry = self.geometry._format()
         display = self.display._format()
