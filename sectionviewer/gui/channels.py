@@ -176,6 +176,8 @@ class Channels_GUI(Color_GUI):
         self.entry_n.grid(column=2, row=0, padx=3)
         self.entry_x = ttk.Entry(bottom_frame, textvariable=self.vars['xs'], width=5)
         self.entry_x.grid(column=2, row=1, padx=3)
+        auto_button = ttk.Button(bottom_frame, text='Auto', command=self.auto_contrast)
+        auto_button.grid(column=3, row=0, rowspan=2, pady=2, sticky=tk.E)
         
         self.entry_r.bind('<Return>', self.rgb_enter(2))
         self.entry_r.bind('<Button-1>', self.rgb_enter(2))
@@ -326,6 +328,11 @@ class Channels_GUI(Color_GUI):
                 i = int(x[0])
                 self.vars[vn[0]].set(self.obj[i][2][num])
         return func
+    
+    def auto_contrast(self):
+        x = self.treeview.selection()
+        ids = [int(i) for i in x]
+        self.obj.auto_contrast(ids)
     
     def sh_trace(self, *args):
         x = self.treeview.selection()

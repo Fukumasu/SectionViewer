@@ -375,7 +375,7 @@ class STAC_GUI(GUI):
             if os.path.splitext(self.file_path)[1] != 'stac':
                 ask_name = True
         if ask_name:
-            filetypes = [('SectionViewer stack file', '*.secv')]
+            filetypes = [('SectionViewer stack file', '*.stac')]
             initialfile = initialfile
             path = filedialog.asksaveasfilename(
                 parent = self.master, 
