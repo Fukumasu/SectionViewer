@@ -696,6 +696,25 @@ class ChannelList(FrozenList):
             channel_ids = [channel_ids]
         auto_color(self, channel_ids)
         
+    def auto_contrast(self, channel_ids: Union[int, list] = None):
+        if channel_ids is None:
+            channel_ids = list(range(len(self)))
+        if not hasattr(channel_ids, '__iter__'):
+            channel_ids = [channel_ids]
+        cui = self.cui
+        if hasattr(cui, 'view_frame') or hasattr(cui, 'stacks'):
+            if hasattr(cui, 'view_frame'):
+                frame = cui.view_frame
+            else:
+                frame = cui.stacks[cui.display['index']]
+            new_frame = frame[channel_ids].reshape(len(channel_ids), -1)
+            a = np.sum(new_frame != 0, axis = 0, dtype = bool)
+            vmins = np.percentile(new_frame[:,a], 1, axis = 1)
+            vmaxs = np.percentile(new_frame[:,a], 99, axis = 1)
+            for i, n in enumerate(channel_ids):
+                self[n][2][0] = vmins[i]
+                self[n][2][1] = vmaxs[i]
+        
     def copy(self):
         return [Channel(c) for c in self._format()]
     
@@ -717,22 +736,11 @@ class ChannelList(FrozenList):
                 mc[i][0] = 'ch{0}'.format(nn)
         news = [i for i in range(len(mc)) if mc[i][1] is None]
         if len(news) > 0:
-            ids = [i for i in range(len(mc)) if mc[i][1] is None]
-            self.auto_color(ids)
+            self.auto_color(news)
         if hasattr(cui, 'update') and 'secv_path' in cui.files:
             cui.update(level = 2, end = 3)
         if len(news) > 0:
-            if hasattr(cui, 'view_frame') or hasattr(cui, 'stacks'):
-                if hasattr(cui, 'view_frame'):
-                    frame = cui.view_frame
-                else:
-                    frame = cui.stacks[cui.display['index']]
-                new_frame = frame[news].reshape(len(news), -1)
-                vmins = np.percentile(new_frame, 1, axis = 1)
-                vmaxs = np.percentile(new_frame, 99, axis = 1)
-                for i, n in enumerate(news):
-                    self[n][2][0] = vmins[i]
-                    self[n][2][1] = vmaxs[i]
+            self.auto_contrast(news)
     
     def _issame(self, other):
         if len(self) != len(other):

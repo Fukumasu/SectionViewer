@@ -358,6 +358,11 @@ def auto_color(units: list, ids: list, offset: int = 120):
     num_new = len(ids)
     fix = [i for i in range(len(units)) if i not in ids]
     
+    if len(fix) == 0:
+        if num_new == 1:
+            units[0][1] = Color(bgr = [255, 255, 255])
+            return
+    
     if len(fix) > 0:
         
         hues_fix = np.array([units[i][1]['hsl'] for i in fix])
