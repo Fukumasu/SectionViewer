@@ -11,15 +11,22 @@ Viewer for 3-dimensional images (.oir, .oib, .tif) on cross sections (multi-plan
 - Windows, macOS, or Linux
 - python >= 3.6
 - Microsoft Visual C++ compiler (for Windows)
-- To open .oir files, a java executable is required to be available in your environment. If you are using conda, you can install with 'conda install -c conda-forge scyjava'.
 
 ## Installation
-
-You can install SectionViewer simply by the following pip command:
+Installing the software into a conda virtual environment is recommended. Run the following commands in Anaconda Prompt to enter a minimum environment:
+```
+conda create -n ENVNAME python pip git numpy-base=1
+conda activate ENVNAME
+```
+In your environment, install the software with the following pip command:
 ```
 pip install git+https://github.com/Fukumasu/SectionViewer
 ```
-If successful, a GUI software will be launched with a shell command 'sectionviewer'.
+To use .oir files as image data, add "scyjava" to the environment with the following conda command (optional):
+```
+conda install -c conda-forge scyjava
+```
+If successful, the GUI will be launched by entering 'sectionviewer' command in your environment.
 
 ## Description
 
