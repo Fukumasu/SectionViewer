@@ -46,6 +46,7 @@ class Points_GUI(Color_GUI):
                              self.vars['ss'].set(str(self.vars['s'].get()/10)))
         self.vars['l'].trace('w', lambda *args: 
                              self.vars['ls'].set(str(self.vars['l'].get()/10)))
+        self.vars['sh'].trace('w', self.sh_trace)
         
         base_frame = ttk.Frame(main.dock_note)
         self.base_frame = base_frame
@@ -82,13 +83,19 @@ class Points_GUI(Color_GUI):
         control_frame = ttk.Frame(base_frame, relief='groove')
         self.control_frame = control_frame
             
-        self.entry_nm = ttk.Entry(control_frame, textvariable=self.vars['nm'], width=30)
-        self.entry_nm.pack(padx=25, pady=15, anchor=tk.W)
+        frame = ttk.Frame(control_frame)
+        frame.pack(padx=20, pady=10, ipadx=5, ipady=5, fill=tk.X)
+        self.entry_nm = ttk.Entry(frame, textvariable=self.vars['nm'], width=30)
+        self.entry_nm.pack(side = tk.LEFT)
+        self.checkbutton = ttk.Checkbutton(frame, variable=self.vars['sh'], 
+                                           onvalue=1, offvalue=0, text='Show')
+        self.checkbutton.pack(side=tk.RIGHT)
         
         color_note = ttk.Notebook(control_frame)
         color_note.pack(padx=10, pady=5, ipadx=5, ipady=5)
         
         rgb_frame = ttk.Frame(color_note)
+        self.rgb_frame = rgb_frame
         
         ttk.Label(rgb_frame, text='  R:  ').grid(column=0, row=1)
         ttk.Label(rgb_frame, text='  G:  ').grid(column=0, row=2)
@@ -138,7 +145,7 @@ class Points_GUI(Color_GUI):
         self.entry_l = ttk.Entry(hsl_frame, textvariable=self.vars['ls'], width=5)
         self.entry_l.grid(column=2, row=3, padx=3)
         preset_canvas = tk.Canvas(hsl_frame, width=160, height=20, cursor='hand2')
-        preset_canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
+        self.preset_id = preset_canvas.create_image(0, 0, anchor='nw', image=self.preset_image)
         preset_canvas.grid(column=0, row=4, columnspan=2, padx=20, sticky=tk.SW)
         preset_canvas.bind('<Button-1>', self.preset)
         auto_button = ttk.Button(hsl_frame, text='Auto', command=self.auto_color)
@@ -146,6 +153,8 @@ class Points_GUI(Color_GUI):
         color_note.add(hsl_frame, text='HSL')
         
         bottom_frame = ttk.Frame(control_frame)
+        self.bottom_frame = bottom_frame
+        
         bottom_frame.pack(padx=20, pady=10, ipadx=5, ipady=5, fill=tk.X)
         self.button_cg = ttk.Button(bottom_frame, text='Change', command=self.change)
         self.button_cg.pack(pady=10, padx=10, side=tk.RIGHT)
@@ -214,6 +223,7 @@ class Points_GUI(Color_GUI):
         self.vars['l'].set(int(color['hsl'][2]*10))
         text = '(x,y,z) = ({0:.1f}, {1:.1f}, {2:.1f})'.format(crs[2], crs[1], crs[0])
         self.vars['cr'].set(text)
+        self.vars['sh'].set(self.main.display['shown_points'][i])
     
     def select(self, event):
         self.main.master.focus_set()
@@ -529,6 +539,46 @@ class Points_GUI(Color_GUI):
         
         pos = np.array([op, ny, nx]) / main.position._anisotropy
         main.position[:] = pos
+        
+    def sh_trace(self, *args):
+        x = self.treeview.selection()
+        if len(x) == 0:
+            return
+        selec = [int(i) for i in x]
+        sh = self.vars['sh'].get()
+        if sh not in (0, 1):
+            return
+        sh = bool(sh)
+        pt_show = list(self.main.display['shown_points'])
+        for i in selec:
+            pt_show[i] = sh
+        
+        self.main.display['shown_points'] = tuple(pt_show)
+        
+        pt_show = np.array(self.main.display['shown_points'])[selec]
+        if pt_show.all():
+            self.vars['sh'].set(1)
+            for frame in [self.rgb_frame, self.hsl_frame, self.bottom_frame]:
+                for w in frame.grid_slaves():
+                    s = str(w).split('!')[-1][:5]
+                    if s in ['butto', 'entry', 'label']:
+                        w['state'] = tk.NORMAL
+                    if s == 'canva':
+                        w.config(cursor = 'hand2')
+                        w.itemconfig(self.preset_id, image=self.preset_image)
+        else:
+            if pt_show.any():
+                self.vars['sh'].set(-1)
+            else:
+                self.vars['sh'].set(0)
+            for frame in [self.rgb_frame, self.hsl_frame, self.bottom_frame]:
+                for w in frame.grid_slaves():
+                    s = str(w).split('!')[-1][:5]
+                    if s in ['butto', 'entry', 'label']:
+                        w['state'] = tk.DISABLED
+                    if s == 'canva':
+                        w.config(cursor = 'arrow')
+                        w.itemconfig(self.preset_id, image=self.preset_off)
         
     def add(self):
         selection = self.treeview.selection()

@@ -478,4 +478,5 @@ class Channels_GUI(Color_GUI):
                 if ch not in self.obj_prev:
                     new_selection += [str(i)]
             self.treeview.selection_set(new_selection)
+            
         self.obj_prev = obj.copy()

@@ -11,7 +11,7 @@ from tkinter import ttk, filedialog, messagebox
 from ..core import SECV
 from ..basics import CoordinateError
 from ..tools import base_dir, init_dir, save_init, resources, pf
-from ..tools import tk_from_array, desolve_state, make_key_text
+from ..tools import draw_points, tk_from_array, desolve_state, make_key_text
 from .gui import GUI
 from .channels import Channels_GUI
 from .points import Points_GUI
@@ -106,8 +106,9 @@ class SECV_GUI(GUI):
         self.update([['new']], level = 7)
         self.master.after(1, self.monitor)
         
-        self.secv.save(file_path)
-        save_init(file_path)
+        if self.secv.files['secv_path'] is not None:
+            self.secv.save(file_path)
+            save_init(file_path)
         
     def __getattribute__(self, name):
         if name in ['files', 'geometry', 'display', 'position',
@@ -676,6 +677,18 @@ class SECV_GUI(GUI):
         y += ih//2 - cy / zoom
         return x, y
     
+    def image_to_screen_coor(self, x, y, secv = None):
+        if secv is None:
+            secv = self.secv
+        zoom = secv.display['zoom']
+        cx, cy = secv.display['center']
+        iw, ih = secv.geometry['image_size']
+        x -= iw//2 - cx / zoom
+        y -= ih//2 - cy / zoom
+        x *= zoom
+        y *= zoom
+        return x, y
+    
     def click_view(self, event):
         self.master.focus_set()
         
@@ -1092,10 +1105,31 @@ class SECV_GUI(GUI):
             warp = np.array([[zoom, 0., ul[0]], [0., zoom, ul[1]]])
         back = [255, 255, 255] if self.display['white_back'] else [0, 0, 0]
         
-        cv2.warpAffine(self.secv.view_image, warp, (w, h), 
+        cv2.warpAffine(self.secv.view_image_raw, warp, (w, h), 
                        dst = self.main_image,
                        borderMode = cv2.BORDER_CONSTANT,
                        borderValue = back)
+        
+        if self.display['points'] and len(self.display._shown_points_ids) > 0:
+            
+            ids = self.display._shown_points_ids
+            point_names = np.array(self.points.getnames())
+            point_colors = np.array(self.points.getcolors())
+            point_coors = self.points.coorsonimage()
+            thickness = self.display['thickness']
+            
+            point_coors[:,2], point_coors[:,1] = self.image_to_screen_coor(point_coors[:,2], 
+                                                                           point_coors[:,1])
+            
+            draw_points(self.main_image, point_coors[ids], point_colors[ids],
+                        point_names[ids], thickness=thickness)
+            
+            p_num = self.display['point_focus']
+            if 0 <= p_num < len(self.points):    
+                ps = slice(p_num, p_num + 1)
+                draw_points(self.main_image, point_coors[ps], point_colors[ps],
+                            point_names[ps], thickness=thickness, r = 6)
+        
         ul = np.fmax(0, ul)
         br = np.fmax(0, br)
         self.main_image[:ul[1]] = 240
@@ -1154,6 +1188,10 @@ class SECV_GUI(GUI):
         loc1 = [l for l in loc1 if l[0] != 'files' or
                                    l == ['files', 'paths']]
         loc1 = [l for l in loc1 if l != ['channels']]
+        if ['files', 'paths'] in loc1:
+            loc1 += [['display', 'shown_channels']]
+        if ['points'] in loc1:
+            loc1 += [['display', 'shown_points']]
         
         if len(loc1) > 0 and self.hidx == self.hidx_kept:
             olds, news = [], []
