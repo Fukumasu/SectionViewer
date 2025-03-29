@@ -13,12 +13,12 @@ Viewer for 3-dimensional images (.oir, .oib, .tif) on cross sections (multi-plan
 - Microsoft Visual C++ compiler (for Windows)
 
 ## Installation
-Installing the software into a conda virtual environment is recommended. 
+It is recommended to install the software in a conda virtual environment. 
 1. Run the following command in Anaconda Prompt to create a minimum environment:
 ```
 conda create -n ENVNAME python pip git numpy-base=1
 ```
-2. Enter the new environment:
+2. Activate the new environment:
 ```
 conda activate ENVNAME
 ```
@@ -30,7 +30,7 @@ pip install git+https://github.com/Fukumasu/SectionViewer
 ```
 conda install -c conda-forge scyjava
 ```
-If successful, the GUI will be launched by entering 'sectionviewer' command in your environment.
+If successful, the GUI will be launched by entering 'sectionviewer' command.
 
 ## Description
 
