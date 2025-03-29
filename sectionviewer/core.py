@@ -65,10 +65,10 @@ class SECV(CUI):
             'geometry': ({'image_size': ({}, 2), 'scale_bar_length': ({}, 4)}, 3),
             'display': ({'thickness': ({}, 3), 'white_back': ({}, 4), 
                          'shown_channels': ({}, 4), 'points': ({}, 5), 
-                         'scale_bar': ({}, 5), 'point_focus': ({}, 5)}, 6),
+                         'scale_bar': ({}, 5), 'shown_points': ({}, 5)}, 6),
             'position': ({}, 3),
             'channels': ({}, 4),
-            'points': ({}, 4),
+            'points': ({}, 5),
             'snapshots': ({}, 6)
             }
         object.__setattr__(self, '_key_levels', key_levels)
@@ -289,18 +289,14 @@ class SECV(CUI):
             point_colors = np.array(self.points.getcolors())
             point_coors = self.points.coorsonimage()
             thickness = self.display['thickness']
+            shown_points = self.display['shown_points']
             
             show = draw_points(image, point_coors, point_colors,
-                               point_names, thickness)
+                               point_names, shown_points, thickness)
             
             object.__setattr__(self.display, '_shown_points_ids', np.where(show)[0])
             object.__setattr__(self.display, '_shown_points_coors', point_coors[show, 1:])
             
-            p_num = self.display['point_focus']
-            if 0 <= p_num < len(self.points):    
-                ps = slice(p_num, p_num + 1)
-                draw_points(image, point_coors[ps], point_colors[ps],
-                            point_names[ps], thickness, r = 6)
         else:
             object.__setattr__(self.display, '_shown_points_ids', 
                                np.zeros((0), dtype=int))
@@ -342,6 +338,7 @@ class SECV(CUI):
                 point_colors = np.array(self.points.getcolors())
                 point_coors = self.points.coorsonimage()
                 thickness = self.display['thickness']
+                shown_points = self.display['shown_points']
                 
                 point_coors[:,1:] -= np.array(self.geometry['image_size'][::-1])//2
                 point_coors /= 2
@@ -355,13 +352,13 @@ class SECV(CUI):
                 point_colors = np.tile(point_colors, (2,1))
                 point_names = np.append(point_names, point_names)
                 draw_points(side_image, point_coors, point_colors, 
-                            point_names, thickness)
+                            point_names, shown_points, thickness)
                 
                 p_num = self.display['point_focus']
                 if 0 <= p_num < len(self.points):
                     ps= slice(p_num, 2*len(self.points), len(self.points))
                     draw_points(side_image, point_coors[ps], point_colors[ps], 
-                                point_names[ps], thickness, r = 6)
+                                point_names[ps], thickness=thickness, r = 6)
             object.__setattr__(self, 'sideview_image', side_image)
         
         point_locations = calc_skeleton(self.files, self.geometry, 

@@ -453,18 +453,22 @@ def synthesize_image(
 def draw_points(image: np.ndarray, 
                  coors: np.ndarray, 
                  colors: np.ndarray,
-                 names: Union[np.ndarray, None] = None, 
+                 names: Union[np.ndarray, None] = None,
+                 shown_points: Union[np.ndarray, None] = None,
                  thickness: int = 1, 
                  r: int = 3
                  ) -> np.ndarray:
     
     if names is None:
         names = np.full(len(coors), '')
+    if shown_points is None:
+        shown_points = np.ones(len(coors), dtype=bool)
         
     threshold = 10 + thickness//2
     show = np.abs(coors[:,0]) < threshold
     ly, lx = image[:,:,0].shape
     show *= np.prod(coors[:,1:3]//np.array([ly, lx]) == 0, axis=1, dtype=bool)
+    show *= shown_points
     
     start = -(thickness//2)
     stop = start + thickness

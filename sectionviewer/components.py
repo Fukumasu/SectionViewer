@@ -362,6 +362,7 @@ class DisplayDict(FrozenDict):
         'center': None,
         'window_size': None,
         'shown_channels': None,
+        'shown_points': None,
         'point_focus': -1,
         'index': 0
         }
@@ -374,7 +375,7 @@ class DisplayDict(FrozenDict):
         if 'secv_path' in cui.files:
             keys = ['thickness', 'zoom', 'axis', 'scale_bar', 'points',
                     'dock', 'white_back', 'guide', 'sideview', 'center',
-                    'window_size', 'shown_channels', 'point_focus']
+                    'window_size', 'shown_channels', 'shown_points', 'point_focus']
         else:
             keys = ['zoom', 'scale_bar', 'dock', 'white_back', 'center',
                     'window_size', 'shown_channels', 'index']
@@ -391,6 +392,11 @@ class DisplayDict(FrozenDict):
         if md['shown_channels'] is None:
             ch_show = tuple([True] * np.sum(cui.files['channel_nums']))
             md['shown_channels'] = ch_show
+        if md['shown_points'] is None:
+            try: n = len(cui.points)
+            except: n = 0
+            pt_show = tuple([True] * n)
+            md['shown_points'] = pt_show
         super().__init__(md)
         for k in md:
             self[k] = md[k]
@@ -402,8 +408,13 @@ class DisplayDict(FrozenDict):
             return
         if k == 'shown_channels':
             if len(v) != np.sum(self.cui.files['channel_nums']):
-                raise ValueError("length of 'shown_channels' must be "
-                                 "the same with channel number")
+                raise ValueError("Length of 'shown_channels' must be "
+                                 "the same as the channel number.")
+            v = tuple([bool(v[i]) for i in range(len(v))])
+        elif k == 'shown_points':
+            if len(v) != len(self.cui.points):
+                raise ValueError("Length of 'shown_points' must be "
+                                 "the same as the point number.")
             v = tuple([bool(v[i]) for i in range(len(v))])
         elif k in ('center', 'window_size'):
             v = (int(v[0]), int(v[1]))
@@ -857,6 +868,7 @@ class PointList(FrozenList):
             coordinate = self.cui.position[0]
         pt = Point([name, color, coordinate])
         list.append(self, pt)
+        self.cui.display['shown_points'] = list(self.cui.display['shown_points']) + [True]
         if name is None:
             nn = 0
             while 'p{0}'.format(nn) in self.getnames():
@@ -869,8 +881,10 @@ class PointList(FrozenList):
         if not hasattr(point_ids, '__iter__'):
             point_ids = [point_ids]
         point_ids = np.sort(np.unique(point_ids))[::-1]
+        pt_show = list(self.cui.display['shown_points'])
         for i in point_ids:
-            del self[i]
+            del self[i], pt_show[i]
+        self.cui.display['shown_points'] = pt_show
             
     def setname(self, point_ids: Union[int, list], name: str):
         if not hasattr(point_ids, '__iter__'):
