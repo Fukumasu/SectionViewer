@@ -392,11 +392,12 @@ class DisplayDict(FrozenDict):
         if md['shown_channels'] is None:
             ch_show = tuple([True] * np.sum(cui.files['channel_nums']))
             md['shown_channels'] = ch_show
-        if md['shown_points'] is None:
-            try: n = len(cui.points)
-            except: n = 0
-            pt_show = tuple([True] * n)
-            md['shown_points'] = pt_show
+        if 'shown_points' in md:
+            if md['shown_points'] is None:
+                try: n = len(cui.points)
+                except: n = 0
+                pt_show = tuple([True] * n)
+                md['shown_points'] = pt_show
         super().__init__(md)
         for k in md:
             self[k] = md[k]

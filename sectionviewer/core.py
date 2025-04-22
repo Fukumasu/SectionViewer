@@ -65,7 +65,7 @@ class SECV(CUI):
             'geometry': ({'image_size': ({}, 2), 'scale_bar_length': ({}, 4)}, 3),
             'display': ({'thickness': ({}, 3), 'white_back': ({}, 4), 
                          'shown_channels': ({}, 4), 'points': ({}, 5), 
-                         'scale_bar': ({}, 5), 'shown_points': ({}, 5)}, 6),
+                         'scale_bar': ({}, 4), 'shown_points': ({}, 5)}, 6),
             'position': ({}, 3),
             'channels': ({}, 4),
             'points': ({}, 5),
@@ -276,6 +276,11 @@ class SECV(CUI):
         
         image = synthesize_image(self.view_frame, self.channels, 
                                  self.display, self.view_image_buffer)
+        if self.display['scale_bar']:
+            sbp = self.geometry._scale_bar_px
+            if sbp > 0:
+                sb = image[-25: -20, -20 - sbp: -20]
+                sb[:] = 255 if np.average(sb) < 128 else 0
         object.__setattr__(self, 'view_image_raw', image)
         return True
     
@@ -302,12 +307,6 @@ class SECV(CUI):
                                np.zeros((0), dtype=int))
             object.__setattr__(self.display, '_shown_points_coors', 
                                np.zeros((0,3), dtype=float))
-        
-        if self.display['scale_bar']:
-            sbp = self.geometry._scale_bar_px
-            if sbp > 0:
-                sb = image[-25: -20, -20 - sbp: -20]
-                sb[:] = 255 if np.average(sb) < 128 else 0
             
         object.__setattr__(self, 'view_image', image)
             
