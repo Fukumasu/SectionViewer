@@ -1192,7 +1192,6 @@ class SECV_GUI(GUI):
             loc1 += [['display', 'shown_channels']]
         if ['points'] in loc1:
             loc1 += [['display', 'shown_points']]
-        
         if len(loc1) > 0 and self.hidx == self.hidx_kept:
             olds, news = [], []
             for l in loc1:
