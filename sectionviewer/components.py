@@ -84,7 +84,7 @@ class MetadataDict(FrozenDict):
         if k not in self:
             raise KeyError(k)
         v0 = self[k]
-        dict.__setitem__(self, k, v)
+        dict.__setitem__(self.cui.metadata, k, v)
         try:
             if k == 'files' and type(v) != FileDict:
                 dict.__setitem__(self, k, FileDict(self.cui))
@@ -101,7 +101,7 @@ class MetadataDict(FrozenDict):
             elif k == 'snapshots' and type(v) != SnapshotList:
                 dict.__setitem__(self, k, SnapshotList(self.cui))
         except Exception as e:
-            dict.__setitem__(self, k, v0)
+            dict.__setitem__(self.cui.metadata, k, v0)
             raise e
             
     def __str__(self):
