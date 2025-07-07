@@ -335,7 +335,7 @@ class GeometryDict(FrozenDict):
     def _issame(self, other):
         res = {}
         for k in self:
-            if type(self[k]) == float:
+            if type(self[k]) == float and type(other[k]) == float:
                 res[k] = abs(self[k] - other[k]) < 10**(-sf)
             else:
                 res[k] = self[k] == other[k]
