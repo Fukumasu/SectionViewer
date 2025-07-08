@@ -1,5 +1,5 @@
 import cython
-# from cython.parallel import prange
+from cython.parallel import prange
 from libc.stdlib cimport rand, RAND_MAX
 import numpy as np
 cimport numpy as cnp
@@ -224,8 +224,7 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -242,15 +241,13 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,0] < 0 or pos[0,0] >= dz:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
@@ -279,8 +276,7 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -297,15 +293,13 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,1] < 0 or pos[0,1] >= dy:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
@@ -334,8 +328,7 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -352,33 +345,28 @@ cpdef calc_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,2] < 0 or pos[0,2] >= dx:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
             return False
         
-    # for i in prange(i0, nogil=True):
-    for i in range(i0):
+    for i in prange(i0, nogil=True):
         for j in range(n):
             for k in range(dc):
                 res[k,i,j] = 0
-    # for i in prange(i1, m, nogil=True):
-    for i in range(i1, m):
+    for i in prange(i1, m, nogil=True):
         for j in range(n):
             for k in range(dc):
                 res[k,i,j] = 0
     
-    # for i in prange(i0, i1, nogil=True):
-    for i in range(i0, i1):
+    for i in prange(i0, i1, nogil=True):
         m = i - c[0]
         z0 = pos[0,0] + m*pos[1,0]
         y0 = pos[0,1] + m*pos[1,1]
@@ -505,8 +493,7 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -523,15 +510,13 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 z0 = pos[0,0] + (i1 - c[0] - 1)*pos[1,0]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,0] < 0 or pos[0,0] >= dz:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
@@ -560,8 +545,7 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -578,15 +562,13 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 y0 = pos[0,1] + (i1 - c[0] - 1)*pos[1,1]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,1] < 0 or pos[0,1] >= dy:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
@@ -615,8 +597,7 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
@@ -633,33 +614,28 @@ cpdef fast_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
                 i1 -= 1
                 x0 = pos[0,2] + (i1 - c[0] - 1)*pos[1,2]
             if i0 == i1:
-                # for i in prange(m, nogil=True):
-                for i in range(m):
+                for i in prange(m, nogil=True):
                     for j in range(n):
                         for k in range(dc):
                             res[k,i,j] = 0
                 return False
         elif pos[0,2] < 0 or pos[0,2] >= dx:
-            # for i in prange(m, nogil=True):
-            for i in range(m):
+            for i in prange(m, nogil=True):
                 for j in range(n):
                     for k in range(dc):
                         res[k,i,j] = 0
             return False
         
-    # for i in prange(i0, nogil=True):
-    for i in range(i0):
+    for i in prange(i0, nogil=True):
         for j in range(n):
             for k in range(dc):
                 res[k,i,j] = 0
-    # for i in prange(i1, m, nogil=True):
-    for i in range(i1, m):
+    for i in prange(i1, m, nogil=True):
         for j in range(n):
             for k in range(dc):
                 res[k,i,j] = 0
     
-    # for i in prange(i0, i1, nogil=True):
-    for i in range(i0, i1):
+    for i in prange(i0, i1, nogil=True):
         m = i - c[0]
         z0 = pos[0,0] + m*pos[1,0]
         y0 = pos[0,1] + m*pos[1,1]
@@ -761,8 +737,7 @@ cpdef stack_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim
     
     cdef int chs = len(ch_show)
     
-    # for i in prange(m, nogil=True):
-    for i in range(m):
+    for i in prange(m, nogil=True):
         for j in range(n):
             for l in range(chs):
                 res[ch_show[l],i,j] = 0
@@ -884,8 +859,7 @@ cpdef stack_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim
             if i0 == i1:
                 return False
             
-    # for i in prange(i0, i1, nogil=True):
-    for i in range(i0, i1):
+    for i in prange(i0, i1, nogil=True):
         s = i - c[0]
         z0 = pos[0,0] + s*pos[1,0]
         y0 = pos[0,1] + s*pos[1,1]
@@ -973,8 +947,7 @@ cpdef stack_section2(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndi
     cdef int n = res.shape[2]
     cdef cnp.ndarray[DTYPE_t2, ndim=2] pos1
     
-    # for i in prange(m, nogil=True):
-    for i in range(m):
+    for i in prange(m, nogil=True):
         for j in range(n):
             for l in range(dc):
                 res[l,i,j] = 0
@@ -1043,8 +1016,7 @@ cpdef stack_section2(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndi
         if s == e:
             continue
         
-        # for i in prange(i0, i1, nogil=True):
-        for i in range(i0, i1):
+        for i in prange(i0, i1, nogil=True):
             y = int(y0 + i)
             for j in range(s,e):
                 x = j - (n//2)
@@ -1079,8 +1051,7 @@ cpdef span_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
     
     cdef int chs = len(ch_show)
     
-    # for i in prange(m, nogil=True):
-    for i in range(m):
+    for i in prange(m, nogil=True):
         for j in range(n):
             for k in range(depth):
                 for l in range(dc):
@@ -1203,8 +1174,7 @@ cpdef span_section(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=
             if i0 == i1:
                 return False
             
-    # for i in prange(i0, i1, nogil=True):
-    for i in range(i0, i1):
+    for i in prange(i0, i1, nogil=True):
         s = i - c[0]
         z0 = pos[0,0] + s*pos[1,0]
         y0 = pos[0,1] + s*pos[1,1]
@@ -1298,8 +1268,7 @@ cpdef fast_stack(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=2]
     
     cdef int chs = len(ch_show)
     
-    # for i in prange(m, nogil=True):
-    for i in range(m):
+    for i in prange(m, nogil=True):
         for j in range(n):
             for l in range(chs):
                 res[ch_show[l],i,j] = 0
@@ -1421,8 +1390,7 @@ cpdef fast_stack(cnp.ndarray[DTYPE_t, ndim=4] box, cnp.ndarray[DTYPE_t2, ndim=2]
             if i0 == i1:
                 return False
             
-    # for i in prange(i0, i1, nogil=True):
-    for i in range(i0, i1):
+    for i in prange(i0, i1, nogil=True):
         s = i - c[0]
         z0 = pos[0,0] + s*pos[1,0]
         y0 = pos[0,1] + s*pos[1,1]
@@ -1492,8 +1460,7 @@ cpdef calc_bgr(cnp.ndarray[DTYPE_t, ndim=3] frame, cnp.ndarray[DTYPE_t2, ndim=2]
     cdef float B, G, R, A, a
     chs = len(ch_show)
     if chs == 0:
-        # for i in prange(frame.shape[1], nogil=True):
-        for i in range(frame.shape[1]):
+        for i in prange(frame.shape[1], nogil=True):
             for j in range(frame.shape[2]):
                 res[i,j,0] = 0
                 res[i,j,1] = 0
@@ -1504,8 +1471,7 @@ cpdef calc_bgr(cnp.ndarray[DTYPE_t, ndim=3] frame, cnp.ndarray[DTYPE_t2, ndim=2]
     for k in range(chs):
         clr[k] = colors[ch_show[k]]/255
     
-    # for i in prange(frame.shape[1], nogil=True):
-    for i in range(frame.shape[1]):
+    for i in prange(frame.shape[1], nogil=True):
         for j in range(frame.shape[2]):
             A = alpha[ch_show[0], frame[ch_show[0],i,j]]
             B = A*clr[0,0]
@@ -1536,8 +1502,7 @@ cpdef calc_bgr_w(cnp.ndarray[DTYPE_t, ndim=3] frame, cnp.ndarray[DTYPE_t2, ndim=
     cdef float B, G, R, A, a
     chs = len(ch_show)
     if chs == 0:
-        # for i in prange(frame.shape[1], nogil=True):
-        for i in range(frame.shape[1]):
+        for i in prange(frame.shape[1], nogil=True):
             for j in range(frame.shape[2]):
                 res[i,j,0] = 0
                 res[i,j,1] = 0
@@ -1548,8 +1513,7 @@ cpdef calc_bgr_w(cnp.ndarray[DTYPE_t, ndim=3] frame, cnp.ndarray[DTYPE_t2, ndim=
     for k in range(chs):
         clr[k] = 1 - colors[ch_show[k]]/255
     
-    # for i in prange(frame.shape[1], nogil=True):
-    for i in range(frame.shape[1]):
+    for i in prange(frame.shape[1], nogil=True):
         for j in range(frame.shape[2]):
             A = alpha[ch_show[0], frame[ch_show[0],i,j]]
             B = A*clr[0,0]
