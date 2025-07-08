@@ -64,7 +64,7 @@ class SECV(CUI):
             'files': ({'paths': ({}, 1)}, 6),
             'geometry': ({'image_size': ({}, 2), 'scale_bar_length': ({}, 4)}, 3),
             'display': ({'thickness': ({}, 3), 'white_back': ({}, 4), 
-                         'shown_channels': ({}, 4), 'points': ({}, 5), 
+                         'shown_channels': ({}, 3), 'points': ({}, 5), 
                          'scale_bar': ({}, 4), 'shown_points': ({}, 5)}, 6),
             'position': ({}, 3),
             'channels': ({}, 4),
