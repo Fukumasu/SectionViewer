@@ -1,5 +1,4 @@
 import os
-import time
 import traceback
 
 import cv2
@@ -75,7 +74,7 @@ class SECV_GUI(GUI):
         self.depth = tk.IntVar(value = -self.position.depth_range[0])
         
         self.click = None
-        self.click_time = 0
+        self.dragging = False
         self.mode = 0
         
         self.record_on = True
@@ -701,6 +700,7 @@ class SECV_GUI(GUI):
         if x > iw or y > ih or x < 0 or y < 0:
             return
         self.click = np.array([x, y], dtype = float)
+        self.dragging = False
         self.record_on = False
         state = desolve_state(event.state)
         state = (state['Shift'], state['Ctrl'], state['Alt'], state['Command'])
@@ -713,10 +713,9 @@ class SECV_GUI(GUI):
         elif state == (False, False, True, False):
             self.mode = 3
         self.image_kept = self.secv.view_image_raw.copy()
-        self.click_time = time.time()
     
     def release_view(self, event):
-        if time.time() - self.click_time < 0.5:
+        if not self.dragging:
             if self.mode == 0 and self.display['point_focus'] != -1:
                 self.open_points(select = self.display['point_focus'])
             elif self.mode == 1:
@@ -738,6 +737,7 @@ class SECV_GUI(GUI):
             self.cut_history = True
             self.click = None
             object.__setattr__(self.secv, 'meta_prev', self.meta_kept.copy())
+        self.dragging = False
         self.update_params = {}
         self.record_on = True
         self.master.bind('<Key>', self.key)
@@ -752,6 +752,8 @@ class SECV_GUI(GUI):
         
         x, y = event.x, event.y
         x, y = self.screen_to_image_coor(x, y, secv = meta_k)
+        self.dragging = self.dragging or (self.click != 
+                                          np.array([x, y], dtype = float)).any()
         state = desolve_state(event.state)
         if not state['Click']:
             p = secv.calc_2d_to_3d(np.array([x,y]))
