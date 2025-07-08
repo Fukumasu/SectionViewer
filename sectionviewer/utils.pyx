@@ -6,7 +6,7 @@ cimport numpy as cnp
 
 ctypedef cnp.uint16_t DTYPE_t
 ctypedef cnp.float_t DTYPE_t2
-ctypedef cnp.int64_t DTYPE_t3
+ctypedef cnp.int_t DTYPE_t3
 ctypedef cnp.uint8_t DTYPE_t4
         
         
