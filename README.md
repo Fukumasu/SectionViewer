@@ -16,7 +16,7 @@ Viewer for 3-dimensional images (.oir, .oib, .tif) on cross sections (multi-plan
 It is recommended to install the software in a conda virtual environment. 
 1. Run the following command in Anaconda Prompt to create a minimum environment:
 ```
-conda create -n ENVNAME python pip git numpy-base=1
+conda create -n ENVNAME python pip git numpy=1
 ```
 2. Activate the new environment:
 ```
