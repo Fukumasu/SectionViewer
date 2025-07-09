@@ -8,7 +8,6 @@ def build_ext(*args, **kwargs):
     class _build_ext(build_ext_cy):
         def finalize_options(self):
             build_ext_cy.finalize_options(self)
-            # __builtins__.__NUMPY_SETUP__ = False
             import numpy
             self.include_dirs.append(numpy.get_include())
     return _build_ext(*args, **kwargs)
