@@ -192,9 +192,9 @@ class FileDict(FrozenDict):
     def __str__(self):
         text = '< Files >\n'
         if 'secv_path' in self:
-            text += '{ ' + "'secv path': '{0}'".format(str(self['secv_path'])) + ',\n'
+            text += '{ ' + "'secv_path': '{0}'".format(str(self['secv_path'])) + ',\n'
         elif 'stac_path' in self:
-            text += '{ ' + "'stac path': '{0}'".format(str(self['stac_path'])) + ',\n'
+            text += '{ ' + "'stac_path': '{0}'".format(str(self['stac_path'])) + ',\n'
         text += "      'paths': " + str(self['paths']) + ' }\n'
         return text
         
@@ -389,15 +389,23 @@ class DisplayDict(FrozenDict):
         for k in md:
             if md[k] is None:
                 md[k] = self.defaults[k]
+        n = np.sum(cui.files['channel_nums'])
         if md['shown_channels'] is None:
-            ch_show = tuple([True] * np.sum(cui.files['channel_nums']))
+            ch_show = tuple([True] * n)
+            md['shown_channels'] = ch_show
+        elif len(md['shown_channels']) != n:
+            ch_show = tuple([True] * n)
             md['shown_channels'] = ch_show
         if 'shown_points' in md:
+            try: n = len(cui.points)
+            except: n = 0
             if md['shown_points'] is None:
-                try: n = len(cui.points)
-                except: n = 0
                 pt_show = tuple([True] * n)
                 md['shown_points'] = pt_show
+            elif len(md['shown_points']) != n:
+                pt_show = tuple([True] * n)
+                md['shown_points'] = pt_show
+                
         super().__init__(md)
         for k in md:
             self[k] = md[k]
