@@ -10,7 +10,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 from ..core import STAC
-from ..tools import pf, base_dir, init_dir, save_init, resources
+from ..tools import pf, BASE_DIR, init_dir, save_init, resources
 from ..tools import tk_from_array, make_key_text
 from .gui import GUI
 from .channels import Channels_GUI
@@ -27,14 +27,14 @@ class STAC_GUI(GUI):
         w, h = root.screenwidth, root.screenheight
         master.geometry('{0}x{1}+0+0'.format(w, h))
         if pf == 'Windows':
-            master.iconbitmap(base_dir + 'img/icon.ico')
+            master.iconbitmap(BASE_DIR + 'img/icon.ico')
             master.state('zoomed')
             
         e_image = resources[:14,174:188]
         self.e_image = tk_from_array(e_image)
         
         try:
-            stac = STAC(file_path)
+            stac = STAC(file_path, master=master)
         except:
             messagebox.showerror('Error', traceback.format_exc(),
                                  parent = master)
@@ -86,7 +86,7 @@ class STAC_GUI(GUI):
         self.update()
         self.master.after(1, self.monitor)
         
-        save_init(file_path)
+        save_init(file_path, mode="open")
         
     def __getattribute__(self, name):
         if name in ['files', 'geometry', 'display', 'channels']:
@@ -380,7 +380,7 @@ class STAC_GUI(GUI):
             path = filedialog.asksaveasfilename(
                 parent = self.master, 
                 filetypes = filetypes, 
-                initialdir = init_dir(),
+                initialdir = init_dir(mode="open"),
                 initialfile = initialfile,
                 title = 'Saving stacks as STAC format',
                 defaultextension = '.stac'
@@ -395,7 +395,7 @@ class STAC_GUI(GUI):
         self.file_path = path
         self.file_name = os.path.basename(path)
         self.file_dir = os.path.dirname(path)
-        save_init(path)
+        save_init(path, mode="open")
         self.master.title(self.file_name)
         
         return True
@@ -437,7 +437,7 @@ class STAC_GUI(GUI):
         path = filedialog.asksaveasfilename(
             parent = self.master,
             filetypes = filetypes,
-            initialdir = init_dir(),
+            initialdir = init_dir(mode="export"),
             initialfile = initialfile,
             title = 'Exporting the stack image',
             defaultextension = '.png'
@@ -447,7 +447,7 @@ class STAC_GUI(GUI):
             
             if path[-4:] == '.mp4':
                 self.ask_fps(path)
-                save_init(path)
+                save_init(path, mode="export")
                 return
             
             if path[-4:] == '.tif':
@@ -464,12 +464,12 @@ class STAC_GUI(GUI):
                                              '\nFailed to export TIFF file',
                                              parent = self.master)
                         return
-                    save_init(path)
+                    save_init(path, mode="export")
                     return
             
             image = self.stac.view_image
             if self.imwrite(path, image):
-                save_init(path)
+                save_init(path, mode="export")
                 
     def index_trace(self, *args):
         self.display['index'] = self.index.get()
@@ -484,7 +484,7 @@ class STAC_GUI(GUI):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
         if pf == 'Windows':
-            self.fps_win.iconbitmap(base_dir + 'img/icon.ico')
+            self.fps_win.iconbitmap(BASE_DIR + 'img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width = False, height = False)

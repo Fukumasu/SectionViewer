@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-from ..tools import pf, base_dir, tk_from_array, ask_file_path, launch, desolve_state
+from ..tools import pf, BASE_DIR, tk_from_array, ask_file_path, launch, desolve_state
 
 class Base_GUI(ttk.Frame):
     def __init__(self, main):
@@ -42,7 +42,7 @@ class GUI(Base_GUI):
         win = tk.Toplevel(master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap(base_dir + 'img/icon.ico')
+            win.iconbitmap(BASE_DIR + 'img/icon.ico')
         win.title(title)
         if geometry != None:
             win.geometry(geometry)
@@ -323,7 +323,7 @@ class Color_GUI(Base_GUI):
             return
         obj_ids = [int(i) for i in self.treeview.selection()]
         color = [[0,0,0], [255,255,255], [0,0,255], [0,255,255],
-                 [0,255,0], [255,255,0], [255,0,0], [255,0,255]][event.x//20]
+                 [0,255,0], [255,255,0], [255,0,0], [255,0,255]][max(0, min(7, event.x//20))]
         self.obj.setcolor(obj_ids, color)
                 
     def nm_trace(self, *args):

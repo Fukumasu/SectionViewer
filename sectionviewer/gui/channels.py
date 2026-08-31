@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import filedialog, messagebox
 
 from .gui import Color_GUI
-from ..tools import desolve_state, tk_from_array
+from ..tools import init_dir, save_init, desolve_state, tk_from_array
 
 
 class Channels_GUI(Color_GUI):
@@ -374,7 +374,7 @@ class Channels_GUI(Color_GUI):
                         w.config(cursor = 'arrow')
                         w.itemconfig(self.preset_id, image=self.preset_off)
         if hasattr(self.main, 'reset_button'):
-            if not ch_show.any():
+            if not np.array(self.main.display['shown_channels']).any():
                 self.main.reset_button['state'] = tk.DISABLED
             else:
                 self.main.reset_button['state'] = tk.NORMAL
@@ -384,7 +384,7 @@ class Channels_GUI(Color_GUI):
         
         filetypes = [('OIB/TIFF files', ['*.oib', '*.tif', '*.tiff']),
                      ('All files', '*')]
-        initialdir = main.file_dir
+        initialdir = init_dir(mode="import")
         add_paths = filedialog.askopenfilenames(parent = main.master, 
                                                 filetypes = filetypes, 
                                                 initialdir = initialdir, 
@@ -404,6 +404,8 @@ class Channels_GUI(Color_GUI):
                 messagebox.showinfo(title = 'Same data file', message = message)
                 return
         main.files.add(add_paths)
+        save_init(add_paths[0], mode="import")
+        
         
     def delete(self):
         main = self.main

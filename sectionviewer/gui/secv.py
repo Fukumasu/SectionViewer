@@ -9,7 +9,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from ..core import SECV
 from ..basics import CoordinateError
-from ..tools import base_dir, init_dir, save_init, resources, pf
+from ..tools import BASE_DIR, init_dir, save_init, resources, pf
 from ..tools import draw_points, tk_from_array, desolve_state, make_key_text
 from .gui import GUI
 from .channels import Channels_GUI
@@ -31,7 +31,7 @@ class SECV_GUI(GUI):
         w, h = root.screenwidth, root.screenheight
         master.geometry('{0}x{1}+0+0'.format(w, h))
         if pf == 'Windows':
-            master.iconbitmap(base_dir + 'img/icon.ico')
+            master.iconbitmap(BASE_DIR + 'img/icon.ico')
             master.state('zoomed')
         
         self.file_path = file_path
@@ -107,7 +107,7 @@ class SECV_GUI(GUI):
         
         if self.secv.files['secv_path'] is not None:
             self.secv.save(file_path)
-            save_init(file_path)
+        save_init(file_path, mode="open")
         
     def __getattribute__(self, name):
         if name in ['files', 'geometry', 'display', 'position',
@@ -489,7 +489,7 @@ class SECV_GUI(GUI):
             path = filedialog.asksaveasfilename(
                 parent = self.master, 
                 filetypes = filetypes, 
-                initialdir = init_dir(),
+                initialdir = init_dir(mode="open"),
                 initialfile = initialfile,
                 title = 'Saving the project as SECV format',
                 defaultextension = '.secv'
@@ -504,7 +504,7 @@ class SECV_GUI(GUI):
         self.file_path = path
         self.file_name = os.path.basename(path)
         self.file_dir = os.path.dirname(path)
-        save_init(path)
+        save_init(path, mode="open")
         self.master.title(self.file_name)
         
         return True
@@ -553,7 +553,7 @@ class SECV_GUI(GUI):
         path = filedialog.asksaveasfilename(
             parent = self.master,
             filetypes = filetypes,
-            initialdir = init_dir(),
+            initialdir = init_dir(mode="export"),
             initialfile = initialfile,
             title = 'Exporting the section image',
             defaultextension = '.png'
@@ -563,7 +563,7 @@ class SECV_GUI(GUI):
             
             if path[-4:] == '.mp4':
                 self.ask_fps(path)
-                save_init(path)
+                save_init(path, mode="export")
                 return
             
             if path[-4:] == '.tif':
@@ -580,12 +580,12 @@ class SECV_GUI(GUI):
                                              '\nFailed to export TIFF file',
                                              parent = self.master)
                         return
-                    save_init(path)
+                    save_init(path, mode="export")
                     return
             
             image = self.secv.view_image
             if self.imwrite(path, image):
-                save_init(path)
+                save_init(path, mode="export")
                 
     def position_key(self, key):
         if np.count_nonzero(self.display['shown_channels']) == 0:
@@ -904,7 +904,7 @@ class SECV_GUI(GUI):
         self.fps_win = tk.Toplevel(self.master)
         self.fps_win.withdraw()
         if pf == 'Windows':
-            self.fps_win.iconbitmap(base_dir + 'img/icon.ico')
+            self.fps_win.iconbitmap(BASE_DIR + 'img/icon.ico')
         self.fps_win.title('mp4 settings')
         self.fps_win.geometry('250x90')
         self.fps_win.resizable(width = False, height = False)
@@ -1078,7 +1078,6 @@ class SECV_GUI(GUI):
                level: int = None,
                warp: np.ndarray = None,
                ) -> bool:
-        
         if level is None:
             level = self.secv._get_update_level(loc)
         try:
@@ -1177,6 +1176,13 @@ class SECV_GUI(GUI):
         
         if self.record_on:
             self.sbar_len.set(str(self.geometry['scale_bar_length']))
+            self.a_on.set(self.display['axis'])
+            self.b_on.set(self.display['scale_bar'])
+            self.p_on.set(self.display['points'])
+            self.d_on.set(self.display['dock'])
+            self.white_on.set(self.display['white_back'])
+            self.thickness.set(str(self.display['thickness']))
+            self.zoom.set(str(int(self.display['zoom'] * 100)))
             self.channels_gui.update(loc)
             self.points_gui.update(loc)
             self.snapshots_gui.update(loc)

@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
@@ -7,7 +5,7 @@ from tkinter import messagebox
 
 from .gui import Color_GUI
 from ..basics import CoordinateError
-from ..tools import pf, base_dir, desolve_state, make_key_text, tk_from_array
+from ..tools import pf, BASE_DIR, desolve_state, make_key_text, tk_from_array
 
 
 class Points_GUI(Color_GUI):
@@ -295,7 +293,20 @@ class Points_GUI(Color_GUI):
         pt_show[i] = False
         main.display['shown_points'] = tuple(pt_show)
 
-        def repair():
+        def repair(coor=None):
+            
+            display = main.display._format()
+            pt_show = list(display['shown_points'])
+            pt_show[i] = True
+            display['shown_points'] = tuple(pt_show)
+            object.__setattr__(main.secv, 'metadata', org_meta.copy())
+            if coor is not None:
+                try:                
+                    self.obj.setcoordinate(i, coor)
+                except CoordinateError:
+                    pass
+            main.secv.metadata['display'] = display
+            
             frame.pack_forget()
 
             main.master.protocol('WM_DELETE_WINDOW', main.on_close)
@@ -331,13 +342,9 @@ class Points_GUI(Color_GUI):
 
         def ok():
             iw, ih = main.geometry['image_size']
-            coor = main.secv.calc_2d_to_3d(np.array([iw, ih])//2)
-            object.__setattr__(main.secv, 'metadata', org_meta.copy())
-            self.obj[i][2] = coor
-            repair()
+            repair(coor = main.secv.calc_2d_to_3d(np.array([iw, ih])//2))
 
         def cancel():
-            object.__setattr__(main.secv, 'metadata', org_meta)
             repair()
 
         def key(event):
@@ -353,10 +360,14 @@ class Points_GUI(Color_GUI):
                 return
             elif 'combo' in focus:
                 return
-            main.position_key(key)
+            
+            if key in ['A', 'B']:
+                getattr(main, 'chk_{0}'.format(key.lower())).invoke()
+            else:
+                main.position_key(key)
 
         def release_view(event):
-            if time.time() - main.click_time < 0.5:
+            if not main.dragging:
                 if main.mode == 1:
                     iw, ih = main.secv.geometry['image_size']
                     v = main.click - np.array([iw, ih]) // 2
@@ -368,16 +379,17 @@ class Points_GUI(Color_GUI):
                         if k != 0:
                             main.position_key('Ctrl+' + k)
                 elif main.mode == 2:
-                    coor = main.secv.calc_2d_to_3d(main.click)
-                    object.__setattr__(main.secv, 'metadata', org_meta.copy())
-                    self.obj[i][2] = coor
-                    repair()
+                    main.update_params = {}
+                    main.record_on = True
+                    repair(coor = main.secv.calc_2d_to_3d(main.click))
                     return
-            main.cut_history = True
-            main.record_on = True
-            main.click = None
-            main.meta_prev = main.meta_kept
+            if main.click is not None:
+                main.cut_history = True
+                main.click = None
+                object.__setattr__(main.secv, 'meta_prev', main.meta_kept.copy())
+            main.dragging = False
             main.update_params = {}
+            main.record_on = True
             main.master.bind('<Key>', key)
 
         frame = ttk.Frame(main.bottom)
@@ -421,7 +433,7 @@ class Points_GUI(Color_GUI):
         win = tk.Toplevel(self.main.master)
         win.withdraw()
         if pf == 'Windows':
-            win.iconbitmap(base_dir + 'img/icon.ico')
+            win.iconbitmap(BASE_DIR + 'img/icon.ico')
         win.title('Move to')
 
         frame0 = ttk.Frame(win)

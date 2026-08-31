@@ -7,7 +7,7 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 
-from ..tools import launch, base_dir, tk_from_array, synthesize_image
+from ..tools import launch, BASE_DIR, tk_from_array, synthesize_image
 from .gui import Base_GUI
 from .. import utils as ut
 
@@ -347,7 +347,7 @@ class Stack_GUI(Base_GUI):
         main = self.main
         stac = [stacks, main.channels._format(), main.geometry._format(),
                 {'white back': main.display['white_back']}]
-        path = base_dir + '{0}.stac'.format(str(uuid.uuid4()))
+        path = BASE_DIR + '{0}.stac'.format(str(uuid.uuid4()))
         byt = pickle.dumps(stac, protocol=4)
         byt = gzip.compress(byt, compresslevel=1)
         with open(path, 'wb') as f:
