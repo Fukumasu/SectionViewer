@@ -1,4 +1,5 @@
 import gzip
+import json
 import os
 import pickle
 import platform
@@ -23,30 +24,60 @@ from .components import ChannelList, PointList, DisplayDict
 from .basics import geometry_key_patterns
 from . import utils as ut
 
-base_dir = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/'
+CONFIG_FILE = BASE_DIR + 'gui_settings.json'
 
-def init_dir():
-    if os.path.isfile(base_dir + 'init_dir.txt'):
-        with open(base_dir + 'init_dir.txt', 'r') as f:
-            initialdir = f.read()
-        if not os.path.isdir(initialdir):
-            initialdir = os.path.expanduser('~/Desktop')
+def init_dir(mode="open"):
+    if os.path.isfile(CONFIG_FILE):
+        with open(CONFIG_FILE, 'r') as f:
+            config = json.load(f)
     else:
-        initialdir = os.path.expanduser('~/Desktop')
-        with open(base_dir + 'init_dir.txt', 'w') as f:
-            f.write(initialdir)
+        config = dict()
+    if not os.path.isdir(config.get("open_dir", "")):
+        config["open_dir"] = os.path.expanduser('~')
+    if not os.path.isdir(config.get("import_dir", "")):
+        config["open_dir"] = config.get("open_dir", "")
+    if not os.path.isdir(config.get("export_dir", "")):
+        config["export_dir"] = config.get("open_dir", "")
+    match mode:
+        case "open":        
+            key = "open_dir" 
+        case "import":
+            key = "import_dir"
+        case "export":        
+            key = "export_dir"
+    initialdir = config.get(key, "")
     return initialdir
-def save_init(path):
-    if path is not None:
-        with open(base_dir + 'init_dir.txt', 'w') as f:
-            f.write(os.path.dirname(path))
+
+
+def save_init(path, mode="open"):
+    if path is None:
+        return
+    path = os.path.dirname(path).replace('\\', '/')
+    if not os.path.isdir(path):
+        return
+    if os.path.isfile(CONFIG_FILE):
+        with open(CONFIG_FILE, 'r') as f:
+            config = json.load(f)
+    else:
+        config = dict()
+    match mode:
+        case "open":        
+            config["open_dir"] = path 
+        case "import":
+            config["import_dir"] = path
+        case "export":        
+            config["export_dir"] = path
+    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+        json.dump(config, f)
+            
             
 def ask_file_path(master, title = 'Open'):
     master.deiconify()
     filetypes = [('Supported files', ['*.secv', '*.stac', '*.oir', 
                                       '*.oib', '*.tif', '*.tiff']),
                  ('All files', '*')]
-    initialdir = init_dir()
+    initialdir = init_dir(mode="open")
     file_path = filedialog.askopenfilename(parent = master, 
                                            filetypes = filetypes, 
                                            initialdir = initialdir, 
@@ -55,12 +86,12 @@ def ask_file_path(master, title = 'Open'):
 
 def launch(file_path = None):
     launch_code = 'from {0}.main import main\nmain(check_latest_version = False)'
-    launch_code = launch_code.format(os.path.basename(os.path.dirname(base_dir)))
-    with open(base_dir + 'launch.py', 'w') as f:
+    launch_code = launch_code.format(os.path.basename(os.path.dirname(BASE_DIR)))
+    with open(BASE_DIR + 'launch.py', 'w') as f:
         f.write(launch_code)
     if file_path == None:
         file_path = ''
-    command = 'python "' + base_dir + 'launch.py" "' + file_path + '"'
+    command = 'python "' + BASE_DIR + 'launch.py" "' + file_path + '"'
     subprocess.Popen(command, shell = True)
     return
 
@@ -99,12 +130,12 @@ def check_version():
         return False
     
 
-resources = cv2.imread(base_dir + 'img/resources.png')
+resources = cv2.imread(BASE_DIR + 'img/resources.png')
 pf = platform.system()
 
 def desolve_secv(secv_path: Union[str, None]) -> dict:
     
-    file_keys = ['original_secv_path', 'secv_path', 'paths']
+    file_keys = ['original_secv_path', 'secv_path', 'paths', 'shape', 'channel_nums']
     if secv_path is None:
         metadata = {'files': {},
                     'geometry': {},
@@ -167,6 +198,85 @@ def load_stac(stac_path: str):
     metadata['display'] = display
     metadata['channels'] = channels
     return stacks, metadata
+
+
+def parse_filenames(files, axes):
+    
+    base_path, ext = os.path.splitext(files[0])
+    match = re.search(r"\d+$", base_path)
+    if match:
+        digits = len(match.group())
+    else:
+        digits = "1,4"
+    
+    pattern = r"""(?ix)
+        # matches Olympus OIF and Leica TIFF series
+        _?(?:({0})(\d{{{1}}}))
+        _?(?:({0})(\d{{{1}}}))?
+        _?(?:({0})(\d{{{1}}}))?
+        _?(?:({0})(\d{{{1}}}))?
+        _?(?:({0})(\d{{{1}}}))?
+        _?(?:({0})(\d{{{1}}}))?
+        _?(?:({0})(\d{{{1}}}))?
+        """.format("|".join(axes.lower()), digits)
+
+    pattern_compiled = re.compile(pattern)
+
+    def parse(fname, /):
+        dims = []
+        indices = []
+        groupindex = {v: k for k, v in pattern_compiled.groupindex.items()}
+        match = pattern_compiled.search(fname)
+        if match is None:
+            raise ValueError(f'pattern does not match file name {fname!r}')
+        ax = None
+        for i, m in enumerate(match.groups()):
+            if m is None:
+                continue
+            if i + 1 in groupindex:
+                ax = groupindex[i + 1]
+            elif m[0].isalpha():
+                ax = m  # axis label for next index
+                continue
+            if ax is None:
+                ax = 'Q'  # no preceding axis letter
+            indices.append(m)
+            dims.append(ax)
+            ax = None
+        return tuple(dims), tuple(indices)
+
+    normpaths = [os.path.normpath(f) for f in files]
+    if len(normpaths) == 1:
+        prefix_str = os.path.dirname(normpaths[0])
+    else:
+        prefix_str = os.path.commonpath(normpaths)
+    prefix = len(prefix_str)
+
+    dims: tuple[str, ...] | None = None
+    indices: list[tuple[int, ...]] = []
+    for fname in normpaths:
+        lbl, idx = parse(fname[prefix:])
+        if dims is None:
+            dims = lbl
+        elif dims != lbl:
+            raise ValueError('dims do not match within image sequence')
+        indices.append(idx)
+
+    assert dims is not None
+
+    # determine shape
+    indices_array = np.array(indices, dtype=np.intp)
+    parsedshape = np.max(indices_array, axis=0)
+    
+    startindex = np.min(indices_array, axis=0)
+    indices_array -= startindex
+    parsedshape -= startindex
+    parsedshape += 1
+    shape = tuple(int(i) for i in parsedshape.tolist())
+
+    indices = [tuple(index) for index in indices_array.tolist()]
+    
+    return dims, shape, indices, files
 
 
 def load_data(
@@ -253,13 +363,17 @@ def load_data(
                 pass
             
         elif ext == '.oib':
-            img = oif.imread(path)
             
             try:
                 with oif.OifFile(path) as oib:
                     axes = oib.axes.upper()
+                    dims, shape, indices, files = parse_filenames(oib.series[0].files, axes)
+                    oib.series[0].dims = dims
+                    oib.series[0].shape  = shape
+                    oib.series[0].indices = indices                    
                     shape = oib.shape
                     info = oib.mainfile
+                    img = oib.asarray()
                 bshape = np.array(img.shape)
                 oshape = np.array(shape)
                 if len(bshape) == len(oshape):
@@ -290,7 +404,7 @@ def load_data(
                 Z_px_size_in_files = pxs['Z']
                 
             except Exception:
-                pass
+                img = oif.imread(path)
             if img.dtype != np.uint16:
                 img = img.astype(np.uint16)
             if img.ndim == 3:
@@ -566,9 +680,9 @@ def calc_skeleton(
     if len(point_colors) > 0:
         point_colors[:] = point_colors//1.5
         
-    sort = np.argsort(point_coors[:,0])[::-1]
-    point_coors = point_coors[sort]
-    point_colors = point_colors[sort]
+    psort = np.argsort(point_coors[:,0])[::-1]
+    point_coors = point_coors[psort]
+    point_colors = point_colors[psort]
     
     peaks = np.array([[ 0,  0,  0], [ 0,  0, sx],
                       [ 0, sy,  0], [ 0, sy, sx],
@@ -631,7 +745,8 @@ def calc_skeleton(
     peaks = ((peaks * e + skeleton_shape//2) * 2**shift).astype(int)
     point_coors = point_coors * e 
     point_coors[:,:2] += skeleton_shape//2
-    point_locations = point_coors.astype(int)
+    point_locations = np.zeros(point_coors.shape, dtype=int)
+    point_locations[psort] = point_coors.astype(int)
     point_coors = (point_coors* 2**shift).astype(int)
     c = (skeleton_shape//2 - center[::-1]*e).astype(int)
     
@@ -778,6 +893,7 @@ def calc_skeleton(
     if 0 <= p_num < len(points):
         radius = int(radius * 1.5)
         name = points.getnames()[p_num]
+        p_num = psort.tolist().index(p_num)
         coor = point_coors[p_num]
         color = point_colors[p_num]
         color = (int(color[0]), int(color[1]), int(color[2]))

@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from .info import url
-from .tools import base_dir, check_version, ask_file_path, resources, pf
+from .tools import BASE_DIR, check_version, ask_file_path, resources, pf
 from .gui.gui import Base_GUI
 from .gui.secv import SECV_GUI
 from .gui.stac import STAC_GUI
@@ -18,7 +18,7 @@ class SectionViewer(Base_GUI):
         super().__init__(self)
         master.withdraw()
         if pf == 'Windows':
-            master.iconbitmap(base_dir + 'img/icon.ico')
+            master.iconbitmap(BASE_DIR + 'img/icon.ico')
         
         icon = resources[-128:,:128]
         icon = ImageTk.PhotoImage(Image.fromarray(icon[:,:,::-1]))

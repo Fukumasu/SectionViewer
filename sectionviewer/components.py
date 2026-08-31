@@ -124,7 +124,7 @@ class MetadataDict(FrozenDict):
     def _locate_difference(self, other) -> list:
         issame = {}
         for k in self:
-            issame[k] = self[k]._issame(other[k])
+            issame[k] = self[k]._issame(other[k]) if k in other else False
         def search(ks: list, obj) -> list:
             typ = type(obj)
             if not hasattr(obj, '__iter__'):
@@ -192,16 +192,16 @@ class FileDict(FrozenDict):
     def __str__(self):
         text = '< Files >\n'
         if 'secv_path' in self:
-            text += '{ ' + "'secv_path': '{0}'".format(str(self['secv_path'])) + ',\n'
+            text += '{ ' + "'secv path': '{0}'".format(str(self['secv_path'])) + ',\n'
         elif 'stac_path' in self:
-            text += '{ ' + "'stac_path': '{0}'".format(str(self['stac_path'])) + ',\n'
+            text += '{ ' + "'stac path': '{0}'".format(str(self['stac_path'])) + ',\n'
         text += "      'paths': " + str(self['paths']) + ' }\n'
         return text
         
     def _issame(self, other):
         res = {}
         for k in self:
-            res[k] = self[k] == other[k]
+            res[k] = self[k] == other[k] if k in other else False
         return res
     
     def _format(self) -> dict:
@@ -335,6 +335,9 @@ class GeometryDict(FrozenDict):
     def _issame(self, other):
         res = {}
         for k in self:
+            if k not in other:
+                res[k] = False
+                continue
             if type(self[k]) == float and type(other[k]) == float:
                 res[k] = abs(self[k] - other[k]) < 10**(-sf)
             else:
@@ -389,23 +392,15 @@ class DisplayDict(FrozenDict):
         for k in md:
             if md[k] is None:
                 md[k] = self.defaults[k]
-        n = np.sum(cui.files['channel_nums'])
         if md['shown_channels'] is None:
-            ch_show = tuple([True] * n)
-            md['shown_channels'] = ch_show
-        elif len(md['shown_channels']) != n:
-            ch_show = tuple([True] * n)
+            ch_show = tuple([True] * np.sum(cui.files['channel_nums']))
             md['shown_channels'] = ch_show
         if 'shown_points' in md:
-            try: n = len(cui.points)
-            except: n = 0
             if md['shown_points'] is None:
+                try: n = len(cui.points)
+                except: n = 0
                 pt_show = tuple([True] * n)
                 md['shown_points'] = pt_show
-            elif len(md['shown_points']) != n:
-                pt_show = tuple([True] * n)
-                md['shown_points'] = pt_show
-                
         super().__init__(md)
         for k in md:
             self[k] = md[k]
@@ -456,6 +451,9 @@ class DisplayDict(FrozenDict):
     def _issame(self, other):
         res = {}
         for k in self:
+            if k not in other:
+                res[k] = False
+                continue
             if type(self[k]) == float:
                 res[k] = abs(self[k] - other[k]) < 10**(-sf)
             else:
@@ -729,8 +727,12 @@ class ChannelList(FrozenList):
                 frame = cui.stacks[cui.display['index']]
             new_frame = frame[channel_ids].reshape(len(channel_ids), -1)
             a = np.sum(new_frame != 0, axis = 0, dtype = bool)
-            vmins = np.percentile(new_frame[:,a], 1, axis = 1)
-            vmaxs = np.percentile(new_frame[:,a], 99, axis = 1)
+            if a.any():
+                vmins = np.percentile(new_frame[:,a], 1, axis = 1)
+                vmaxs = np.percentile(new_frame[:,a], 99, axis = 1)
+            else:
+                vmins = [0] * len(channel_ids)
+                vmaxs = [1] * len(channel_ids)
             for i, n in enumerate(channel_ids):
                 self[n][2][0] = vmins[i]
                 self[n][2][1] = vmaxs[i]
@@ -741,9 +743,7 @@ class ChannelList(FrozenList):
     def generate(self, mc):
         cui = self.cui
         num = np.sum(cui.files['channel_nums'])
-        if mc is None:
-            mc = [None]*num
-        elif len(mc) != num:
+        if mc is None or len(mc) != num:
             mc = [None]*num
         for i in range(len(mc)):
             mc[i] = Channel(mc[i])
@@ -757,7 +757,8 @@ class ChannelList(FrozenList):
         news = [i for i in range(len(mc)) if mc[i][1] is None]
         if len(news) > 0:
             self.auto_color(news)
-        if hasattr(cui, 'update') and 'secv_path' in cui.files:
+        if hasattr(cui, 'update') and 'secv_path' in cui.files and \
+            (cui.master is not None or cui.files['secv_path'] is None):
             cui.update(level = 2, end = 3)
         if len(news) > 0:
             self.auto_contrast(news)
@@ -1072,8 +1073,10 @@ class SnapshotList(FrozenList):
         if chs_on:
             new['files'] = ss['files']
             new['channels'] = ss['channels']
+            new['display']['shown_channels'] = [True]*len(ss['channels'])
         if pts_on:
             new['points'] = ss['points']
+            new['display']['shown_points'] = [True]*len(ss['points'])
         cui.metadata = new
         
     def setname(self, snapshot_ids: Union[int, list], name: str):

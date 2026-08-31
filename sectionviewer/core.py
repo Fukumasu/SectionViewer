@@ -4,7 +4,7 @@ import pickle
 from typing import Union
 import numpy as np
 
-from .tools import base_dir, desolve_secv, load_stac, load_data
+from .tools import BASE_DIR, desolve_secv, load_stac, load_data
 from .tools import calc_section, calc_sideview
 from .tools import synthesize_image, draw_points, calc_skeleton
 from .components import DataArray, CUI, MetadataDict
@@ -52,7 +52,7 @@ class SECV(CUI):
             ]
         object.__setattr__(self, 'update_funcs', update_funcs)
         
-        if voxel_array is None:
+        if voxel_array is None and (master is not None or secv_path is None):
             self._load_voxels()
         else:
             object.__setattr__(self, 'voxels', voxel_array)
@@ -80,7 +80,8 @@ class SECV(CUI):
         skeleton_image = DataArray(np.zeros([400, 400, 3], np.uint8))
         object.__setattr__(self, 'skeleton_image', skeleton_image)
         
-        self.update(level = 4)
+        if master is not None or secv_path is None:
+            self.update(level = 4)
     
     def __str__(self):
         text = 'SECV({0})'
@@ -129,8 +130,8 @@ class SECV(CUI):
     
     
     def update(self, level: int = None, end: int = 6) -> bool:
-        if not hasattr(self, 'voxels'):
-            raise NoDataGivenError('No available data for 3d-image array')
+        if not hasattr(self, 'voxels') or self.voxels is None:
+            level = 1
         if hasattr(self, 'meta_prev') and \
             hasattr(self.metadata, '_locate_difference'):
             loc = self.metadata._locate_difference(self.meta_prev)
@@ -148,6 +149,10 @@ class SECV(CUI):
                 if level == self._get_update_level(loc) and end == 6:
                     object.__setattr__(self, 'meta_prev', self.metadata.copy())
         return success
+    
+    def getvoxels(self):
+        self.update()
+        return self.voxels.copy()
     
     def getframe(self):
         self.update()
@@ -175,6 +180,8 @@ class SECV(CUI):
         return self.metadata._locate_difference(other.metadata)
     
     def _get_update_level(self, loc):
+        if not hasattr(self, 'voxels') or self.voxels is None:
+            return 1
         level = 6
         for l in loc:
             obj, num = self._key_levels[l[0]]
@@ -211,7 +218,7 @@ class SECV(CUI):
         
         for k in metadata_in_files:
             dict.__setitem__(self.files, k, metadata_in_files[k])
-        if hasattr(self.channels, '_format'):
+        if hasattr(self.channels, '_format') and len(self.channels) != len(voxel_array):
             old_chs = list(self.channels)
             old_ch_show = list(self.display['shown_channels'])
             sep = [0] + list(np.cumsum(channel_nums))
@@ -337,27 +344,30 @@ class SECV(CUI):
                 point_colors = np.array(self.points.getcolors())
                 point_coors = self.points.coorsonimage()
                 thickness = self.display['thickness']
-                shown_points = self.display['shown_points']
+                shown_points = np.array(self.display['shown_points'])
                 
                 point_coors[:,1:] -= np.array(self.geometry['image_size'][::-1])//2
                 point_coors /= 2
                 point_coors1 = point_coors[:,[1,0,2]]
                 point_coors1[:,1:] += np.array(self._sideview_frame1[0].shape)//2
+                shown_points1 = shown_points * point_coors1[:,1] < len(self._sideview_frame1[0])
                 point_coors2 = point_coors[:,[2,0,1]]
                 point_coors2[:,1:] += np.array(self._sideview_frame2[0].shape)//2
                 point_coors2[:,1] += len(self._sideview_frame1[0])
+                shown_points2 = shown_points * point_coors2[:,1] > len(self._sideview_frame1[0])
                 
                 point_coors = np.append(point_coors1, point_coors2, axis=0)
                 point_colors = np.tile(point_colors, (2,1))
                 point_names = np.append(point_names, point_names)
+                shown_points = np.append(shown_points1, shown_points2)
                 draw_points(side_image, point_coors, point_colors, 
                             point_names, shown_points, thickness)
                 
                 p_num = self.display['point_focus']
                 if 0 <= p_num < len(self.points):
-                    ps= slice(p_num, 2*len(self.points), len(self.points))
+                    ps = slice(p_num, 2*len(self.points), len(self.points))
                     draw_points(side_image, point_coors[ps], point_colors[ps], 
-                                point_names[ps], thickness=thickness, r = 6)
+                                point_names[ps], shown_points[ps], thickness=thickness, r = 6)
             object.__setattr__(self, 'sideview_image', side_image)
         
         point_locations = calc_skeleton(self.files, self.geometry, 
@@ -368,13 +378,14 @@ class SECV(CUI):
         return True
     
 class STAC(CUI):
-    def __init__(self, path):
+    def __init__(self, path, master = None):
+        object.__setattr__(self, 'master', master)
         ext = os.path.splitext(path)[1]
         if ext != '.stac':
             raise TypeError('Only .stac files are supported.')
         stacks, metadata = load_stac(path)
         object.__setattr__(self, 'metadata', metadata)
-        if os.path.dirname(path) == base_dir[:-1]:
+        if os.path.dirname(path) == BASE_DIR[:-1]:
             os.remove(path)
             metadata['files']['stac_path'] = None
         shape = np.array(stacks).shape
