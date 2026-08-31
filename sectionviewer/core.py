@@ -132,6 +132,8 @@ class SECV(CUI):
     def update(self, level: int = None, end: int = 6) -> bool:
         if not hasattr(self, 'voxels') or self.voxels is None:
             level = 1
+        elif not hasattr(self, 'view_frame') or self.view_frame is None:
+            level = 2
         if hasattr(self, 'meta_prev') and \
             hasattr(self.metadata, '_locate_difference'):
             loc = self.metadata._locate_difference(self.meta_prev)
